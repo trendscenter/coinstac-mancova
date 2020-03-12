@@ -1,0 +1,67 @@
+{
+    "meta": {
+        "name": "Spatially Constrained ICA",
+        "version": "v1.0.0",
+        "repository": "https://github.com/MRN-Code/coinstac_backreconstruction",
+        "description": "Back-Reconstruction with Gig-ICA and Dual Regression"
+    },
+    "computation": {
+        "type": "docker",
+        "dockerImage": "cs_scica",
+        "command": [
+            "python",
+            "\/computation\/local.py"
+        ],
+        "remote": {
+            "type": "docker",
+            "dockerImage": "cs_scica",
+            "command": [
+                "python",
+                "\/computation\/remote.py"
+            ]
+        },
+        "input": {
+            "file_names": {
+                "label": "Filenames",
+                "type": "array",
+                "items": [
+                    "string"
+                ],
+                "extensions": [
+                    "nii"
+                ]
+            },
+            "ica_varname": {
+                "label": "ICA Variable name",
+                "type": "string"
+            },
+            "ica_sig": {
+                "label": "ICA Results",
+                "type": "string",
+                "extensions": [
+                    "mat"
+                ]
+            },
+            "algorithm": {
+                "label": "Algorithm",
+                "type": "string",
+                "defaultValue": "gigica",
+                "allowed": [
+                    "gigica"
+                ],
+                "labels": [
+                    "Gig-ICA"
+                ]
+            }
+        },
+        "output": {
+            "output_files": {
+                "label": "Output Files",
+                "type": "array",
+                "items": [
+                    "string"
+                ]
+            }
+        }
+    }
+}

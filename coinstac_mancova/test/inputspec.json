@@ -1,0 +1,12 @@
+[
+    {
+        "_sitename": "local0",
+        "file_names": [
+            "V.mat"
+        ],
+        "algorithm": "gigica",
+        "preproc": "time_mean",
+        "ica_sig": "template.mat",
+        "ica_varname": "SM"
+    }
+]

@@ -1,0 +1,55 @@
+{
+    "meta": {
+        "name": "decentralized mancova",
+        "id": "dmancova",
+        "version": "v1.0.0",
+        "repository": "",
+        "description": "a demo for decentralized mancova"
+    },
+    "computation": {
+        "type": "docker",
+        "dockerImage": "dmancova",
+        "command": [
+            "python",
+            "\/computation\/local.py"
+        ],
+        "remote": {
+            "type": "docker",
+            "dockerImage": "dgica",
+            "command": [
+                "python",
+                "\/computation\/remote.py"
+            ]
+        },
+        "input": {
+            "datafile": {
+                "label": "Input Data",
+                "type": "string",
+                "extensions": [
+                    [
+                        "csv"
+                    ]
+                ]
+            },
+            "mask": {
+                "defaultValue": "/computation/local_data/mask.nii",
+                "label": "Mask",
+                "type": "string",
+                "source": "owner"
+            },
+            "num_ics": {
+                "defaultValue": 20,
+                "label": "Global Number of Independent Components",
+                "min": 1,
+                "type": "number",
+                "source": "owner"
+            },
+            "scica_template": {
+                "defaultValue": "NeuroMark.nii",
+                "label": "Spatially Constrained ICA Template",
+                "type": "list/file"
+            }
+        },
+        "output": {}
+    }
+}

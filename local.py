@@ -11,12 +11,17 @@ import sys
 import copy
 import numpy as np
 import utils as ut
-import mancova_phase_keys as pk
+import mancova_phase_keys as mpk
+import gica_phase_keys as gpk
 from constants import OUTPUT_TEMPLATE
 
 
 LOCAL_MANCOVA_PHASES = \
-    pk.MANCOVA_LOCAL 
+    mpk.MANCOVA_LOCAL
+    #gpk.NOOP_LOCAL + \
+    #gpk.INIT_LOCAL + \
+    #gpk.SPATIALLY_CONSTRAINED_ICA_LOCAL + \
+    #mpk.MANCOVA_LOCAL 
 if __name__ == '__main__':
 
     PIPELINE = LOCAL_MANCOVA_PHASES

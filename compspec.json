@@ -15,7 +15,7 @@
         ],
         "remote": {
             "type": "docker",
-            "dockerImage": "dgica",
+            "dockerImage": "dmancova",
             "command": [
                 "python",
                 "\/computation\/remote.py"

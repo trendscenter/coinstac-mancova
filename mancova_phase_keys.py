@@ -40,12 +40,12 @@ NOOP_REMOTE = [
 MANCOVA_LOCAL = [
     dict(
         do=[
-            ops_local.local_load_datasets,
-            ops_local.local_output_to_input,
+            # ops_local.local_load_datasets,
+            # ops_local.local_output_to_input,
             mancova_local.local_run_mancova,
         ],
         recv=[],
-        send='local_init',
+        send='local_mancova_1',
         args=[
             [],
             [],
@@ -67,9 +67,10 @@ MANCOVA_REMOTE = [
     dict(
         do=[
             ops_remote.remote_noop,
+            # mancova_remote.mancova_aggregate
         ],
-        recv=INIT_LOCAL[0].get("send"),
-        send='remote_init',
+        recv=MANCOVA_LOCAL[0].get("send"),
+        send='remote_aggregate',
         args=[
             [],
             [],
@@ -83,4 +84,3 @@ MANCOVA_REMOTE = [
 
     )
 ]
-

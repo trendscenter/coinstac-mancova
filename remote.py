@@ -12,12 +12,17 @@ import sys
 import numpy as np
 import utils as ut
 import copy
-import mancova_phase_keys as pk
+import mancova_phase_keys as mpk
+import gica_phase_keys as gpk
 from constants import OUTPUT_TEMPLATE
 
 
 REMOTE_MANCOVA_PHASES = \
-    pk.MANCOVA_REMOTE
+    mpk.MANCOVA_REMOTE
+    #gpk.NOOP_REMOTE + \
+    #gpk.INIT_REMOTE + \
+    #gpk.SPATIALLY_CONSTRAINED_ICA_REMOTE + \
+    #mpk.MANCOVA_REMOTE 
 
 if __name__ == '__main__':
 

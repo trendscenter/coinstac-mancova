@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__
+*.data
+*.mat
+
+/venv
+/.vscode
+/env
+
+/test/*/simulatorRun/*

@@ -1,0 +1,26 @@
+[
+    {
+        "data": {
+            "value": [
+                [
+                    "subject_1.nii"
+                ],
+                [
+                    "nifti"
+                ]
+            ]
+        }
+    },
+    {
+        "data": {
+            "value": [
+                [
+                    "subject_2.nii"
+                ],
+                [
+                    "nifti"
+                ]
+            ]
+        }
+    }
+]

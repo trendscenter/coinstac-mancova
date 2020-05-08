@@ -1,0 +1,26 @@
+[
+    {
+        "data": {
+            "value": [
+                [
+                    "local0.sub0.data.nii"
+                ],
+                [
+                    "nifti"
+                ]
+            ]
+        }
+    },
+    {
+        "data": {
+            "value": [
+                [
+                    "local1.sub1.data.nii"
+                ],
+                [
+                    "nifti"
+                ]
+            ]
+        }
+    }
+]

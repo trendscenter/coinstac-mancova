@@ -21,7 +21,10 @@ def load_datasets(args, phase_prefix="local"):
     state = args['state']
     inputs = args['input']
 
-    csv_file = os.path.join(state["baseDirectory"], inputs['datafile'][0])
+    ext = '.csv'
+    csv_filename = [i for i in inputs['data'] if ext in i]
+
+    csv_file = os.path.join(state["baseDirectory"], csv_filename)
     datasets = ut.read_data_csv(csv_file, state["baseDirectory"],
                                 state["clientId"])
 

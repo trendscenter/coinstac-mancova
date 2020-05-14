@@ -66,8 +66,10 @@ def local_run_mancova(args):
     in_files = [os.path.join(state['baseDirectory'], f)
                 for f in args["input"]["data"]]
     ut.log("Loaded files %s" % ', '.join(in_files), state)
-    covariates = convert_covariates(os.path.join(state['baseDirectory'], args['input']['covariates']),  state,
-                                    os.path.join(state['baseDirectory'], args['input']['covariate_types']), N=len(in_files))
+    ext = '.csv'
+    csv_filename = [i for i in args["input"]["data"] if ext in i]
+    covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
+    covariates = convert_covariates(covariate_file, state, covariate_types=None, N=len(in_files))
 
     ica_parameters = os.path.join(
         state['outputDirectory'], 'gica_cmd_ica_parameter_info.mat')

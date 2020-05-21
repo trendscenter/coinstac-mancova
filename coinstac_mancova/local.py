@@ -63,12 +63,14 @@ def parse_stats(filename):
 def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
-    in_files = [os.path.join(state['baseDirectory'], f)
-                for f in args["input"]["data"]]
-    ut.log("Loaded files %s" % ', '.join(in_files), state)
-    ext = '.csv'
-    csv_filename = [i for i in args["input"]["data"] if ext in i]
+    csv_filename = [i for i in args["input"]["data"] if '.csv' in i]
     covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
+    ut.log("Covariate File Name:"+covariate_file, state)
+    file_list = args["input"]["data"]
+    file_list.remove(csv_filename[0])
+    in_files = [os.path.join(state['baseDirectory'], f)
+                for f in file_list]
+    ut.log("Loaded files %s" % ', '.join(in_files), state)
     covariates = convert_covariates(covariate_file, state, covariate_types=None, N=len(in_files))
 
     ica_parameters = os.path.join(

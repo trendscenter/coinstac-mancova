@@ -65,47 +65,23 @@ def local_run_mancova(args):
     ut.log("Got input %s" % (args["input"]), state)
     csv_filename = [i for i in args["input"]["data"] if '.csv' in i]
     covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
+    covariate_type_file = os.path.join(state["baseDirectory"], csv_filename[1])
     ut.log("Covariate File Name:"+covariate_file, state)
     file_list = args["input"]["data"]
     file_list.remove(csv_filename[0])
+    file_list.remove(csv_filename[1])
     in_files = [os.path.join(state['baseDirectory'], f)
                 for f in file_list]
     ut.log("Loaded files %s" % ', '.join(in_files), state)
-    covariates = convert_covariates(covariate_file, state, covariate_types=None, N=len(in_files))
-
-    ica_parameters = os.path.join(
-        state['outputDirectory'], 'gica_cmd_ica_parameter_info.mat')
+    covariates = convert_covariates(covariate_file, state, covariate_types=covariate_type_file, N=len(in_files))
+    ica_parameters_input = os.path.join(state['baseDirectory'], 'gica_cmd_ica_parameter_info.mat')
+    ica_parameters_dict = sio.loadmat(ica_parameters_input, struct_as_record=False)
+    ica_parameters_dict['sesInfo'][0][0].outputDir[0] = ica_parameters_dict['sesInfo'][0][0].outputDir[0].replace(state['outputDirectory'], state['baseDirectory'])
+    ica_parameters = os.path.join(state['outputDirectory'], 'gica_cmd_ica_parameter_info.mat')
+    sio.savemat(ica_parameters, ica_parameters_dict)
     maskfile = args["input"]["mask"]
     interactions = args["input"]["interactions"]
-    ut.log("Interpolating", state)
-    template = ut.get_interpolated_nifti(
-        in_files[0], args["input"]["scica_template"], destination_dir=state['outputDirectory'])
-    ut.log("Interpolated template at file %s" % template, state)
-    pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
-    if os.path.exists(pyscript):
-        os.remove(pyscript)
-    ut.log("Running group ICA", state)
-    output = gift_gica(
-        in_files=in_files,
-        refFiles=[template],
-        mask=maskfile,
-        out_dir=state["outputDirectory"],
-        group_pca_type="subject specific",
-        algoType=16,
-    )
-    subject_sms = list(glob.glob(os.path.join(
-        state["outputDirectory"], 'gica_cmd_sub*_component_ica_s1_*.nii')))
 
-    subject_tcs = []
-    for i in range(1, (len(subject_sms)+1)):
-        fn = os.path.join(state["outputDirectory"], TC_SEARCH_STRING) % i
-        found = glob.glob(fn)
-        if len(found) > 0:
-            subject_tcs.append(found[0])
-        else:
-            break
-    other_matfiles = [f for f in list(
-        glob.glob(os.path.join(state['outputDirectory'], '*.mat')))]
     ut.log("Running Mancova", state)
     gift_mancova(
         ica_param_file=ica_parameters,
@@ -116,7 +92,7 @@ def local_run_mancova(args):
         features=["spatial maps", "timecourses spectra", "fnc correlations"],
         covariates=covariates,
         interactions=interactions,
-        numOfPCs=[53],
+        numOfPCs=[5, 5, 5],
         # feature_params=DEFAULT_FEATURE_PARAMS,
     )
     ut.log("Collecting Mancova results", state)

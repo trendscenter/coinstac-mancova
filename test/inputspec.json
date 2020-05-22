@@ -3,6 +3,7 @@
         "data": {
             "value": [
                 "covariates.csv",
+                "covariate_keys.csv",
                 "vsdwa_000300655084_0002.nii.gz",
                 "vsdwa_000303008407_0002.nii.gz",
                 "vsdwa_000306518979_0002.nii.gz",
@@ -40,6 +41,7 @@
         "data": {
             "value": [
                 "covariates.csv",
+                "covariate_keys.csv",
                 "vsdwa_000705721567_0002.nii.gz",
                 "vsdwa_000712379966_0002.nii.gz",
                 "vsdwa_000713047394_0002.nii.gz",

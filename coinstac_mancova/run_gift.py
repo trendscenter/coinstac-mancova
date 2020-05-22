@@ -275,5 +275,6 @@ def gift_mancova(
     gc.inputs.interactions = interactions
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
+    gc.inputs.display = {'freq_limits':[0.1, 0.15], 'structFile':'/app/groupicatv4.0b/oldgroupica/icatb_templates/ch2bet.nii', 't_threshold':1.0, 'image_values':'positive', 'threshdesc':'fdr'};
 
     return gc.run()

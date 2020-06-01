@@ -18,10 +18,6 @@ from constants import OUTPUT_TEMPLATE
 
 
 REMOTE_MANCOVA_PHASES = \
-    mpk.MANCOVA_REMOTE + \
-    gpk.NOOP_REMOTE + \
-    gpk.INIT_REMOTE + \
-    gpk.SPATIALLY_CONSTRAINED_ICA_REMOTE + \
     mpk.MANCOVA_REMOTE
 
 if __name__ == '__main__':

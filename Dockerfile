@@ -1,5 +1,5 @@
 # FROM ubuntu:16.04
-FROM trendscenter/gift:latest
+FROM bbradt/groupicatb:latest
 ENV MCRROOT=/usr/local/MATLAB/MATLAB_Runtime/v91
 ENV MCR_CACHE_ROOT=/computation/mcrcache
 #RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
@@ -57,7 +57,7 @@ RUN (timeout 20s /app/groupicatv4.0b/GroupICATv4.0b_standalone/run_groupica.sh /
 
 #COPY . /computation
 
-COPY ./node_modules /computation/node_modules
+#COPY ./node_modules /computation/node_modules
 COPY ./coinstac_masking /computation/coinstac_masking
 COPY ./coinstac_decentralized_row_means /computation/coinstac_decentralized_row_means
 COPY ./groupicatv4.0b /computation/groupicatv4.0b

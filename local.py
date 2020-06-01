@@ -17,10 +17,6 @@ from constants import OUTPUT_TEMPLATE
 
 
 LOCAL_MANCOVA_PHASES = \
-    mpk.MANCOVA_LOCAL + \
-    gpk.NOOP_LOCAL + \
-    gpk.INIT_LOCAL + \
-    gpk.SPATIALLY_CONSTRAINED_ICA_LOCAL + \
     mpk.MANCOVA_LOCAL
 if __name__ == '__main__':
 

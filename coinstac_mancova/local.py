@@ -1,5 +1,6 @@
 import sys
 import ujson as json
+#import json
 from .run_gift import gift_mancova, gift_gica
 from utils import listRecursive
 import utils as ut
@@ -8,6 +9,7 @@ import glob
 import pandas as pd
 import scipy.io as sio
 import shutil
+import h5py
 
 TC_SEARCH_STRING = 'gica_cmd_sub*%d_timecourses_ica_s1_.nii'
 
@@ -79,25 +81,41 @@ def _todict(matobj):
     return dict
 
 def parse_stats(filename):
-    stats_loaded = sio.loadmat(filename, struct_as_record=False)
+    using_h5py = False
+    try:
+        stats_loaded = loadmat(filename)
+    except Exception:
+        #f = h5py.
+        using_h5py = True
+        stats_loaded = h5py.File(filename, 'r')
+        #stats_loaded = _check_keys(stats_loaded)
     mult_output = {}
-    mult = stats_loaded['MULT'][0][0].__dict__
-
-    stats = mult['stats'][0][0].__dict__
+    if not using_h5py:
+        mult = stats_loaded['MULT'][0][0].__dict__
+    else:
+        mult = stats_loaded['MULT']
+    if not using_h5py:
+        stats = mult['stats'][0][0].__dict__
+    else:
+        stats = {k:v[()] for k,v in mult['stats'].items()}
     mult_output['stats'] = stats
-    mult_output['X'] = mult['X']
-    mult_output['p'] = mult['p']
-    mult_output['t'] = mult['t']
+    mult_output['X'] = mult['X'][()]
+    mult_output['p'] = mult['p'][()]
+    mult_output['t'] = mult['t'][()]
 
     uni_output = {}
-    uni = stats_loaded['UNI'][0][0].__dict__
-    stats = uni['stats'][0][0].__dict__
-    uni_output['stats'] = stats
-    uni_output['X'] = uni['X']
-    uni_output['p'] = uni['p']
-    uni_output['t'] = uni['t']
+    if not using_h5py:
+        uni = stats_loaded['UNI'][0][0].__dict__
+        stats = uni['stats'][0][0].__dict__
+    else:
+        uni = stats_loaded['UNI']
+        stats = uni['stats'][()] #{k:v[()] for k,v in uni['stats'].items()}
+    #uni_output['stats'] = stats
+    #uni_output['X'] = uni['X']
+    uni_output['p'] = uni['p'][()]
+    uni_output['t'] = uni['t'][()]
 
-    return {'MULT': mult, 'UNI': uni}
+    return {'MULT': mult_output, 'UNI': uni_output}
 
 def local_run_mancova(args):
     state = args["state"]
@@ -164,10 +182,10 @@ def local_run_mancova(args):
     for sm_file in SM_FILES:
         sm_results[i] = parse_stats(sm_file)
     output_dict = {
-        'fnc': fnc_output,
-        'fnc_avg': fnc_output_avg,
-        'spectra': spectra_results,
-        'sm': sm_results,
+        #'fnc': fnc_output,
+        #'fnc_avg': fnc_output_avg,
+        #'spectra': spectra_results,
+        #'sm': sm_results,
         'computation_phase': 'scica_mancova_1'
     }
     ut.log("Output %s" % (output_dict), state)

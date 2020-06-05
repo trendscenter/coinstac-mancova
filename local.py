@@ -6,6 +6,7 @@
 """
 
 import ujson as json
+#import json
 import os
 import sys
 import copy
@@ -71,7 +72,10 @@ if __name__ == '__main__':
                             ut.log("Trying operation %s, with no args or kwargs" %
                                    (operation.__name__), parsed_args["state"])
                             computation_output = operation(parsed_args)
-                parsed_args = copy.deepcopy(computation_output)
+                try:
+                    parsed_args = copy.deepcopy(computation_output)
+                except Exception:
+                    parsed_args = computation_output
                 ut.log("Finished with operation %s" %
                        (operation.__name__), parsed_args["state"])
                 ut.log("Operation output has keys %s" % str(parsed_args['output'].keys()), parsed_args["state"])
@@ -82,5 +86,6 @@ if __name__ == '__main__':
                    expected_phases.get("send"), parsed_args["state"])
             break
     ut.log("Computation output looks like %s, and output keys %s" %
-           (str(computation_output.keys()), str(computation_output["output"].keys())), parsed_args["state"])
+           (str(computation_output), str(computation_output["output"].keys())), parsed_args["state"])
+    ut.log("The dump looks like %s" % json.dumps(computation_output), parsed_args["state"])
     sys.stdout.write(json.dumps(computation_output))

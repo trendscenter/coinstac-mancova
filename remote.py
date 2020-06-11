@@ -26,6 +26,7 @@ if __name__ == '__main__':
     parsed_args = json.loads(sys.stdin.read())
     phase_key = list(ut.listRecursive(parsed_args, 'computation_phase'))
     computation_output = copy.deepcopy(OUTPUT_TEMPLATE)
+    sys.stderr = open('COINSTAC_err.err','w')
     ut.log("Starting remote phase %s" % phase_key, parsed_args["state"])
     ut.log("With input %s, and input keys %s" %
            (str(parsed_args.keys()), str(parsed_args['input'].keys())), parsed_args["state"])

@@ -42,10 +42,11 @@ def stdchannel_redirected(stdchannel, dest_filename):
 LOCAL_MANCOVA_PHASES = \
     mpk.MANCOVA_LOCAL
 if __name__ == '__main__':
-    with stdchannel_redirected(sys.stderr, os.devnull):
+    parsed_args = json.loads(sys.stdin.read())
+    with stdchannel_redirected(sys.stderr, os.path.join(parsed_args["state"]["outputDirectory"], 'COINSTAC_ERROR.err')):
         PIPELINE = LOCAL_MANCOVA_PHASES
 
-        parsed_args = json.loads(sys.stdin.read())
+      
         phase_key = list(ut.listRecursive(parsed_args, 'computation_phase'))
         computation_output = copy.deepcopy(OUTPUT_TEMPLATE)
         sys.stderr = open('COINSTAC_err.err','w')

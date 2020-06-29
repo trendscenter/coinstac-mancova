@@ -1,0 +1,4 @@
+name,type
+age,continuous
+diagnosis,categorical
+gender,categorical

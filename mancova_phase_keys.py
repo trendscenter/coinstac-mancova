@@ -67,7 +67,7 @@ MANCOVA_REMOTE = [
     dict(
         do=[
             ops_remote.remote_noop,
-            # mancova_remote.mancova_aggregate
+            #mancova_remote.mancova_aggregate
         ],
         recv=MANCOVA_LOCAL[0].get("send"),
         send='remote_aggregate',

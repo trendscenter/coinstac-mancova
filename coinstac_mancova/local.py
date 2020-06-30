@@ -116,7 +116,7 @@ def local_run_mancova(args):
         features=["spatial maps", "timecourses spectra", "fnc correlations"],
         covariates=covariates,
         interactions=interactions,
-        numOfPCs=[53],
+        numOfPCs=[5,5,5],
         # feature_params=DEFAULT_FEATURE_PARAMS,
     )
     ut.log("Collecting Mancova results", state)

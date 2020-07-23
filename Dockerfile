@@ -22,7 +22,7 @@ RUN mkdir /tmp/mcr_installer && \
     rm -Rf /tmp/mcr_installer
 
 # Copy the current directory contents into the container
-#WORKDIR /app
+WORKDIR /app
 COPY requirements.txt /app
 
 # Install any needed packages specified in requirements.txt

@@ -140,6 +140,22 @@
         "interactions": {
             "value": []
         },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra"
+            ]
+        },
+        "TR": {
+            "value": 2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
         "univariate_test_list": {
             "value": [
                 {

@@ -152,17 +152,18 @@ def local_run_mancova(args):
         state["outputDirectory"], "gica_cmd_ica_parameter_info.mat"
     )
     maskfile = args["input"]["mask"]
-    ut.log("Interpolating", state)
-    template = ut.get_interpolated_nifti(
-        in_files[0],
-        args["input"]["scica_template"],
-        destination_dir=state["outputDirectory"],
-    )
-    ut.log("Interpolated template at file %s" % template, state)
+
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if os.path.exists(pyscript):
         os.remove(pyscript)
     if args["input"]["gica_input_dir"] is None:
+        ut.log("Interpolating", state)
+        template = ut.get_interpolated_nifti(
+            in_files[0],
+            args["input"]["scica_template"],
+            destination_dir=state["outputDirectory"],
+        )
+        ut.log("Interpolated template at file %s" % template, state)
         ut.log("Running group ICA", state)
         output = gift_gica(
             in_files=in_files,
@@ -219,13 +220,11 @@ def local_run_mancova(args):
         numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),
         run_name="coinstac-mancovan-multivariate",
         comp_network_names=args["input"].get("comp_network_names", NEUROMARK_NETWORKS),
-        display={
-            "freq_limits": args["input"].get("freq_limits", [0.1, 0.15]),
-            "t_threshold": args["input"].get("t_threshold", 0.05),
-            "image_values": args["input"].get("image_values", "positive"),
-            "threshdesc": args["input"].get("threshdesc", "none"),
-            "p_threshold": args["input"].get("p_threshold", 0.05),
-        },
+        freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
+        t_threshold=args["input"].get("t_threshold", 0.05),
+        image_values=args["input"].get("image_values", "positive"),
+        threshdesc=args["input"].get("threshdesc", "fdr"),
+        p_threshold=args["input"].get("p_threshold", 0.05),
     )
     ut.log("Running univariate tests", state)
     for univariate_test in univariate_test_list:
@@ -246,13 +245,11 @@ def local_run_mancova(args):
             ),
             univariate_test=univariate_test,
             run_name="coinstac-mancovan-univariate",
-            display={
-                "freq_limits": args["input"].get("freq_limits", [0.1, 0.15]),
-                "t_threshold": args["input"].get("t_threshold", 0.05),
-                "image_values": args["input"].get("image_values", "positive"),
-                "threshdesc": args["input"].get("threshdesc", "none"),
-                "p_threshold": args["input"].get("p_threshold", 0.05),
-            },
+            freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
+            t_threshold=args["input"].get("t_threshold", 0.05),
+            image_values=args["input"].get("image_values", "positive"),
+            threshdesc=args["input"].get("threshdesc", "none"),
+            p_threshold=args["input"].get("p_threshold", 0.05),
         )
     ut.log("Collecting Mancova results", state)
     output_dict = {"computation_phase": "scica_mancova_1"}

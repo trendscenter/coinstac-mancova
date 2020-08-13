@@ -11,8 +11,19 @@ import pandas as pd
 import scipy.io as sio
 import shutil
 import h5py
+import numpy as np
 
 TC_SEARCH_STRING = "gica_cmd_sub*%d_timecourses_ica_s1_.nii"
+
+NEUROMARK_NETWORKS = {
+    "SC": [1, 2, 3, 4, 5],
+    "AUD": [6, 7],
+    "SM": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "VIS": [17, 18, 19, 20, 21, 22, 23, 24, 25],
+    "CC": [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42],
+    "DMN": [43, 44, 45, 46, 47, 48, 49],
+    "CR": [50, 51, 52, 53],
+}
 
 
 def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
@@ -124,25 +135,14 @@ def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
     csv_filename = [i for i in args["input"]["data"] if ".csv" in i]
+    univariate_test_list = args["input"]["univariate_test_list"]
     covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
     covariate_type_file = os.path.join(state["baseDirectory"], csv_filename[1])
     ut.log("Covariate File Name:" + covariate_file, state)
     file_list = args["input"]["data"]
     file_list.remove(csv_filename[0])
     file_list.remove(csv_filename[1])
-    """
-    for filename in glob.glob(os.path.join(state["baseDirectory"], "*")):
-        if os.path.isdir(filename):
-            shutil.copytree(
-                filename,
-                os.path.join(state["outputDirectory"], os.path.basename(filename)),
-            )
-        else:
-            shutil.copy(
-                filename,
-                os.path.join(state["outputDirectory"], os.path.basename(filename)),
-            )
-    """
+
     in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
     ut.log("Loaded files %s" % ", ".join(in_files), state)
     covariates = convert_covariates(
@@ -162,66 +162,100 @@ def local_run_mancova(args):
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if os.path.exists(pyscript):
         os.remove(pyscript)
-    ut.log("Running group ICA", state)
-    output = gift_gica(
-        in_files=in_files,
-        refFiles=[template],
-        mask=maskfile,
-        out_dir=state["outputDirectory"],
-        group_pca_type="subject specific",
-        algoType=16,
-    )
+    if args["input"]["gica_input_dir"] is None:
+        ut.log("Running group ICA", state)
+        output = gift_gica(
+            in_files=in_files,
+            refFiles=template,
+            mask=maskfile,
+            out_dir=state["outputDirectory"],
+            group_pca_type="subject specific",
+            algoType=16,
+            run_name="coinstac-gica",
+        )
+    else:
+        ut.log(
+            "Copying preexisting output from %s to %s"
+            % (
+                os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"]),
+                os.path.join(state["outputDirectory"], args["input"]["gica_input_dir"]),
+            ),
+            state,
+        )
+        for filename in glob.glob(
+            os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"])
+        ):
+            if os.path.isdir(filename):
+                shutil.copytree(
+                    filename,
+                    os.path.join(
+                        state["outputDirectory"],
+                        args["input"]["gica_input_dir"],
+                        os.path.basename(filename),
+                    ),
+                )
+            else:
+                shutil.copy(
+                    filename,
+                    os.path.join(
+                        state["outputDirectory"],
+                        args["input"]["gica_input_dir"],
+                        os.path.basename(filename),
+                    ),
+                )
     ut.log("ICA Parameters file is %s" % (str(ica_parameters)), state)
     ut.log("Checking covariates %s" % (str(covariates)), state)
     ut.log("ICA param file", state)
     maskfile = args["input"]["mask"]
     interactions = args["input"]["interactions"]
-    comp_network_names = {"%d" % v: v + 1 for v in range(53)}
     ut.log("Running Mancova", state)
     gift_mancova(
         ica_param_file=ica_parameters,
         out_dir=state["outputDirectory"],
-        TR=2,
-        features=["spatial maps", "timecourses spectra"],
+        TR=args["input"].get("TR", 2),
+        features=args["input"]["features"],
         covariates=covariates,
         interactions=interactions,
-        numOfPCs=[5, 5, 5],
-        comp_network_names=comp_network_names
-        # feature_params=DEFAULT_FEATURE_PARAMS,
+        numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),
+        run_name="coinstac-mancovan-multivariate",
+        comp_network_names=args["input"].get("comp_network_names", NEUROMARK_NETWORKS),
+        display={
+            "freq_limits": args["input"].get("freq_limits", [0.1, 0.15]),
+            "t_threshold": args["input"].get("t_threshold", 0.05),
+            "image_values": args["input"].get("image_values", "positive"),
+            "threshdesc": args["input"].get("threshdesc", "none"),
+            "p_threshold": args["input"].get("p_threshold", 0.05),
+        },
     )
+    ut.log("Running univariate tests", state)
+    for univariate_test in univariate_test_list:
+        key = univariate_test.keys()[0]
+        univariate_test[key]["dataset"] = [
+            list(np.argwhere(covariates == name))
+            for name in univariate_test[key]["names"]
+        ]
+        ut.log(
+            "Test with name %s has parameters %s" % (key, univariate_test[key]), state
+        )
+        gift_mancova(
+            ica_param_file=ica_parameters,
+            out_dir=state["outputDirectory"],
+            TR=args["input"].get("TR", 2),
+            comp_network_names=args["input"].get(
+                "comp_network_names", NEUROMARK_NETWORKS
+            ),
+            univariate_test=univariate_test,
+            run_name="coinstac-mancovan-univariate",
+            display={
+                "freq_limits": args["input"].get("freq_limits", [0.1, 0.15]),
+                "t_threshold": args["input"].get("t_threshold", 0.05),
+                "image_values": args["input"].get("image_values", "positive"),
+                "threshdesc": args["input"].get("threshdesc", "none"),
+                "p_threshold": args["input"].get("p_threshold", 0.05),
+            },
+        )
     ut.log("Collecting Mancova results", state)
-    FNC_FILE_1 = os.path.join(
-        state["outputDirectory"], "dfnc_stats", "gica_cmd_mancovan_results_fnc.mat"
-    )
-    fnc_output = {}
-    if os.path.exists(FNC_FILE_1):
-        fnc_output = parse_stats(FNC_FILE_1)
-    FNC_FILE_2 = os.path.join(
-        state["outputDirectory"],
-        "dfnc_stats",
-        "gica_cmd_mancovan_results_fnc_domain_avg.mat",
-    )
-    fnc_output_avg = {}
-    if os.path.exists(FNC_FILE_2):
-        fnc_output_avg = parse_stats(FNC_FILE_2)
-    SPECTRA_FILES = glob.glob(
-        os.path.join(state["outputDirectory"], "spectra_stats", "*.mat")
-    )
-    spectra_results = {}
-    for i, spectra_file in enumerate(SPECTRA_FILES):
-        spectra_results[i] = parse_stats(spectra_file)
-
-    sm_results = {}
-    SM_FILES = glob.glob(os.path.join(state["outputDirectory"], "sm_stats", "*.mat"))
-    for sm_file in SM_FILES:
-        sm_results[i] = parse_stats(sm_file)
-    output_dict = {
-        #'fnc': fnc_output,
-        #'fnc_avg': fnc_output_avg,
-        #'spectra': spectra_results,
-        #'sm': sm_results,
-        "computation_phase": "scica_mancova_1"
-    }
+    output_dict = {"computation_phase": "scica_mancova_1"}
     ut.log("Output %s" % (output_dict), state)
     cache_dict = {}
     computation_output = {"output": output_dict, "cache": cache_dict, "state": state}

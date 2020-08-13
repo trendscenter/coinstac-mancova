@@ -340,7 +340,6 @@ def gift_mancova(
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
     gc.inputs.p_threshold = p_threshold
-    gc.inputs.prefix = run_name
     gc.inputs.display = {
         "freq_limits": freq_limits,
         "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",

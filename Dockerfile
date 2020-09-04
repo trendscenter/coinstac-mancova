@@ -1,4 +1,4 @@
-FROM coinstacteam/coinstac-base:python3.7-buster-beta
+FROM coinstacteam/coinstac-base:python3.7-buster
 ENV MCRROOT=/usr/local/MATLAB/MATLAB_Runtime/v91
 ENV MCR_CACHE_ROOT=/tmp
 
@@ -31,9 +31,6 @@ COPY ./groupicatv4.0b/icatb/nipype-0.10.0/nipype/interfaces/gift /usr/local/lib/
 RUN chmod -R a+wrx /app
 #RUN chmod -R a+wrx /usr/local/MATLAB/MATLAB_Runtime/v91
 
-COPY . /app
-#RUN (timeout 300 bash /app/groupicatv4.0b/GroupICATv4.0b_standalone/run_groupica.sh /usr/local/MATLAB/MATLAB_Runtime/v91; exit 0)
-
 ENV MCRROOT=/usr/local/MATLAB/MATLAB_Runtime/v91
 ENV MCR_CACHE_ROOT=/computation/mcrcache
 
@@ -42,6 +39,7 @@ WORKDIR /computation
 COPY requirements.txt /computation
 
 # Install any needed packages specified in requirements.txt
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install awscli s3utils
 RUN pip install nipy
@@ -50,11 +48,14 @@ RUN mkdir -p /computation/mcrcache
 
 RUN mkdir /output
 
+COPY ./groupicatv4.0b /computation/groupicatv4.0b
+COPY ./groupicatv4.0b /app/groupicatv4.0b
+
 RUN (timeout 20s /app/groupicatv4.0b/GroupICATv4.0b_standalone/run_groupica.sh /usr/local/MATLAB/MATLAB_Runtime/v91/; exit 0)
 
 COPY ./coinstac_masking /computation/coinstac_masking
 COPY ./coinstac_decentralized_row_means /computation/coinstac_decentralized_row_means
-COPY ./groupicatv4.0b /computation/groupicatv4.0b
+
 COPY ./coinstac_node_ops /computation/coinstac_node_ops
 COPY ./coinstac_spatially_constrained_ica /computation/coinstac_spatially_constrained_ica
 COPY ./local_data /computation/local_data
@@ -63,3 +64,10 @@ COPY ./*.py /computation/
 
 
 COPY ./coinstac_mancova /computation/coinstac_mancova
+
+RUN chmod -R a+wrx /computation
+
+COPY . /app
+#RUN (timeout 300 bash /app/groupicatv4.0b/GroupICATv4.0b_standalone/run_groupica.sh /usr/local/MATLAB/MATLAB_Runtime/v91; exit 0)
+
+

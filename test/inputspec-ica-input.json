@@ -1,0 +1,406 @@
+[
+    {
+        "data": {
+            "value": [
+                "covariates.csv",
+                "covariate_keys.csv",
+                "vsdwa_000311156685_0002.nii.gz",
+                "vsdwa_000345580861_0002.nii.gz",
+                "vsdwa_000327684775_0002.nii.gz",
+                "vsdwa_000333132602_0002.nii.gz",
+                "vsdwa_000334336505_0002.nii.gz",
+                "vsdwa_000300655084_0002.nii.gz",
+                "vsdwa_000330648347_0002.nii.gz",
+                "vsdwa_000322053409_0002.nii.gz",
+                "vsdwa_000351232072_0002.nii.gz",
+                "vsdwa_000367615005_0002.nii.gz",
+                "vsdwa_000347428330_0002.nii.gz",
+                "vsdwa_000360276455_0002.nii.gz",
+                "vsdwa_000306518979_0002.nii.gz",
+                "vsdwa_000326392005_0002.nii.gz",
+                "vsdwa_000340070881_0002.nii.gz",
+                "vsdwa_000315778401_0002.nii.gz",
+                "vsdwa_000375389510_0002.nii.gz",
+                "vsdwa_000349792565_0003.nii.gz",
+                "vsdwa_000345384029_0002.nii.gz",
+                "vsdwa_000332635444_0002.nii.gz",
+                "vsdwa_000337929040_0002.nii.gz",
+                "vsdwa_000357754185_0002.nii.gz",
+                "vsdwa_000334096826_0002.nii.gz",
+                "vsdwa_000315133044_0002.nii.gz",
+                "vsdwa_000370421514_0002.nii.gz",
+                "vsdwa_000347002669_0002.nii.gz",
+                "vsdwa_000332470209_0002.nii.gz",
+                "vsdwa_000367224783_0002.nii.gz",
+                "vsdwa_000394544254_0002.nii.gz",
+                "vsdwa_000350800890_0002.nii.gz",
+                "vsdwa_000327286522_0002.nii.gz",
+                "vsdwa_000353034387_0002.nii.gz",
+                "vsdwa_000347808991_0002.nii.gz",
+                "vsdwa_000395985253_0002.nii.gz",
+                "vsdwa_000378943854_0002.nii.gz",
+                "vsdwa_000303008407_0002.nii.gz",
+                "vsdwa_000324287232_0002.nii.gz",
+                "vsdwa_000348108382_0002.nii.gz",
+                "vsdwa_000321840251_0002.nii.gz",
+                "vsdwa_000384131627_0002.nii.gz",
+                "vsdwa_000389486250_0002.nii.gz",
+                "vsdwa_000353504997_0002.nii.gz",
+                "vsdwa_000329739162_0002.nii.gz",
+                "vsdwa_000367615005_0001.nii.gz",
+                "vsdwa_000319717135_0002.nii.gz",
+                "vsdwa_000353995195_0002.nii.gz",
+                "vsdwa_000324167699_0002.nii.gz",
+                "vsdwa_000324456990_0002.nii.gz",
+                "vsdwa_000351147088_0002.nii.gz",
+                "vsdwa_000384602907_0002.nii.gz",
+                "vsdwa_000330745767_0002.nii.gz",
+                "vsdwa_000346450450_0003.nii.gz"
+            ]
+        },
+        "mask": {
+            "value": "/computation/local_data/mask.nii"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": 20
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra"
+            ]
+        },
+        "TR": {
+            "value": 2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                    "Gender": [
+                        "Age"
+                    ]
+                },
+                {
+                    "Age": [
+                        "Gender"
+                    ]
+                },
+                {
+                    "Gender_X_Age": []
+                },
+                {
+                    "ttest2": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0
+                        ]
+                    }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 0.05
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 0.05
+        },
+        "comp_network_names": {
+            "value": {
+                "SC": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "AUD": [
+                    6,
+                    7
+                ],
+                "SM": [
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
+                ],
+                "VIS": [
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25
+                ],
+                "CC": [
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41,
+                    42
+                ],
+                "DMN": [
+                    43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49
+                ],
+                "CR": [
+                    50,
+                    51,
+                    52,
+                    53
+                ]
+            }
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        },
+        "gica_input_dir": {
+            "value": ""
+        }
+    },
+    {
+        "data": {
+            "value": [
+                "covariates.csv",
+                "covariate_keys.csv",
+                "vsdwa_000718032210_0002.nii.gz",
+                "vsdwa_000740198002_0002.nii.gz",
+                "vsdwa_000705721567_0002.nii.gz",
+                "vsdwa_000736628322_0002.nii.gz",
+                "vsdwa_000760725219_0002.nii.gz",
+                "vsdwa_000793481014_0002.nii.gz",
+                "vsdwa_000796448625_0002.nii.gz",
+                "vsdwa_000719014818_0002.nii.gz",
+                "vsdwa_000735001247_0002.nii.gz",
+                "vsdwa_000713047394_0002.nii.gz",
+                "vsdwa_000775166472_0002.nii.gz",
+                "vsdwa_000716420065_0002.nii.gz",
+                "vsdwa_000712379966_0002.nii.gz",
+                "vsdwa_000765900255_0002.nii.gz",
+                "vsdwa_000789217022_0002.nii.gz",
+                "vsdwa_000783876892_0002.nii.gz",
+                "vsdwa_000754760888_0002.nii.gz",
+                "vsdwa_000725574250_0002.nii.gz"
+            ]
+        },
+        "mask": {
+            "value": "/computation/local_data/mask.nii"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": [
+                20
+            ]
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                    "ttest2": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0
+                        ]
+                    }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 0.05
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 0.05
+        },
+        "comp_network_names": {
+            "value": {
+                "SC": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "AUD": [
+                    6,
+                    7
+                ],
+                "SM": [
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
+                ],
+                "VIS": [
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25
+                ],
+                "CC": [
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41,
+                    42
+                ],
+                "DMN": [
+                    43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49
+                ],
+                "CR": [
+                    50,
+                    51,
+                    52,
+                    53
+                ]
+            }
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        }
+    }
+]

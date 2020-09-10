@@ -101,7 +101,7 @@
             "value": "none"
         },
         "gica_input_dir": {
-            "value": "coinstac-gica"
+            "value": null
         }
     },
     {
@@ -208,7 +208,7 @@
             "value": "none"
         },
         "gica_input_dir": {
-            "value": "coinstac-gica"
+            "value": null
         }
     }
 ]

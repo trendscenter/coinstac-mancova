@@ -134,14 +134,15 @@ def parse_stats(filename):
 def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
-    csv_filename = [i for i in args["input"]["data"] if ".csv" in i]
+    cov_filename = [i for i in args["input"]["data"] if "covariates.csv" in i]
+    keys_filename = [i for i in args["input"]["data"] if "covariate_keys.csv" in i]
     univariate_test_list = args["input"]["univariate_test_list"]
-    covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
-    covariate_type_file = os.path.join(state["baseDirectory"], csv_filename[1])
+    covariate_file = os.path.join(state["baseDirectory"], cov_filename[0])
+    covariate_type_file = os.path.join(state["baseDirectory"], keys_filename[0])
     ut.log("Covariate File Name:" + covariate_file, state)
     file_list = args["input"]["data"]
-    file_list.remove(csv_filename[0])
-    file_list.remove(csv_filename[1])
+    file_list.remove(cov_filename[0])
+    file_list.remove(keys_filename[0])
 
     in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
     ut.log("Loaded files %s" % ", ".join(in_files), state)
@@ -149,14 +150,16 @@ def local_run_mancova(args):
         covariate_file, state, covariate_types=covariate_type_file, N=len(in_files)
     )
     ica_parameters = os.path.join(
-        state["outputDirectory"], "gica_cmd_ica_parameter_info.mat"
+        state["outputDirectory"], "gift_ica_parameter_info.mat"
     )
     maskfile = args["input"]["mask"]
 
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if os.path.exists(pyscript):
         os.remove(pyscript)
-    if args["input"]["gica_input_dir"] is None:
+    gica_input_dir = args["input"]["gica_input_dir"]
+    gica_input_dir = gica_input_dir.strip()
+    if not gica_input_dir or gica_input_dir == 'null' or gica_input_dir is None:
         ut.log("Interpolating", state)
         template = ut.get_interpolated_nifti(
             in_files[0],
@@ -172,7 +175,7 @@ def local_run_mancova(args):
             out_dir=state["outputDirectory"],
             group_pca_type="subject specific",
             algoType=16,
-            run_name="coinstac-gica",
+            #run_name="coinstac-gica",
         )
     else:
         ut.log(
@@ -214,7 +217,7 @@ def local_run_mancova(args):
         ica_param_file=ica_parameters,
         out_dir=state["outputDirectory"],
         TR=args["input"].get("TR", 2),
-        features=args["input"]["features"],
+        features=args["input"].get("features", ["spatial maps","timecourses spectra"]),
         covariates=covariates,
         interactions=interactions,
         numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),

@@ -156,8 +156,8 @@ def gift_gica(
         algoType full options:
         1           2           3       4           5       6
         'Infomax'   'Fast ICA'  'Erica' 'Simbec'    'Evd'   'Jade Opac',
-        7           8           9                   10 
-        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)' 
+        7           8           9                   10
+        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)'
         11              12      13          14      15          16          17
         'Radical ICA'   'Combi' 'ICA-EBM'   'ERBM'  'IVA-GL'    'GIG-ICA'   'IVA-L'
 
@@ -165,8 +165,8 @@ def gift_gica(
         perfType            (Int)           :   Options are 1, 2, and 3. 1 - maximize performance, 2 - less memory usage  and 3 - user specified settings.
         prefix              (Str)           :   Enter prefix to be appended with the output files
         dummy_scans         (Int)           :   enter dummy scans
-        numWorkers          (Int)           :   Number of parallel workers    
-        doEstimation        (Int)           :   options are 0 and 1 
+        numWorkers          (Int)           :   Number of parallel workers
+        doEstimation        (Int)           :   options are 0 and 1
 
 
     """
@@ -262,7 +262,7 @@ def gift_dfnc(
         display_results     (Int)   :   0 - No display, 1 - HTML report, 2 - PDF
 
     Args (not supported here, but available for nipype):
-        Regularisation      (Str)   :   Options are 'none' and 'L1'. 
+        Regularisation      (Str)   :   Options are 'none' and 'L1'.
     """
     out_dir = os.path.join(out_dir, run_name)
 
@@ -357,7 +357,7 @@ def gift_patch(**kwargs):
     out_dir = gica_result.inputs["out_dir"]
     nc = gica_result.inputs["dim"]
     alg = ICA_ALGORITHMS[gica_result.inputs["algoType"]]
-    param_file = os.path.join(out_dir, "gica_cmd_ica_parameter_info.mat")
+    param_file = os.path.join(out_dir, "gift_ica_parameter_info.mat")
     kwargs["ica_param_file"] = param_file
     kwargs["ica_algorithm"] = alg
     kwargs["out_dir"] = out_dir

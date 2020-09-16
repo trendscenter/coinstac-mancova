@@ -154,8 +154,11 @@ def local_run_mancova(args):
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if os.path.exists(pyscript):
         os.remove(pyscript)
-    if not os.path.exists(
-        os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"])
+    if (
+        not os.path.exists(
+            os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"])
+        )
+        or len(args["input"]["gica_input_dir"]) == 0
     ):
         ut.log(
             "The input directory %s, does not exist"
@@ -301,6 +304,7 @@ def local_run_mancova(args):
                     comp_network_names=args["input"].get(
                         "comp_network_names", NEUROMARK_NETWORKS
                     ),
+                    covariates=covariates,
                     univariate_tests=univariate_test,
                     run_name="coinstac-mancovan-univariate",
                     numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),

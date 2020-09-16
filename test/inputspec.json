@@ -234,7 +234,7 @@
             "value": "none"
         },
         "gica_input_dir": {
-            "value": ""
+            "value": "coinstac-gica"
         },
         "run_mancova": {
             "value": false
@@ -446,7 +446,7 @@
             "value": "none"
         },
         "gica_input_dir": {
-            "value": ""
+            "value": "coinstac-gica"
         },
         "run_mancova": {
             "value": false

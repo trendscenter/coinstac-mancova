@@ -54,6 +54,8 @@ def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
         ut.log("Wrote covariates %s to file %s" % (covariate_name, fname), state)
         covariates[covariate_name] = [cov_type, fname]
     ut.log("Covariates are %s" % (covariates), state)
+    if N is not None:
+        df = df.head(N)
     return covariates, df
 
 

@@ -54,7 +54,7 @@ def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
         ut.log("Wrote covariates %s to file %s" % (covariate_name, fname), state)
         covariates[covariate_name] = [cov_type, fname]
     ut.log("Covariates are %s" % (covariates), state)
-    return covariates
+    return covariates, df
 
 
 def loadmat(filename):
@@ -145,17 +145,30 @@ def local_run_mancova(args):
 
     in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
     ut.log("Loaded files %s" % ", ".join(in_files), state)
-    covariates = convert_covariates(
+    covariates, covariates_df = convert_covariates(
         covariate_file, state, covariate_types=covariate_type_file, N=len(in_files)
     )
-    ica_parameters = os.path.join(
-        state["outputDirectory"], "gica_cmd_ica_parameter_info.mat"
-    )
+
     maskfile = args["input"]["mask"]
 
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if os.path.exists(pyscript):
         os.remove(pyscript)
+    if not os.path.exists(
+        os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"])
+    ):
+        ut.log(
+            "The input directory %s, does not exist"
+            % (
+                str(
+                    os.path.join(
+                        state["baseDirectory"], args["input"]["gica_input_dir"]
+                    )
+                )
+            ),
+            state,
+        )
+        args["input"]["gica_input_dir"] = None
     if args["input"]["gica_input_dir"] is None:
         ut.log("Interpolating", state)
         template = ut.get_interpolated_nifti(
@@ -165,11 +178,13 @@ def local_run_mancova(args):
         )
         ut.log("Interpolated template at file %s" % template, state)
         ut.log("Running group ICA", state)
+        gica_out_dir = os.path.join(state["outputDirectory"], "coinstac-gica")
+        os.makedirs(gica_out_dir, exist_ok=True)
         output = gift_gica(
             in_files=in_files,
             refFiles=template,
             mask=maskfile,
-            out_dir=state["outputDirectory"],
+            out_dir=gica_out_dir,
             group_pca_type="subject specific",
             algoType=16,
             run_name="coinstac-gica",
@@ -189,11 +204,7 @@ def local_run_mancova(args):
             if os.path.isdir(filename):
                 shutil.copytree(
                     filename,
-                    os.path.join(
-                        state["outputDirectory"],
-                        args["input"]["gica_input_dir"],
-                        os.path.basename(filename),
-                    ),
+                    os.path.join(state["outputDirectory"], os.path.basename(filename),),
                 )
             else:
                 shutil.copy(
@@ -204,53 +215,111 @@ def local_run_mancova(args):
                         os.path.basename(filename),
                     ),
                 )
+    ica_parameter_list = list(
+        glob.iglob(
+            os.path.join(state["outputDirectory"], "**", "*parameter_info.mat"),
+            recursive=True,
+        )
+    )
+    if len(ica_parameter_list) == 0:
+        raise (ValueError("Ica parameter file could not be found in the outupt"))
+    ica_parameters = ica_parameter_list[0]
     ut.log("ICA Parameters file is %s" % (str(ica_parameters)), state)
     ut.log("Checking covariates %s" % (str(covariates)), state)
-    ut.log("ICA param file", state)
     maskfile = args["input"]["mask"]
     interactions = args["input"]["interactions"]
-    ut.log("Running Mancova", state)
-    gift_mancova(
-        ica_param_file=ica_parameters,
-        out_dir=state["outputDirectory"],
-        TR=args["input"].get("TR", 2),
-        features=args["input"]["features"],
-        covariates=covariates,
-        interactions=interactions,
-        numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),
-        run_name="coinstac-mancovan-multivariate",
-        comp_network_names=args["input"].get("comp_network_names", NEUROMARK_NETWORKS),
-        freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
-        t_threshold=args["input"].get("t_threshold", 0.05),
-        image_values=args["input"].get("image_values", "positive"),
-        threshdesc=args["input"].get("threshdesc", "fdr"),
-        p_threshold=args["input"].get("p_threshold", 0.05),
-    )
-    ut.log("Running univariate tests", state)
-    for univariate_test in univariate_test_list:
-        key = univariate_test.keys()[0]
-        univariate_test[key]["dataset"] = [
-            list(np.argwhere(covariates == name))
-            for name in univariate_test[key]["names"]
-        ]
-        ut.log(
-            "Test with name %s has parameters %s" % (key, univariate_test[key]), state
-        )
-        gift_mancova(
-            ica_param_file=ica_parameters,
-            out_dir=state["outputDirectory"],
-            TR=args["input"].get("TR", 2),
-            comp_network_names=args["input"].get(
-                "comp_network_names", NEUROMARK_NETWORKS
-            ),
-            univariate_test=univariate_test,
-            run_name="coinstac-mancovan-univariate",
-            freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
-            t_threshold=args["input"].get("t_threshold", 0.05),
-            image_values=args["input"].get("image_values", "positive"),
-            threshdesc=args["input"].get("threshdesc", "none"),
-            p_threshold=args["input"].get("p_threshold", 0.05),
-        )
+    if args["input"]["run_mancova"]:
+        ut.log("Running Mancova", state)
+        try:
+            multivariate_out_dir = os.path.join(
+                state["outputDirectory"], "coinstac-multivariate"
+            )
+            os.makedirs(multivariate_out_dir, exist_ok=True)
+            gift_mancova(
+                ica_param_file=ica_parameters,
+                out_dir=multivariate_out_dir,
+                TR=args["input"].get("TR", 2),
+                features=args["input"]["features"],
+                covariates=covariates,
+                interactions=interactions,
+                numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),
+                run_name="coinstac-mancovan-multivariate",
+                comp_network_names=args["input"].get(
+                    "comp_network_names", NEUROMARK_NETWORKS
+                ),
+                freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
+                t_threshold=args["input"].get("t_threshold", 0.05),
+                image_values=args["input"].get("image_values", "positive"),
+                threshdesc=args["input"].get("threshdesc", "fdr"),
+                p_threshold=args["input"].get("p_threshold", 0.05),
+                display_p_threshold=args["input"].get("display_p_threshold", 0.05),
+            )
+        except Exception as e:
+            ut.log(
+                "Multivariate analysis raised an exception, likely because of bad conditioning. More subjects are required. Full error string {err}".format(
+                    err=str(e)
+                ),
+                state,
+            )
+    else:
+        ut.log("Skipping Mancova", state)
+    if args["input"]["run_univariate_tests"]:
+        ut.log("Running univariate tests", state)
+        for univariate_test in univariate_test_list:
+            key = list(univariate_test.keys())[0]
+
+            ut.log(
+                "Test with name %s has parameters %s" % (key, univariate_test[key]),
+                state,
+            )
+            if key != "regression":
+                variable = univariate_test[key].pop("variable")
+                if type(univariate_test[key]) is dict:
+                    univariate_test[key]["datasets"] = [
+                        list(np.argwhere(covariates_df[variable] == name).flatten() + 1)
+                        for name in univariate_test[key]["name"]
+                    ]
+            else:
+                variable = ""
+            ut.log(
+                "After parsing, test with name %s has parameters %s"
+                % (key, univariate_test[key]),
+                state,
+            )
+            univariate_out_dir = os.path.join(
+                state["outputDirectory"], "coinstac-univariate-%s-%s" % (key, variable)
+            )
+            os.makedirs(univariate_out_dir, exist_ok=True)
+            if key == "regression":
+                univariate_test = univariate_test[key]
+            try:
+                gift_mancova(
+                    ica_param_file=ica_parameters,
+                    out_dir=univariate_out_dir,
+                    TR=args["input"].get("TR", 2),
+                    features=args["input"]["features"],
+                    comp_network_names=args["input"].get(
+                        "comp_network_names", NEUROMARK_NETWORKS
+                    ),
+                    univariate_tests=univariate_test,
+                    run_name="coinstac-mancovan-univariate",
+                    numOfPCs=args["input"].get("numOfPCs", [4, 4, 4]),
+                    freq_limits=args["input"].get("freq_limits", [0.1, 0.15]),
+                    t_threshold=args["input"].get("t_threshold", 0.05),
+                    image_values=args["input"].get("image_values", "positive"),
+                    threshdesc=args["input"].get("threshdesc", "none"),
+                    p_threshold=args["input"].get("p_threshold", 0.05),
+                    display_p_threshold=args["input"].get("display_p_threshold", 0.05),
+                )
+            except Exception as e:
+                ut.log(
+                    "Univariate analysis ({key}, {variable}) raised an exception. Full error string {err}".format(
+                        key=key, variable=variable, err=str(e)
+                    ),
+                    state,
+                )
+    else:
+        ut.log("Skipping mancova", state)
     ut.log("Collecting Mancova results", state)
     output_dict = {"computation_phase": "scica_mancova_1"}
     ut.log("Output %s" % (output_dict), state)

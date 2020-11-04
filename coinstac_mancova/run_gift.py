@@ -326,6 +326,7 @@ def gift_mancova(
     t_threshold=1.0,
     image_values="positive",
     threshdesc="fdr",
+    display_p_threshold=DEFAULT_P_THRESHOLD,
 ):
     gift.MancovanCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
 
@@ -346,6 +347,7 @@ def gift_mancova(
         "t_threshold": t_threshold,
         "image_values": image_values,
         "threshdesc": threshdesc,
+        "p_threshold": display_p_threshold,
     }
     if univariate_tests is not None:
         gc.inputs.univariate_tests = univariate_tests

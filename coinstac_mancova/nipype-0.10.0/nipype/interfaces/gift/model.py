@@ -562,7 +562,7 @@ class DFNCCommand(GIFTCommand):
 class MancovanCommandInputSpec(GIFTCommandInputSpec):
     """ Mancovan Inputs """
 
-    ica_param_file = traits.Str(
+    ica_param_file = traits.List(
         mandatory=True, desc="Enter fullfile path of the ICA parameter file"
     )
     out_dir = traits.Str(

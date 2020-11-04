@@ -22,7 +22,6 @@ REMOTE_MANCOVA_PHASES = mpk.MANCOVA_REMOTE
 if __name__ == "__main__":
 
     PIPELINE = REMOTE_MANCOVA_PHASES
-    raise (Exception("Ok it breaks here"))
     parsed_args = json.loads(sys.stdin.read())
     phase_key = list(ut.listRecursive(parsed_args, "computation_phase"))
     computation_output = copy.deepcopy(OUTPUT_TEMPLATE)

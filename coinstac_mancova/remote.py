@@ -130,6 +130,7 @@ def mancova_aggregate(args):
             stat_results[multivariate_out_dir] = list(
                 glob.glob(os.path.join(multivariate_out_dir, "**", "*.html"))
             )
+            shutil.copytree(multivariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(multivariate_out_dir))
         except Exception as e:
             ut.log(
                 "Multivariate analysis raised an exception, likely because of bad conditioning. More subjects are required. Full error string {err}".format(
@@ -199,6 +200,7 @@ def mancova_aggregate(args):
                 stat_results[univariate_out_dir][key] = list(
                     glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
                 )
+                shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(univariate_out_dir))
             except Exception as e:
                 ut.log(
                     "Univariate analysis ({key}, {variable}) raised an exception. Full error string {err}".format(

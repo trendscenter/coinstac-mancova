@@ -1,4 +1,5 @@
 sudo rm -r test/output -v;
+sudo rm -r test/transfer -v;
 echo "Building docker file...";
 sudo docker build  -t dmancova .;
 echo "Running Simulator...";

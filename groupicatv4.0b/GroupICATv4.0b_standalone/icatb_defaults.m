@@ -224,8 +224,10 @@ global RAND_SHUFFLE;
 %% Results summary options
 global GICA_RESULTS_SUMMARY;
 
-modalityType = icatb_get_modality;
+%% exit app
+global EXIT_GICA_APP;
 
+modalityType = icatb_get_modality;
 
 %% Naming Convention Output Files( Analyze Format)
 COMPONENT_NAMING = '_component_ica_';
@@ -580,7 +582,7 @@ DEFAULT_TR_SPECTRAL_GROUP_COMPARE = EXPERIMENTAL_TR;
 %% Enforce MAT files versioning for MATLAB versions greater than 6.5. Use
 % the correct option. For more help on version compatibility, please check
 % MATLAB save command options for MAT files.
-ENFORCE_MAT_FILE_VER = '-v6';
+ENFORCE_MAT_FILE_VER = '-v7.3';
 
 %% Center Image distribution
 % Options are 0 and 1
@@ -632,7 +634,7 @@ WRITE_ANALYSIS_STEPS_IN_DIRS = 0;
 %   d. Group stats files - Only mean of all data-sets is written.
 % 2 - Write all files till the group stats. Cleanup intermediate files at the end of the group stats (PCA, Back-reconstruct, Scaled component MAT files in GIFT). Analysis cannot be
 % resumed if there are any changes to the setup parameters. Utilities that work with PCA and Backreconstruction files like Remove components, Percent Variance, etc won't work with this option .
-CONSERVE_DISK_SPACE = 0;
+CONSERVE_DISK_SPACE = 2;
 
 %% Mancova defaults
 %
@@ -709,3 +711,6 @@ RAND_SHUFFLE = 1;
 %% PRINT Resolution for gica summary (only for deployed applications)
 GICA_RESULTS_SUMMARY.print_resolution = '-r72';
 GICA_RESULTS_SUMMARY.format = 'html';
+
+% for docker apps set this variable to 0 for copying the data from the container. 
+EXIT_GICA_APP =1;

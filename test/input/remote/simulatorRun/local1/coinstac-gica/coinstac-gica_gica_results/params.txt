@@ -1,0 +1,22 @@
+....................................................                                                                                                       		
+                                                                                                                                                           		
+Number of Subjects : 20                                                                                                                                    		
+Number of Sessions : 1                                                                                                                                     		
+Number of Independent Components : 53                                                                                                                      		
+ICA Algorithm : GIG-ICA                                                                                                                                    		
+Number Of Scans/Timepoints : 148                                                                                                                           		
+Mask File : mask                                                                                                                                           		
+Data Pre-processing Type : Remove Mean Per Timepoint                                                                                                       		
+PCA Type : Standard                                                                                                                                        		
+Group ICA Type : Spatial                                                                                                                                   		
+Scaling Components : Scale to Original Data(%)                                                                                                             		
+Stability analysis type : none                                                                                                                             		
+Group analysis mode: Serial                                                                                                                                		
+Anatomical file: /computation/mcrcache/.mcrCache9.1/groupi0/data/mialab/users/srinivas/GIFT_Stand_alone/src/GroupICATv4.0b/icatb/icatb_templates/ch2bet.nii		
+Slice Plane: Axial                                                                                                                                         		
+Image values: Positive                                                                                                                                     		
+Convert to Z-scores: Yes                                                                                                                                   		
+Threshold: 1                                                                                                                                               		
+                                                                                                                                                           		
+....................................................                                                                                                       		
+                                                                                                                                                           		

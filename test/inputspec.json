@@ -88,15 +88,6 @@
                         ],
                         "variable": "gender"
                     }
-                },
-                {
-                    "ttest": {
-                        "datasets": [],
-                        "name": [
-                            "Male"
-                        ],
-                        "variable": "gender"
-                    }
                 }
             ]
         },
@@ -284,16 +275,6 @@
                 },
                 {
                     "ttest2": {
-                        "datasets": [],
-                        "name": [
-                            "Male",
-                            "Female"
-                        ],
-                        "variable": "gender"
-                    }
-                },
-                {
-                    "ttest": {
                         "datasets": [],
                         "name": [
                             "Male",

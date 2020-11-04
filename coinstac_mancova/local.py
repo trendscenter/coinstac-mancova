@@ -131,6 +131,7 @@ def local_run_mancova(args):
             group_pca_type="subject specific",
             algoType=16,
             run_name="coinstac-gica",
+            scaleType=2
         )
         ut.log(
             "Copying  output from %s to %s"

@@ -82,7 +82,7 @@ DEFAULT_GROUP_PCA_TYPE = 0
 DEFAULT_BACK_RECON_TYPE = 1
 DEFAULT_PREPROC_TYPE = 1
 DEFAULT_NUM_REDUCTION_STEPS = 1
-DEFAULT_SCALE_TYPE = 1
+DEFAULT_SCALE_TYPE = 2
 DEFAULT_GROUP_ICA_TYPE = "spatial"
 DEFAULT_WHICH_ANALYSIS = 1
 DEFAULT_MASK = None
@@ -156,8 +156,8 @@ def gift_gica(
         algoType full options:
         1           2           3       4           5       6
         'Infomax'   'Fast ICA'  'Erica' 'Simbec'    'Evd'   'Jade Opac',
-        7           8           9                   10 
-        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)' 
+        7           8           9                   10
+        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)'
         11              12      13          14      15          16          17
         'Radical ICA'   'Combi' 'ICA-EBM'   'ERBM'  'IVA-GL'    'GIG-ICA'   'IVA-L'
 
@@ -165,8 +165,8 @@ def gift_gica(
         perfType            (Int)           :   Options are 1, 2, and 3. 1 - maximize performance, 2 - less memory usage  and 3 - user specified settings.
         prefix              (Str)           :   Enter prefix to be appended with the output files
         dummy_scans         (Int)           :   enter dummy scans
-        numWorkers          (Int)           :   Number of parallel workers    
-        doEstimation        (Int)           :   options are 0 and 1 
+        numWorkers          (Int)           :   Number of parallel workers
+        doEstimation        (Int)           :   options are 0 and 1
 
 
     """
@@ -262,7 +262,7 @@ def gift_dfnc(
         display_results     (Int)   :   0 - No display, 1 - HTML report, 2 - PDF
 
     Args (not supported here, but available for nipype):
-        Regularisation      (Str)   :   Options are 'none' and 'L1'. 
+        Regularisation      (Str)   :   Options are 'none' and 'L1'.
     """
     out_dir = os.path.join(out_dir, run_name)
 

@@ -68,14 +68,15 @@ def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
 
-    csv_filename = [i for i in args["input"]["data"] if ".csv" in i]
+    cov_filename = [i for i in args["input"]["data"] if "covariates.csv" in i]
+    ctype_filename = [i for i in args["input"]["data"] if "covariate_keys.csv" in i]
     univariate_test_list = args["input"]["univariate_test_list"]
-    covariate_file = os.path.join(state["baseDirectory"], csv_filename[0])
-    covariate_type_file = os.path.join(state["baseDirectory"], csv_filename[1])
+    covariate_file = os.path.join(state["baseDirectory"], cov_filename[0])
+    covariate_type_file = os.path.join(state["baseDirectory"], ctype_filename[0])
     ut.log("Covariate File Name:" + covariate_file, state)
     file_list = args["input"]["data"]
-    file_list.remove(csv_filename[0])
-    file_list.remove(csv_filename[1])
+    file_list.remove(cov_filename[0])
+    file_list.remove(ctype_filename[0])
 
     in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
     ut.log("Loaded files %s" % ", ".join(in_files), state)

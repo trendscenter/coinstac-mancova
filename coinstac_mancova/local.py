@@ -68,9 +68,12 @@ def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
 
+    args["cache"]["skip_gica"] = args["input"]["skip_gica"]
+    args["cache"]["gica_input_dir"] = args["input"]["gica_input_dir"]
+    args["cache"]["univariate_test_list"] = args["input"]["univariate_test_list"]
+
     cov_filename = [i for i in args["input"]["data"] if "covariates.csv" in i]
     ctype_filename = [i for i in args["input"]["data"] if "covariate_keys.csv" in i]
-    univariate_test_list = args["input"]["univariate_test_list"]
     covariate_file = os.path.join(state["baseDirectory"], cov_filename[0])
     covariate_type_file = os.path.join(state["baseDirectory"], ctype_filename[0])
     ut.log("Covariate File Name:" + covariate_file, state)
@@ -87,27 +90,28 @@ def local_run_mancova(args):
     maskfile = args["input"]["mask"]
 
     pyscript = os.path.join(state["transferDirectory"], "pyscript_gicacommand.m")
-    if os.path.exists(pyscript):
-        os.remove(pyscript)
-    if (
-        not os.path.exists(
-            os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"])
-        )
-        or len(args["input"]["gica_input_dir"]) == 0
-    ):
-        ut.log(
-            "The input directory %s, does not exist"
-            % (
-                str(
-                    os.path.join(
-                        state["baseDirectory"], args["input"]["gica_input_dir"]
+    if args["cache"]["skip_gica"] is False:
+        if os.path.exists(pyscript):
+            os.remove(pyscript)
+        if (
+            not os.path.exists(
+                os.path.join(state["baseDirectory"], args["cache"]["gica_input_dir"])
+            )
+            or len(gica_input_dir) == 0
+        ):
+            ut.log(
+                "The input directory %s, does not exist"
+                % (
+                    str(
+                        os.path.join(
+                            state["baseDirectory"], args["cache"]["gica_input_dir"]
+                        )
                     )
-                )
-            ),
-            state,
-        )
-        args["input"]["gica_input_dir"] = None
-    if args["input"]["gica_input_dir"] is None:
+                ),
+                state,
+            )
+            args["cache"]["gica_input_dir"] = None
+    if args["cache"]["gica_input_dir"] is None:
         """
         ut.log("Interpolating", state)
         template = ut.get_interpolated_nifti(
@@ -159,24 +163,28 @@ def local_run_mancova(args):
                     ),
                 )
     else:
+        if args["cache"]["skip_gica"] is False:
+            baseDir = os.path.join(state["baseDirectory"], args["cache"]["gica_input_dir"])
+        else:
+            baseDir = os.path.join(state["baseDirectory"])
         ut.log(
             "Copying preexisting output from %s to %s"
             % (
-                os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"]),
+                baseDir,
                 os.path.join(
-                    state["transferDirectory"], args["input"]["gica_input_dir"]
+                    state["transferDirectory"], args["cache"]["gica_input_dir"]
                 ),
             ),
             state,
         )
-        shutil.copytree(
-            os.path.join(state["baseDirectory"], args["input"]["gica_input_dir"]),
-            os.path.join(state["transferDirectory"], args["input"]["gica_input_dir"])
-        )
-
+        if os.path.isdir(os.path.join(state["transferDirectory"], args["cache"]["gica_input_dir"])) is False:
+            shutil.copytree(
+                baseDir,
+                os.path.join(state["transferDirectory"], args["cache"]["gica_input_dir"])
+            )
     output_dict = dict(
         computation_phase="scica_mancova_1",
-        univariate_test_list=univariate_test_list,
+        univariate_test_list=args["input"]["univariate_test_list"],
         covariates=covariates,
         covariates_df=covariates_df.to_dict(),
         covariate_types=covariate_types.to_dict(),

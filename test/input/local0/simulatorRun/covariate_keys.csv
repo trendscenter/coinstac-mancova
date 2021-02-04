@@ -1,3 +1,8 @@
 name,type
+sex,categorical
+site,categorical
 age,continuous
-gender,categorical
+tobacco_lifetime,categorical
+bmi,continuous
+fd_mean,continuous
+alcohol_lifetime_risk,categorical

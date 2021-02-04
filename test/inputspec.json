@@ -1,183 +1,398 @@
 [
-   {
-      "data":{
-         "value":[
-            "covariate_keys.csv",
-            "covariates.csv",
-            ---add subject file paths here---
-         ]
-      },
-      "mask":{
-         "value":"average"
-      },
-      "ica_method":{
-         "value":[
-            "spatially constrained"
-         ]
-      },
-      "num_ics":{
-         "value":53
-      },
-      "scica_template":{
-         "value":"/computation/local_data/NeuroMark.nii"
-      },
-      "covariates":{
-         "value":"covariates.csv"
-      },
-      "covariate_types":{
-         "value":"covariate_keys.csv"
-      },
-      "interactions":{
-         "value":[
-
-         ]
-      },
-      "features":{
-         "value":[
-            "spatial maps",
-            "timecourses spectra",
-            "fnc correlations"
-         ]
-      },
-      "TR":{
-         "value":2
-      },
-      "numOfPCs":{
-         "value":[
-            5,
-            5,
-            5
-         ]
-      },
-      "univariate_test_list":{
-         "value":[
-            {
-               "regression":{
-                  "age":[
-                     "BMI",
-                     "tobacco",
-                     "FD",
-                     "site"
-                  ],
-                  "BMI":[
-                     "age",
-                     "tobacco",
-                     "FD",
-                     "site"
-                  ],
-                  "tobacco":[
-                     "age",
-                     "BMI",
-                     "FD",
-                     "site"
-                  ]
-               }
-            }
-         ]
-      },
-      "t_threshold":{
-         "value":1.0
-      },
-      "freq_limits":{
-         "value":[
-            0.1,
-            0.15
-         ]
-      },
-      "p_threshold":{
-         "value":1.0
-      },
-      "display_p_threshold":{
-         "value":1.0
-      },
-      "comp_network_names":{
-         "value":{
-            "SC":[
-               1,
-               2,
-               3,
-               4,
-               5
-            ],
-            "AUD":[
-               6,
-               7
-            ],
-            "SM":[
-               8,
-               9,
-               10,
-               11,
-               12,
-               13,
-               14,
-               15,
-               16
-            ],
-            "VIS":[
-               17,
-               18,
-               19,
-               20,
-               21,
-               22,
-               23,
-               24,
-               25
-            ],
-            "CC":[
-               26,
-               27,
-               28,
-               29,
-               30,
-               31,
-               32,
-               33,
-               34,
-               35,
-               36,
-               37,
-               38,
-               39,
-               40,
-               41,
-               42
-            ],
-            "DMN":[
-               43,
-               44,
-               45,
-               46,
-               47,
-               48,
-               49
-            ],
-            "CR":[
-               50,
-               51,
-               52,
-               53
+    {
+        "data": {
+            "value": [
+              "10000952.nii",
+              "10111807.nii",
+              "10121092.nii",
+              "10295754.nii",
+              "1038801.nii",
+              "10482778.nii",
+              "10841340.nii",
+              "10847852.nii",
+              "10867560.nii",
+              "11019827.nii",
+              "11030480.nii",
+              "112288.nii",
+              "11312832.nii",
+              "11693075.nii",
+              "12029891.nii",
+              "12391077.nii",
+              "1311901.nii",
+              "1338177.nii",
+              "1380042.nii",
+              "1441076.nii",
+              "covariates.csv",
+              "covariate_keys.csv"
             ]
-         }
-      },
-      "image_values":{
-         "value":"positive"
-      },
-      "threshdesc":{
-         "value":"none"
-      },
-      "gica_input_dir":{
-         "value":"coinstac-gica"
-      },
-      "skip_gica":{
-         "value":false
-      },
-      "run_mancova":{
-         "value":false
-      },
-      "run_univariate_tests":{
-         "value":false
-      }
-   }
+        },
+        "mask": {
+            "value": "average"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": 53
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra",
+                "fnc correlations"
+            ]
+        },
+        "TR": {
+            "value": 2.2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                 "regression": {
+                     "age": [
+                       "bmi",
+                       "tobacco_lifetime",
+                       "fd_mean",
+                       "site"
+                     ],
+                     "bmi": [
+                       "age",
+                       "tobacco_lifetime",
+                       "fd_mean",
+                       "site"
+                     ],
+                     "tobacco_lifetime": [
+                       "age",
+                       "bmi",
+                       "fd_mean",
+                       "site"
+                     ]
+                   }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 1.0
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 1
+        },
+        "display_p_threshold": {
+            "value": 1
+        },
+        "comp_network_names": {
+            "value": {
+                "SC": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "AUD": [
+                    6,
+                    7
+                ],
+                "SM": [
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
+                ],
+                "VIS": [
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25
+                ],
+                "CC": [
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41,
+                    42
+                ],
+                "DMN": [
+                    43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49
+                ],
+                "CR": [
+                    50,
+                    51,
+                    52,
+                    53
+                ]
+            }
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        },
+        "gica_input_dir": {
+            "value": "coinstac-gica"
+        },
+        "skip_gica": {
+            "value": false
+        },
+        "run_mancova": {
+            "value": false
+        },
+        "run_univariate_tests": {
+            "value": false
+        }
+    },
+    {
+        "data": {
+            "value": [
+              "12485016.nii",
+              "12645188.nii",
+              "12646956.nii",
+              "12764460.nii",
+              "12809392.nii",
+              "13025821.nii",
+              "13148228.nii",
+              "13243745.nii",
+              "13325745.nii",
+              "13351548.nii",
+              "13361778.nii",
+              "13377477.nii",
+              "13471924.nii",
+              "13623993.nii",
+              "13697017.nii",
+              "14027707.nii",
+              "14034138.nii",
+              "14084077.nii",
+              "14232183.nii",
+              "14268884.nii",
+              "covariates.csv",
+              "covariate_keys.csv"
+            ]
+        },
+        "mask": {
+            "value": "average"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": 53
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra",
+                "fnc correlations"
+            ]
+        },
+        "TR": {
+            "value": 2.2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                 "regression": {
+                     "age": [
+                       "bmi",
+                       "tobacco_lifetime",
+                       "fd_mean",
+                       "site"
+                     ],
+                     "bmi": [
+                       "age",
+                       "tobacco_lifetime",
+                       "fd_mean",
+                       "site"
+                     ],
+                     "tobacco_lifetime": [
+                       "age",
+                       "bmi",
+                       "fd_mean",
+                       "site"
+                     ]
+                   }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 1
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 1
+        },
+        "display_p_threshold": {
+            "value": 1
+        },
+        "comp_network_names": {
+            "value": {
+                "SC": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "AUD": [
+                    6,
+                    7
+                ],
+                "SM": [
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16
+                ],
+                "VIS": [
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25
+                ],
+                "CC": [
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41,
+                    42
+                ],
+                "DMN": [
+                    43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49
+                ],
+                "CR": [
+                    50,
+                    51,
+                    52,
+                    53
+                ]
+            }
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        },
+        "gica_input_dir": {
+            "value": "coinstac-gica"
+        },
+        "skip_gica": {
+            "value": false
+        },
+        "run_mancova": {
+            "value": false
+        },
+        "run_univariate_tests": {
+            "value": false
+        }
+    }
 ]

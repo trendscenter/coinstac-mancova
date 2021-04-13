@@ -1,0 +1,9 @@
+name,type
+sex,categorical
+site,categorical
+age,continuous
+tobacco_lifetime,categorical
+bmi,continuous
+bmi_log,continuous
+fd_mean,continuous
+alcohol_lifetime_risk,categorical

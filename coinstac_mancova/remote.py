@@ -124,7 +124,7 @@ def mancova_aggregate(args):
                 freq_limits=inputs[first].get("freq_limits", [0.1, 0.15]),
                 t_threshold=inputs[first].get("t_threshold", 0.05),
                 image_values=inputs[first].get("image_values", "positive"),
-                threshdesc=inputs[first].get("threshdesc", "fdr"),
+                threshdesc=inputs[first].get("threshdesc", "none"),
                 p_threshold=inputs[first].get("p_threshold", 0.05),
                 display_p_threshold=inputs[first].get(
                     "display_p_threshold", 0.05

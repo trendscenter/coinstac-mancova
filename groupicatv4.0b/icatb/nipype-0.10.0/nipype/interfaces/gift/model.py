@@ -21,7 +21,7 @@ class GICACommandInputSpec(GIFTCommandInputSpec):
         mandatory=False,
         desc="Options are default, average or enter fullfile name of the mask.",
     )
-    TR = traits.List(mandatory=False, desc="Enter experimental TR in seconds")
+    TR = traits.Float(mandatory=False, desc="Enter experimental TR in seconds")
     dim = traits.Int(
         mandatory=False,
         desc="dimensionality reduction into #num dimensions"
@@ -105,7 +105,7 @@ class GICACommand(GIFTCommand):
     >>> import nipype.interfaces.gift
     >>> gc = gift.GICACommand()
     >>> gc.inputs.in_files = '/path/to/swa.nii'
-    >>> gc.run()    
+    >>> gc.run()
     """
 
     input_spec = GICACommandInputSpec
@@ -410,7 +410,7 @@ class DFNCCommand(GIFTCommand):
     >>> dc.inputs.ica_param_file = ['/path/to/ica_parameter_file']
     >>> dc.inputs.comp_network_names = {'BG':21, 'VISUAL':[10, 12, 13]}
     >>> dc.inputs.TR = 2
-    >>> dc.run()   
+    >>> dc.run()
     """
 
     input_spec = DFNCCommandInputSpec
@@ -624,7 +624,7 @@ class MancovanCommand(GIFTCommand):
     >>> mc.inputs.covariates = {'Age':['continuous', '/path/toage.txt', 'log'], 'Gender':['categorical', '/path/to/gender.txt']}
     >>> mc.inputs.TR = 2
     >>> mc.inputs.display = {'freq_limits':[0.1, 0.15], 'structFile':'/icatb_templates/ch2bet.nii', 't_threshold':1.0, 'image_values':'positive', 'threshdesc':'fdr', 'p_threshold':0.05};
-    >>> mc.run()   
+    >>> mc.run()
     """
 
     input_spec = MancovanCommandInputSpec
@@ -734,6 +734,14 @@ class MancovanCommand(GIFTCommand):
         commandstr.append("%% p-threshold \n")
         commandstr.append("p_threshold = %f;\n" % (p_threshold))
 
+        if isdefined(self.inputs.threshdesc):
+            p_threshold = self.inputs.threshdesc
+        else:
+            p_threshold = 'none'
+
+        commandstr.append("%% threshdesc \n")
+        commandstr.append("threshdesc = %f;\n" % (threshdesc))
+
         if isdefined(self.inputs.interactions):
             commandstr.append("%% Interaction terms if any \n")
             commandstr.append("interactions = [")
@@ -780,4 +788,3 @@ class MancovanCommand(GIFTCommand):
         fid.close()
         script = "icatb_mancovan_batch('%s')" % (batch_file_name)
         return script
-

@@ -1,0 +1,214 @@
+[
+    {
+        "data": {
+            "value": [
+                "covariates.csv",
+                "covariate_keys.csv",
+                "vsdwa_000311156685_0002.nii.gz",
+                "vsdwa_000345580861_0002.nii.gz",
+                "vsdwa_000327684775_0002.nii.gz",
+                "vsdwa_000333132602_0002.nii.gz"
+            ]
+        },
+        "mask": {
+            "value": "average"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": 20
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra"
+            ]
+        },
+        "TR": {
+            "value": 2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                    "ttest2": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0
+                        ]
+                    }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 0.05
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 0.05
+        },
+        "comp_network_names": {
+            "value": {}
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        },
+        "gica_input_dir": {
+            "value": "coinstac-gica"
+        }
+    },
+    {
+        "data": {
+            "value": [
+                "covariates.csv",
+                "covariate_keys.csv",
+                "vsdwa_000718032210_0002.nii.gz",
+                "vsdwa_000740198002_0002.nii.gz",
+                "vsdwa_000705721567_0002.nii.gz",
+                "vsdwa_000736628322_0002.nii.gz"
+            ]
+        },
+        "mask": {
+            "value": "average"
+        },
+        "ica_method": {
+            "value": [
+                "spatially constrained"
+            ]
+        },
+        "num_ics": {
+            "value": [
+                20
+            ]
+        },
+        "scica_template": {
+            "value": "/computation/local_data/NeuroMark.nii"
+        },
+        "covariate_types": {
+            "value": "covariate_keys.csv"
+        },
+        "covariates": {
+            "value": "covariates.csv"
+        },
+        "interactions": {
+            "value": []
+        },
+        "features": {
+            "value": [
+                "spatial maps",
+                "timecourses spectra"
+            ]
+        },
+        "TR": {
+            "value": 2
+        },
+        "numOfPCs": {
+            "value": [
+                5,
+                5,
+                5
+            ]
+        },
+        "univariate_test_list": {
+            "value": [
+                {
+                    "ttest2": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                },
+                {
+                    "ttest": {
+                        "datasets": [],
+                        "name": [
+                            0.0
+                        ]
+                    }
+                }
+            ]
+        },
+        "t_threshold": {
+            "value": 0.05
+        },
+        "freq_limits": {
+            "value": [
+                0.1,
+                0.15
+            ]
+        },
+        "p_threshold": {
+            "value": 0.05
+        },
+        "comp_network_names": {
+            "value": {}
+        },
+        "image_values": {
+            "value": "positive"
+        },
+        "threshdesc": {
+            "value": "none"
+        },
+        "gica_input_dir": {
+            "value": "coinstac-gica"
+        }
+    }
+]

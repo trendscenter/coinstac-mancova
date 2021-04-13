@@ -89,6 +89,8 @@ def local_run_mancova(args):
 
     maskfile = args["input"]["mask"]
 
+    TR = args["input"]["TR"]
+
     pyscript = os.path.join(state["transferDirectory"], "pyscript_gicacommand.m")
     if args["cache"]["skip_gica"] is False:
         if os.path.exists(pyscript):
@@ -136,7 +138,8 @@ def local_run_mancova(args):
             group_pca_type="subject specific",
             algoType=16,
             run_name="coinstac-gica",
-            scaleType=2
+            scaleType=2,
+            TR=args["input"].get("TR", 2),
         )
         ut.log(
             "Copying  output from %s to %s"

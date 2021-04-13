@@ -71,6 +71,7 @@ DEFAULT_DISPLAY_RESULTS = 1
 DEFAULT_NUM_COMPS = 53
 DEFAULT_COMP_NETWORK_NAMES = {}
 DEFAULT_TR = 2
+DEFAULT_THRESHDESC = 'none'
 
 # GICA DEFAULTS
 DEFAULT_DIM = 53
@@ -130,6 +131,8 @@ def gift_gica(
     display_results=DEFAULT_DISPLAY_RESULTS,
     which_analysis=DEFAULT_WHICH_ANALYSIS,
     mask=DEFAULT_MASK,
+    TR=DEFAULT_TR,
+    threshdesc=DEFAULT_THRESHDESC,
     comp_network_names=None,
     **kwargs
 ):
@@ -152,6 +155,8 @@ def gift_gica(
         display_results     (Int)           :   0 - No display, 1 - HTML report, 2 - PDF
         which_analysis      (Int)           :   Options are 1, 2, and 3. 1 - standard group ica, 2 - ICASSO and 3 - MST.
         mask                (Str)           :   Enter file names using full path of the mask. If you wish to use default mask leave it empty
+        TR                (Float)           :   Enter experimental TR in seconds
+        threshdesc          (Str)           :   options 'none' and 'fdr'
 
         algoType full options:
         1           2           3       4           5       6
@@ -188,6 +193,8 @@ def gift_gica(
     gc.inputs.which_analysis = which_analysis
     gc.inputs.refFiles = get_interpolated_nifti(in_files[0], refFiles, out_dir)
     gc.inputs.display_results = display_results
+    gc.inputs.TR = TR
+    gc.inputs.threshdesc = threshdesc
     if mask is not None:
         gc.inputs.mask = mask
     if comp_network_names is not None:
@@ -325,7 +332,7 @@ def gift_mancova(
     freq_limits=[0.1, 0.15],
     t_threshold=1.0,
     image_values="positive",
-    threshdesc="fdr",
+    threshdesc=DEFAULT_THRESHDESC,
     display_p_threshold=DEFAULT_P_THRESHOLD,
 ):
     gift.MancovanCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)

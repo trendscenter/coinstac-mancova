@@ -4,5 +4,4 @@ site,categorical
 age,continuous
 tobacco_lifetime,categorical
 bmi,continuous
-fd_mean,continuous
 alcohol_lifetime_risk,categorical

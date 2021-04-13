@@ -1,2 +1,3 @@
 test/input
 test/output
+*.DS_Store

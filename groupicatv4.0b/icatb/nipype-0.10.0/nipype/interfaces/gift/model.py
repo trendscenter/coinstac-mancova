@@ -590,6 +590,7 @@ class MancovanCommandInputSpec(GIFTCommandInputSpec):
     numOfPCs = traits.List(
         mandatory=False, desc="Number of principal components for each feature"
     )
+    #threshdesc = traits.Str(mandatory=False, desc="Enter threshdesc 'fdr' or 'none'")
     p_threshold = traits.Float(mandatory=False, desc="Enter p-threshold significance")
     feature_params = traits.Dict(mandatory=False, desc="Feature params")
     univariate_tests = traits.Dict(mandatory=False, desc="Univariate tests to specify")
@@ -734,13 +735,13 @@ class MancovanCommand(GIFTCommand):
         commandstr.append("%% p-threshold \n")
         commandstr.append("p_threshold = %f;\n" % (p_threshold))
 
-        if isdefined(self.inputs.threshdesc):
-            p_threshold = self.inputs.threshdesc
-        else:
-            p_threshold = 'none'
-
-        commandstr.append("%% threshdesc \n")
-        commandstr.append("threshdesc = %f;\n" % (threshdesc))
+        # if isdefined(self.inputs.threshdesc):
+        #     p_threshold = self.inputs.threshdesc
+        # else:
+        #     p_threshold = 'none'
+        #
+        # commandstr.append("%% threshdesc \n")
+        # commandstr.append("threshdesc = %f;\n" % (threshdesc))
 
         if isdefined(self.inputs.interactions):
             commandstr.append("%% Interaction terms if any \n")

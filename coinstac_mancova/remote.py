@@ -172,7 +172,10 @@ def mancova_aggregate(args):
             if univariate_out_dir[-1] == "-":
                 univariate_out_dir = univariate_out_dir[: (len(univariate_out_dir) - 1)]
             stat_results[univariate_out_dir] = dict()
-
+            ut.log(
+                "threshdesc setting:"+json.dumps(inputs[first]['threshdesc']),
+                state,
+            )
             os.makedirs(univariate_out_dir, exist_ok=True)
             if key == "regression":
                 univariate_test = univariate_test[key]
@@ -194,7 +197,7 @@ def mancova_aggregate(args):
                     image_values=inputs[first].get(
                         "image_values", "positive"
                     ),
-                    threshdesc=inputs[first].get("threshdesc", "none"),
+                    threshdesc=inputs[first].get("threshdesc", "fdr"),
                     p_threshold=inputs[first].get("p_threshold", 0.05),
                     display_p_threshold=inputs[first].get(
                         "display_p_threshold", 0.05

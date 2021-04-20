@@ -71,7 +71,7 @@ DEFAULT_DISPLAY_RESULTS = 1
 DEFAULT_NUM_COMPS = 53
 DEFAULT_COMP_NETWORK_NAMES = {}
 DEFAULT_TR = 2
-DEFAULT_THRESHDESC = 'none'
+DEFAULT_THRESHDESC = 'fdr'
 
 # GICA DEFAULTS
 DEFAULT_DIM = 53
@@ -194,7 +194,7 @@ def gift_gica(
     gc.inputs.refFiles = get_interpolated_nifti(in_files[0], refFiles, out_dir)
     gc.inputs.display_results = display_results
     gc.inputs.TR = TR
-    gc.inputs.threshdesc = threshdesc
+    gc.inputs.display.threshdesc = threshdesc
     if mask is not None:
         gc.inputs.mask = mask
     if comp_network_names is not None:
@@ -347,7 +347,6 @@ def gift_mancova(
     gc.inputs.interactions = interactions
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
-    gc.inputs.p_threshold = p_threshold
     gc.inputs.display = {
         "freq_limits": freq_limits,
         "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",

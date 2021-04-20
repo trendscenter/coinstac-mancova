@@ -207,7 +207,7 @@
          "value":"positive"
       },
       "threshdesc":{
-         "value":"none"
+         "value":"fdr"
       },
       "gica_input_dir":{
          "value":""

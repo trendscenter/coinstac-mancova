@@ -177,6 +177,10 @@ class GICACommand(GIFTCommand):
         commandstr.append("maskFile = '%s';\n" % (mask))
         commandstr.append("\n")
 
+        if isdefined(self.inputs.threshdesc):
+            commandstr.append("%% threshdescs \n")
+            commandstr.append("threshdesc = %s;\n" % str(self.inputs.threshdesc))
+
         if isdefined(self.inputs.TR):
             commandstr.append("%% TR in seconds \n")
             commandstr.append("TR = %s;\n" % str(self.inputs.TR))
@@ -728,9 +732,9 @@ class MancovanCommand(GIFTCommand):
         commandstr.append("p_threshold = %f;\n" % (p_threshold))
 
         if isdefined(self.inputs.threshdesc):
-            p_threshold = self.inputs.threshdesc
+            threshdesc = self.inputs.threshdesc
         else:
-            p_threshold = 'fdr'
+            threshdesc = 'fdr'
 
         commandstr.append("%% threshdesc \n")
         commandstr.append("threshdesc = %f;\n" % (threshdesc))

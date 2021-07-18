@@ -6,7 +6,7 @@ import shutil
 import ujson as json
 from utils import listRecursive
 import utils as ut
-from .run_gift import gift_mancova, gift_gica
+from .run_gift import gift_mancova, gift_gica, gift_run_matlab_script
 
 
 NEUROMARK_NETWORKS = {
@@ -66,7 +66,7 @@ def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
     return covariates, df
 
 
-def mancova_aggregate(args):
+def mancova_aggregate_old(args):
     inputs = args["input"]
     state = args["state"]
 
@@ -98,7 +98,10 @@ def mancova_aggregate(args):
     ut.log("ICA Parameters file is %s" % (str(ica_parameters)), state)
     ut.log("Checking covariates %s" % (str(covariates)), state)
     stat_results = dict()
-    if args["input"]["local0"]["run_mancova"]:
+
+    first = next(iter(inputs)) #Get key for local0 or equivalent in UI
+
+    if inputs[first]["run_mancova"]:
         ut.log("Running Mancova", state)
         try:
             multivariate_out_dir = os.path.join(
@@ -109,21 +112,21 @@ def mancova_aggregate(args):
             gift_mancova(
                 ica_param_file=ica_parameters,
                 out_dir=multivariate_out_dir,
-                TR=args["input"]["local0"].get("TR", 2),
-                features=args["input"]["local0"]["features"],
+                TR=inputs[first].get("TR", 2),
+                features=inputs[first]["features"],
                 covariates=covariates,
-                interactions=args["input"]["local0"].get("interactions", []),
-                numOfPCs=args["input"]["local0"].get("numOfPCs", [4, 4, 4]),
+                interactions=inputs[first].get("interactions", []),
+                numOfPCs=inputs[first].get("numOfPCs", [4, 4, 4]),
                 run_name="coinstac-mancovan-multivariate",
-                comp_network_names=args["input"]["local0"].get(
+                comp_network_names=inputs[first].get(
                     "comp_network_names", NEUROMARK_NETWORKS
                 ),
-                freq_limits=args["input"]["local0"].get("freq_limits", [0.1, 0.15]),
-                t_threshold=args["input"]["local0"].get("t_threshold", 0.05),
-                image_values=args["input"]["local0"].get("image_values", "positive"),
-                threshdesc=args["input"]["local0"].get("threshdesc", "fdr"),
-                p_threshold=args["input"]["local0"].get("p_threshold", 0.05),
-                display_p_threshold=args["input"]["local0"].get(
+                freq_limits=inputs[first].get("freq_limits", [0.1, 0.15]),
+                t_threshold=inputs[first].get("t_threshold", 0.05),
+                image_values=inputs[first].get("image_values", "positive"),
+                threshdesc=inputs[first].get("threshdesc", "none"),
+                p_threshold=inputs[first].get("p_threshold", 0.05),
+                display_p_threshold=inputs[first].get(
                     "display_p_threshold", 0.05
                 ),
             )
@@ -140,7 +143,7 @@ def mancova_aggregate(args):
             )
     else:
         ut.log("Skipping Mancova", state)
-    if args["input"]["local0"]["run_univariate_tests"]:
+    if inputs[first]["run_univariate_tests"]:
         ut.log("Running univariate tests", state)
         for univariate_test in univariate_test_list:
             key = list(univariate_test.keys())[0]
@@ -169,7 +172,10 @@ def mancova_aggregate(args):
             if univariate_out_dir[-1] == "-":
                 univariate_out_dir = univariate_out_dir[: (len(univariate_out_dir) - 1)]
             stat_results[univariate_out_dir] = dict()
-
+            ut.log(
+                "threshdesc setting:"+json.dumps(inputs[first]['threshdesc']),
+                state,
+            )
             os.makedirs(univariate_out_dir, exist_ok=True)
             if key == "regression":
                 univariate_test = univariate_test[key]
@@ -177,23 +183,23 @@ def mancova_aggregate(args):
                 gift_mancova(
                     ica_param_file=ica_parameters,
                     out_dir=univariate_out_dir,
-                    TR=args["input"]["local0"].get("TR", 2),
-                    features=args["input"]["local0"]["features"],
-                    comp_network_names=args["input"]["local0"].get(
+                    TR=inputs[first].get("TR", 2),
+                    features=inputs[first]["features"],
+                    comp_network_names=inputs[first].get(
                         "comp_network_names", NEUROMARK_NETWORKS
                     ),
                     covariates=covariates,
                     univariate_tests=univariate_test,
                     run_name="coinstac-mancovan-univariate",
-                    numOfPCs=args["input"]["local0"].get("numOfPCs", [4, 4, 4]),
-                    freq_limits=args["input"]["local0"].get("freq_limits", [0.1, 0.15]),
-                    t_threshold=args["input"]["local0"].get("t_threshold", 0.05),
-                    image_values=args["input"]["local0"].get(
+                    numOfPCs=inputs[first].get("numOfPCs", [4, 4, 4]),
+                    freq_limits=inputs[first].get("freq_limits", [0.1, 0.15]),
+                    t_threshold=inputs[first].get("t_threshold", 0.05),
+                    image_values=inputs[first].get(
                         "image_values", "positive"
                     ),
-                    threshdesc=args["input"]["local0"].get("threshdesc", "none"),
-                    p_threshold=args["input"]["local0"].get("p_threshold", 0.05),
-                    display_p_threshold=args["input"]["local0"].get(
+                    threshdesc=inputs[first].get("threshdesc", "fdr"),
+                    p_threshold=inputs[first].get("p_threshold", 0.05),
+                    display_p_threshold=inputs[first].get(
                         "display_p_threshold", 0.05
                     ),
                 )
@@ -209,12 +215,49 @@ def mancova_aggregate(args):
                     state,
                 )
     else:
-        ut.log("Skipping mancova", state)
+        ut.log("Skipping univariate tests", state)
     output_dict = {
         "computation_phase": "scica_mancova_remote",
         "stat_results": stat_results,
     }
+
+
     ut.log("Output %s" % (output_dict), state)
     cache_dict = {}
     computation_output = {"output": output_dict, "cache": cache_dict, "state": state}
+    return computation_output
+
+def chmod_dir_recursive(dir_name):
+    try:
+        for dir_root, dirs, files in os.walk(dir_name):
+            for d in dirs:
+                os.chmod(os.path.join(dir_root, d), 0o777)
+            for f in files:
+                os.chmod(os.path.join(dir_root, f), 0o777)
+    except:
+        #ut.log("Error while changing permissions for files in dir: %s"%dir_name)
+        a=""
+
+def mancova_aggregate(args):
+    inputs = args["input"]
+    state = args["state"]
+
+    ut.log("Checking the inputs on remote: " + str(inputs), state)
+    ut.log("Checking the state: " + str(state), state)
+    ut.log("Running remote mat script..", state)
+    gift_run_matlab_script('/computation/coinstac_mancova/matcode/remote_mat_script.m')
+
+    output_dict = {
+        "computation_phase": "scica_mancova_remote",
+        "stat_results": {},
+    }
+
+    ut.log("Output %s" % (output_dict), state)
+    cache_dict = {}
+    computation_output = {"output": output_dict, "cache": cache_dict, "state": state}
+
+    # Gives permission errors while copying if file already exists
+    chmod_dir_recursive(state["transferDirectory"])
+    chmod_dir_recursive(state["outputDirectory"])
+
     return computation_output

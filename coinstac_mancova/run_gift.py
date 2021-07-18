@@ -448,3 +448,12 @@ if __name__ == "__main__":
     else:
         # Do both
         gift_patch(**json_args)
+
+
+def gift_run_matlab_script(file_name):
+    import nipype.interfaces.gift.model as gift
+
+    gift.evalGIFTCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
+    ec = gift.evalGIFTCommand()
+    ec.inputs.file_name = file_name;
+    ec.run();

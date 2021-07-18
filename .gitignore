@@ -1,2 +1,4 @@
 test/input
 test/output
+._*
+.DS_Store

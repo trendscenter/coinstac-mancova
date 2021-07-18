@@ -51,9 +51,8 @@
         },
         "features": {
             "value": [
-                "spatial maps",
-                "timecourses spectra",
-                "fnc correlations"
+                "fnc correlations",
+                "timecourses spectra"
             ]
         },
         "TR": {
@@ -75,8 +74,7 @@
                         ],
                         "age": [
                             "gender"
-                        ],
-                        "gender_X_age": []
+                        ]
                     }
                 },
                 {
@@ -185,6 +183,9 @@
         },
         "gica_input_dir": {
             "value": ""
+        },
+        "skip_gica":{
+            "value": false
         },
         "run_mancova": {
             "value": false
@@ -245,9 +246,8 @@
         },
         "features": {
             "value": [
-                "spatial maps",
-                "timecourses spectra",
-                "fnc correlations"
+                "fnc correlations",
+                "timecourses spectra"
             ]
         },
         "TR": {
@@ -269,8 +269,7 @@
                         ],
                         "age": [
                             "gender"
-                        ],
-                        "gender_X_age": []
+                        ]
                     }
                 },
                 {
@@ -379,6 +378,9 @@
         },
         "gica_input_dir": {
             "value": ""
+        },
+        "skip_gica":{
+            "value": false
         },
         "run_mancova": {
             "value": false

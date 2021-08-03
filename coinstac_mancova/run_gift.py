@@ -194,7 +194,7 @@ def gift_gica(
     gc.inputs.refFiles = get_interpolated_nifti(in_files[0], refFiles, out_dir)
     gc.inputs.display_results = display_results
     gc.inputs.TR = TR
-    gc.inputs.display.threshdesc = threshdesc
+    #gc.inputs.threshdesc = threshdesc
     if mask is not None:
         gc.inputs.mask = mask
     if comp_network_names is not None:
@@ -454,3 +454,12 @@ if __name__ == "__main__":
     else:
         # Do both
         gift_patch(**json_args)
+
+
+def gift_run_matlab_script(file_name):
+    import nipype.interfaces.gift.model as gift
+
+    gift.evalGIFTCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
+    ec = gift.evalGIFTCommand()
+    ec.inputs.file_name = file_name;
+    ec.run();

@@ -6,7 +6,7 @@ import shutil
 import ujson as json
 from utils import listRecursive
 import utils as ut
-from .run_gift import gift_mancova, gift_gica
+from .run_gift import gift_mancova, gift_gica, gift_run_matlab_script
 
 
 NEUROMARK_NETWORKS = {
@@ -66,7 +66,7 @@ def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
     return covariates, df
 
 
-def mancova_aggregate(args):
+def mancova_aggregate_old(args):
     inputs = args["input"]
     state = args["state"]
 
@@ -225,4 +225,39 @@ def mancova_aggregate(args):
     ut.log("Output %s" % (output_dict), state)
     cache_dict = {}
     computation_output = {"output": output_dict, "cache": cache_dict, "state": state}
+    return computation_output
+
+def chmod_dir_recursive(dir_name):
+    try:
+        for dir_root, dirs, files in os.walk(dir_name):
+            for d in dirs:
+                os.chmod(os.path.join(dir_root, d), 0o777)
+            for f in files:
+                os.chmod(os.path.join(dir_root, f), 0o777)
+    except:
+        #ut.log("Error while changing permissions for files in dir: %s"%dir_name)
+        a=""
+
+def mancova_aggregate(args):
+    inputs = args["input"]
+    state = args["state"]
+
+    ut.log("Checking the inputs on remote: " + str(inputs), state)
+    ut.log("Checking the state: " + str(state), state)
+    ut.log("Running remote mat script..", state)
+    gift_run_matlab_script('/computation/coinstac_mancova/matcode/remote_mat_script.m')
+
+    output_dict = {
+        "computation_phase": "scica_mancova_remote",
+        "stat_results": {},
+    }
+
+    ut.log("Output %s" % (output_dict), state)
+    cache_dict = {}
+    computation_output = {"output": output_dict, "cache": cache_dict, "state": state}
+
+    # Gives permission errors while copying if file already exists
+    chmod_dir_recursive(state["transferDirectory"])
+    chmod_dir_recursive(state["outputDirectory"])
+
     return computation_output

@@ -76,16 +76,6 @@
                             "gender"
                         ]
                     }
-                },
-                {
-                    "ttest2": {
-                        "datasets": [],
-                        "name": [
-                            "Male",
-                            "Female"
-                        ],
-                        "variable": "gender"
-                    }
                 }
             ]
         },
@@ -270,16 +260,6 @@
                         "age": [
                             "gender"
                         ]
-                    }
-                },
-                {
-                    "ttest2": {
-                        "datasets": [],
-                        "name": [
-                            "Male",
-                            "Female"
-                        ],
-                        "variable": "gender"
                     }
                 }
             ]

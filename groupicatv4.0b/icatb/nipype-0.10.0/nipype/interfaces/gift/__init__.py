@@ -3,4 +3,4 @@
 """Top-level namespace for gift."""
 
 from .base import (GIFTCommand)
-from .model import (GICACommand, DFNCCommand, MancovanCommand)
+from .model import (GICACommand, DFNCCommand, MancovanCommand, evalGIFTCommand)

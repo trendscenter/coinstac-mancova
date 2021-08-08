@@ -145,3 +145,15 @@ mc.run()
  dc.inputs.comp_network_names = {'BG':21, 'VISUAL':[10, 12, 13]}
  dc.inputs.TR = 2
  dc.run()   
+
+
+# Example 7: dfnc
+
+from nipype.interfaces import gift   
+matlab_cmd = '/data/mialab/users/srinivas/GIFT_Stand_alone/Linux_x86_64/GroupICATv4.0b_standalone_July30_2020/run_groupica.sh /data/mialab/users/srinivas/GIFT_Stand_alone/Linux_x86_64/tmp_gica_stand_alone/v91/ '
+gift.DFNCCommand.set_mlab_paths(matlab_cmd=matlab_cmd,use_mcr=True)
+dc = gift.DFNCCommand()
+dc.inputs.ica_param_file = '/data/mialab/users/srinivas/Example_Subjects/mancova_sample_data/ica_output/rest_hcp_ica_parameter_info.mat'
+dc.inputs.comp_network_names = {'BG':21, 'VISUAL':[10, 12, 13]}
+dc.inputs.TR = 2
+dc.run() 

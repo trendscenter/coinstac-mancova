@@ -59,12 +59,18 @@ if (isfield(interactionsList, 'name'))
         sel = icatb_listdlg('PromptString', 'Select Model Interactions ...', 'title_fig', 'Select Model Interactions ...', 'SelectionMode', 'multiple', 'ListString', allInterNames, 'movegui', 'center', 'windowStyle', 'modal', 'help', struct('title', 'Model Interactions', 'str', ...
             'Select model interactions which could be categorical-categorical, categorical-continuous, continuous-continuous. If you don''t want to include interactions, click on cancel button'));
     else
+        strsToReplace = {};
         for nInter = 1:size(interactions, 1)
             cName1 = [covariateNames{interactions(nInter, 1)}, ' X ', covariateNames{interactions(nInter, 2)}];
             chkIndex = strmatch(cName1, allInterNames, 'exact');
+            oName1 = [covariateNames{interactions(nInter, 1)}, '_X_', covariateNames{interactions(nInter, 2)}];
             if (isempty(chkIndex))
                 cName2 = [covariateNames{interactions(nInter, 2)}, ' X ', covariateNames{interactions(nInter, 1)}];
+                oName2 = [covariateNames{interactions(nInter, 2)}, '_X_', covariateNames{interactions(nInter, 1)}];
                 chkIndex = strmatch(cName2, allInterNames, 'exact');
+                if (~isempty(chkIndex))
+                    strsToReplace(end + 1, :) = {oName1, oName2};
+                end
             end
             if (~isempty(chkIndex))
                 sel = [sel, chkIndex];
@@ -117,3 +123,20 @@ mancovanInfo.userInput.modelInteractions.gglist = gglist;
 mancovanInfo.userInput.modelInteractions.cclist = cclist;
 mancovanInfo.userInput.modelInteractions.gclist = gclist;
 mancovanInfo.userInput.modelInteractions.types = selLists;
+
+if (isfield(mancovanInfo.userInput, 'univariate_tests') && ~isempty(mancovanInfo.userInput.univariate_tests))
+    
+    univ_test_name = mancovanInfo.userInput.univariate_tests{1, 1};
+    
+    if ~(strcmpi(univ_test_name, 'ttest') || strcmpi(univ_test_name, 'ttest2'))
+        
+        if (exist('strsToReplace', 'var'))
+            univariate_tests = mancovanInfo.userInput.univariate_tests;
+            for na = 1:size(strsToReplace, 1)
+                univariate_tests = cellfun(@(x) strrep(x, strsToReplace{na, 1}, strsToReplace{na, 2}), univariate_tests, 'UniformOutput', false);
+            end
+            mancovanInfo.userInput.univariate_tests = univariate_tests;
+        end
+    end
+    
+end

@@ -130,12 +130,12 @@ if (isdeployed)
     save_info = 1;
 end
 
-try 
+try
     resultsFormat = GICA_RESULTS_SUMMARY.format;
 catch
     resultsFormat = 'html';
 end
-    
+
 try
     resultsFormat = network_opts.format;
 catch
@@ -270,7 +270,7 @@ for nF = 1:size(comp_network_names,1)
     tmp_f_name = [prefix, '_render_', num2str(nF)];
     outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
     saveas(fH, outFNames);
-    pngFNames = printFigToPNG(fH, outputDir, [tmp_f_name, '.png']);
+    pngFNames = printFigToPNG(fH, outputDir, tmp_f_name);
     
     render_pngs(end + 1) = pngFNames;
     
@@ -317,7 +317,7 @@ if (~isempty(FNCM))
     tmp_f_name = [prefix, '_FNC'];
     outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
     saveas(gH, outFNames);
-    pngFNames = printFigToPNG(gH, outputDir, [tmp_f_name, '.png']);
+    pngFNames = printFigToPNG(gH, outputDir, tmp_f_name);
     
     if (strcmpi(resultsFormat, 'pdf'))
         countPdfs = countPdfs + 1;
@@ -346,7 +346,7 @@ if (~isempty(FNCM))
     tmp_f_name = [prefix, '_connectogram'];
     outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
     saveas(fH, outFNames);
-    pngFNames = printFigToPNG(fH, outputDir, [tmp_f_name, '.png']);
+    pngFNames = printFigToPNG(fH, outputDir, tmp_f_name);
     
     
     if (strcmpi(resultsFormat, 'pdf'))
@@ -379,7 +379,7 @@ gH = icatb_plot_composite_orth_views(file_names, comp_network_names, 'convert_to
 tmp_f_name = [prefix, '_composite_orth_views'];
 outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
 saveas(gH, outFNames);
-pngFNames = printFigToPNG(gH, outputDir, [tmp_f_name, '.png']);
+pngFNames = printFigToPNG(gH, outputDir, tmp_f_name);
 
 printInfo(end + 1).title = 'Composite Orthogonal Slices';
 printInfo(end).text = 'Multiple components are displayed in a composite plot. Orthogonal slices are shown.';
@@ -403,31 +403,44 @@ pause(1);
 
 drawnow;
 
-%% Stacked ortho slices are shown for each component in the network. Title shows component numbers plotted from top to bottom
-icatb_groupNetworks(file_names, comp_network_names(:, 1), comp_network_names(:, 2), 'convert_to_z', convert_to_z, 'threshold', thresholds(1), 'image_values', image_values, ...
-    'structfile', structFile, 'interMediatePlot', 0);
-tmp_f_name = [prefix, '_orth_views'];
-outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
-gH = gcf;
-saveas(gH, outFNames);
-
-if (strcmpi(resultsFormat, 'pdf'))
-    countPdfs = countPdfs + 1;
-    tmpImFile = [pdfPrefix, '_', icatb_returnFileIndex(countPdfs), '.pdf'];
-    set(gH, 'PaperPositionMode', 'auto');
-    print(gH, '-dpdf', print_res, '-noui', '-bestfit', fullfile(outputDir, tmpImFile));
-    pdfFiles{countPdfs} = fullfile(outputDir, tmpImFile);
-end
-
-pngFNames = printFigToPNG(gH, outputDir, [tmp_f_name, '.png']);
-printInfo(end + 1).title = 'Stacked Ortho Slices';
-printInfo(end).text = 'Stacked ortho slices are shown for each component in the network. Title shows component numbers plotted from top to bottom';
-printInfo(end).files = pngFNames;
-printInfo(end).tag = 'stacked_ortho';
-printInfo(end).str = get_result_strings(outputDir, printInfo(end), printInfo(end).tag);
-
-if (save_info)
-    delete(gH);
+if (0)
+    % skip this part for now as it involves cropping images and text
+    % automatically
+    
+    %% Stacked ortho slices are shown for each component in the network. Title shows component numbers plotted from top to bottom
+    icatb_groupNetworks(file_names, comp_network_names(:, 1), comp_network_names(:, 2), 'convert_to_z', convert_to_z, 'threshold', thresholds(1), 'image_values', image_values, ...
+        'structfile', structFile, 'interMediatePlot', 1);
+    tmp_f_name = [prefix, '_orth_views'];
+    %outFNames = fullfile(outputDir, [tmp_f_name, '.fig']);
+    gH = findobj(0, 'tag', 'group_networks');
+    
+    for nG = 1:length(gH)
+        
+        outFNames = fullfile(outputDir, [tmp_f_name, '_', num2str(nG), '.fig']);
+        
+        savefig(gH(nG), outFNames);
+        
+        if (strcmpi(resultsFormat, 'pdf'))
+            countPdfs = countPdfs + 1;
+            tmpImFile = [pdfPrefix, '_', icatb_returnFileIndex(countPdfs), '.pdf'];
+            set(gH(nG), 'PaperPositionMode', 'auto');
+            print(gH(nG), '-dpdf', print_res, '-noui', '-bestfit', fullfile(outputDir, tmpImFile));
+            pdfFiles{countPdfs} = fullfile(outputDir, tmpImFile);
+        end
+        
+    end
+    
+    pngFNames = printFigToPNG(gH, outputDir, tmp_f_name);
+    printInfo(end + 1).title = 'Stacked Ortho Slices';
+    printInfo(end).text = 'Stacked ortho slices are shown for each component in the network. Title shows component numbers plotted from top to bottom';
+    printInfo(end).files = pngFNames;
+    printInfo(end).tag = 'stacked_ortho';
+    printInfo(end).str = get_result_strings(outputDir, printInfo(end), printInfo(end).tag);
+    
+    if (save_info)
+        delete(gH);
+    end
+    
 end
 
 

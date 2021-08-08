@@ -373,6 +373,10 @@ for nFigs = 1:numberOfFigures
             ColorbarHandle = colorbar;
         end
         
+        set(ColorbarHandle, 'tag', 'compexploreColorbar');
+        
+        drawnow;
+        
         set(ColorbarHandle, 'units', 'pixels');
         set(ColorbarHandle, 'position', cAxesPos);
         ChildH = get(ColorbarHandle,'Children');
@@ -391,7 +395,7 @@ for nFigs = 1:numberOfFigures
         else
             set(ColorbarHandle, 'color', FONT_COLOR);
             labelsH = get(ColorbarHandle, 'Label');
-            set (labelsH, 'units', UI_FONTUNITS, 'FontSize', fontSize, 'FontName', UI_FONTNAME);            
+            set (labelsH, 'units', UI_FONTUNITS, 'FontSize', fontSize, 'FontName', UI_FONTNAME);
             YTicks = get(ColorbarHandle, 'YTick');
             set(ColorbarHandle, 'YTick', [YTicks(1), YTicks(end)]);
             set(ColorbarHandle, 'YTickLabel', char(num2str(minLabel), num2str(maxLabel)));
@@ -461,6 +465,11 @@ for numFig = 1:numberOfFigures
     set(GraphicsHandle(numFig).H, 'userdata', figureData);
     set(GraphicsHandle(numFig).H, 'WindowButtonDownFcn', @mouseListenerCallback);
 end
+
+
+set(findobj(0, 'tag', 'compexploreColorbar'), 'YLim',[minInterval maxInterval]);
+
+drawnow;
 
 icatb_plotNextPreviousExitButtons(GraphicsHandle);
 

@@ -135,6 +135,8 @@ function run_mancovan_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+icatb_defaults;
+global MANCOVA_DEFAULTS;
 
 %% Select nuisance covariates?
 check = icatb_questionDialog('title', 'Remove nuisance covariates', 'textbody', 'Do you want to remove variance associated with nuisance covariates? For example, you could remove sites variance from the data before computing mancovan.');
@@ -144,7 +146,17 @@ if (check)
     nuisance_cov_file = icatb_selectEntry('title', 'Select nuisance covariates file', 'typeEntity', 'file', 'typeSelection', 'single', 'filter', '*.asc;*.dat');
 end
 drawnow;
-icatb_run_mancovan([], 3, nuisance_cov_file);
+mancovanInfo = icatb_run_mancovan([], 3, nuisance_cov_file);
+
+write_stats_info = 0;
+try
+    write_stats_info = MANCOVA_DEFAULTS.write_stats_info;
+catch
+end
+
+if (write_stats_info)
+    icatb_mancovan_agg(mancovanInfo);
+end
 
 
 % --- Executes on button press in display.

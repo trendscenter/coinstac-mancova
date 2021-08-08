@@ -309,7 +309,7 @@ backReconIndex = strmatch(backReconTag, cellstr(char(inputText.tag)), 'exact');
 if (~isempty(backReconIndex))
     inputText(backReconIndex).enable = 'on';
     if (strcmpi(deblank(icaStr(icaVal, :)), 'iva-gl') || strcmpi(deblank(icaStr(icaVal, :)), 'iva-l') ...
-            || strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') || strcmpi(deblank(icaStr(icaVal, :)), 'gig-ica') || strcmpi(deblank(icaStr(icaVal, :)), 'constrained ica (spatial)'))
+            || strcmpi(deblank(icaStr(icaVal, :)), 'iva-l-sos') || strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') || strcmpi(deblank(icaStr(icaVal, :)), 'gig-ica') || strcmpi(deblank(icaStr(icaVal, :)), 'constrained ica (spatial)'))
         inputText(backReconIndex).enable = 'inactive';
     end
 end
@@ -329,7 +329,7 @@ if numOfSub*numOfSess > 0
     inputText(dataRedIndex).enable = 'off';
     
     numReductionSteps = 1;
-    if (~strcmpi(deblank(icaStr(icaVal, :)), 'iva-gl') && ~strcmpi(deblank(icaStr(icaVal, :)), 'iva-l') && ~strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') ...
+    if (~strcmpi(deblank(icaStr(icaVal, :)), 'iva-gl') && ~strcmpi(deblank(icaStr(icaVal, :)), 'iva-l') && ~strcmpi(deblank(icaStr(icaVal, :)), 'iva-l-sos') && ~strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') ...
             && ~strcmpi(deblank(icaStr(icaVal, :)), 'gig-ica') && ~strcmpi(deblank(icaStr(icaVal, :)), 'constrained ica (spatial)'))
         % Number of data reduction steps
         if(numOfSub == 1 && numOfSess == 1)
@@ -529,6 +529,7 @@ try
     global BG_COLOR;
     global FONT_COLOR;
     global AXES_COLOR;
+    global EXPERIMENTAL_TR;
     
     % disable the estimate components and the data reduction parameters
     set(findobj(handles, 'tag', 'estimate_components'), 'enable', 'off');
@@ -733,10 +734,18 @@ try
             algoVal = getfield(sesInfo.userInput, algoTag);
             algoStr = cellstr(get(algoHandle, 'string'));
             set(algoHandle, 'value', algoVal);
-            if (strcmpi(algoStr{algoVal}, 'iva-gl') || strcmpi(algoStr{algoVal}, 'iva-l') || strcmpi(algoStr{algoVal}, 'moo-icar')  || ....
+            if (strcmpi(algoStr{algoVal}, 'iva-gl') || strcmpi(algoStr{algoVal}, 'iva-l') || strcmpi(algoStr{algoVal}, 'iva-l-sos') || strcmpi(algoStr{algoVal}, 'moo-icar')  || ....
                     strcmpi(algoStr{algoVal}, 'gig-ica') || strcmpi(algoStr{algoVal}, 'constrained ica (spatial)'))
                 icaTypeCallback(algoHandle, [], handles);
             end
+        end
+        
+        %% TR
+        trH = findobj(handles, 'tag', 'TR');
+        try
+            set(trH, 'enable', 'on', 'string', num2str(sesInfo.userInput.TR));
+        catch
+            set(trH, 'enable', 'on', 'string', num2str(EXPERIMENTAL_TR));
         end
         
         
@@ -1311,11 +1320,30 @@ try
     numOfSub = sesInfo.userInput.numOfSub;
     numOfSess = sesInfo.userInput.numOfSess;
     
+    trH = findobj(handles, 'tag', 'TR');
+    
+    if (~isempty(trH))
+        
+        TR = str2num(get(trH, 'string'));
+        if (isempty(TR))
+            error('Enter TR in seconds. If you have different TRs across subjects, enter one per subject in a row vector like 2, 1.5, .');
+        end
+        
+        if (length(TR) > 1)
+            if (length(TR) ~= numOfSub)
+                error(['TR vector length must match the number of subjects entered, (', num2str(numOfSub), ')']);
+            end
+        end
+        
+        sesInfo.userInput.TR = TR;
+        
+    end
+    
     icaAlgoH =  findobj(handles, 'tag', 'algorithm');
     icaVal = get(icaAlgoH, 'value');
     icaStr = get(icaAlgoH, 'string');
     
-    if (strcmpi(deblank(icaStr(icaVal, :)), 'iva-gl') || strcmpi(deblank(icaStr(icaVal, :)), 'iva-l')  || strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') ...
+    if (strcmpi(deblank(icaStr(icaVal, :)), 'iva-gl') || strcmpi(deblank(icaStr(icaVal, :)), 'iva-l') || strcmpi(deblank(icaStr(icaVal, :)), 'iva-l-sos') || strcmpi(deblank(icaStr(icaVal, :)), 'moo-icar') ...
             || strcmpi(deblank(icaStr(icaVal, :)), 'gig-ica') || strcmpi(deblank(icaStr(icaVal, :)), 'constrained ica (spatial)'))
         sesInfo.userInput.numReductionSteps = 1;
     else
@@ -1481,7 +1509,7 @@ try
     if (isempty(write_analysis_steps_in_dirs))
         write_analysis_steps_in_dirs = 0;
     end
-        
+    
     if (isempty(conserve_disk_space))
         conserve_disk_space = 0;
     end
@@ -1652,7 +1680,7 @@ end
 
 
 % Select the options of the ICA algorithm other than Erica ICA algorithm
-matchedInd = strmatch(algorithmName, lower({'Infomax', 'Fast ICA', 'SDD ICA', 'Semi-blind Infomax', 'Constrained ICA (Spatial)', 'FBSS', 'ERBM', 'IVA-GL', 'IVA-L'}), 'exact');
+matchedInd = strmatch(algorithmName, lower({'Infomax', 'Fast ICA', 'SDD ICA', 'Semi-blind Infomax', 'Constrained ICA (Spatial)', 'FBSS', 'ERBM', 'IVA-GL', 'IVA-L', 'Sparse ICA-EBM', 'IVA-L-SOS'}), 'exact');
 
 sesInfo.userInput.ICA_Options = {};
 
@@ -1675,7 +1703,7 @@ if (~isempty(matchedInd))
         % get the spm2 design matrix file
         if isempty(checkFile)
             checkFile = icatb_selectEntry('typeSelection', 'single', 'typeEntity', 'file', 'filter', ...
-                '*.mat', 'title', 'Select SPM2/SPM5/SPM8 design matrix');
+                '*.mat', 'title', 'Select SPM design matrix');
         end
         % edit box tag
         editboxTag = 'prefix';
@@ -1749,17 +1777,24 @@ if (strcmpi(algorithmName, 'constrained ica (spatial)') || strcmpi(algorithmName
     fileNumbers = (1:numSpatialFiles);
     
     % get the spatial reference data
-    [images, imHInfo] = icatb_loadData(spatial_references);
+    %[images, imHInfo] = icatb_loadData(spatial_references);
     
-    imDims = imHInfo(1).DIM(1:3);
+    imagesV = icatb_spm_vol(deblank(spatial_references(1,:)));
+    
+    imDims = imagesV(1).dim(1:3);
     funcDims = sesInfo.userInput.HInfo.DIM(1:3);
     
     if (length(find((imDims == funcDims) ~= 0)) ~= length(funcDims))
-        error('Error:Dimensions', 'Spatial reference image dimensions ([%s]) are not equal to functional image dimensions ([%s])', ...
+        fprintf('Spatial reference image dimensions ([%s]) are not equal to functional image dimensions ([%s]). Resizing template image/images to match functional image\n\n', ...
             num2str(imDims), num2str(funcDims));
+        
+        spatial_references = noisecloud_spm_coregister(deblank(sesInfo.userInput.files(1).name(1, :)), deblank(spatial_references(1, :)), spatial_references, sesInfo.userInput.pwd);
     end
     
-    images = reshape(images, prod(imDims), numSpatialFiles);
+    [images, imHInfo] = icatb_loadData(spatial_references);
+    
+    
+    images = reshape(images, prod(funcDims), numSpatialFiles);
     images = (images(sesInfo.userInput.mask_ind, :))';
     
     ICAOptions = sesInfo.userInput.ICA_Options;
@@ -1911,6 +1946,37 @@ elseif (selObject == 3)
     num_ica_runs = str2num(num_ica_runs{1});
     
     handles_data.sesInfo.userInput.mst_opts.num_ica_runs = num_ica_runs;
+    
+    
+elseif (selObject == 4)
+    % cross isi
+    
+    % open input dialog box
+    prompt = {'Enter no. of ICA Runs:'};
+    dlg_title = 'ICA Runs';
+    num_lines = 1;
+    
+    if (isfield(handles_data.sesInfo.userInput, 'cross_isi_opts'))
+        num_ica_runs = handles_data.sesInfo.userInput.cross_isi_opts.num_ica_runs;
+    else
+        num_ica_runs = NUM_RUNS_GICA;
+    end
+    
+    if (num_ica_runs <= 1)
+        num_ica_runs = 2;
+    end
+    
+    def = {num2str(num_ica_runs)};
+    num_ica_runs = icatb_inputdlg2(prompt, dlg_title, num_lines, def);
+    
+    if (isempty(num_ica_runs))
+        error('!!!No. of runs is not selected');
+    end
+    
+    num_ica_runs = str2num(num_ica_runs{1});
+    
+    handles_data.sesInfo.userInput.cross_isi_opts.num_ica_runs = num_ica_runs;
+    
     
 end
 

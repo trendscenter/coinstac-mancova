@@ -224,6 +224,7 @@ end
 
 
 if strcmpi(algorithmName, 'semi-blind infomax')
+    load(fullfile(outputDir, [sesInfo.data_reduction_mat_file, '1-1']),'dewhiteM');
     ICA_Options = icatb_sbica_options(ICA_Options, dewhiteM);
     sesInfo.userInput.ICA_Options = ICA_Options;
 end

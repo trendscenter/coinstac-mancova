@@ -416,6 +416,7 @@ for nFig = 1:numFigures
             labelsH = get(colorbarH, 'Label');
             set(labelsH, 'fontname', UI_FONTNAME, 'fontsize', UI_FS - 2, 'fontunits', UI_FONTUNITS);
         end
+        set(colorbarH, 'tag', 'singleTrialColorbar');
         set(colorbarH, 'units', 'normalized');
         set(colorbarH, 'position', colorbarPos);
         set(colorbarH, 'YLim', [minInterval, maxInterval]);
@@ -483,6 +484,8 @@ for nFig = 1:numFigures
 end
 %% End loop over figures
 
+
+set(findobj(0, 'tag', 'singleTrialColorbar'), 'YLim', [minInterval, maxInterval]);
 
 %% Plot prev, next and exit buttons
 icatb_plotNextPreviousExitButtons(GraphicsH);

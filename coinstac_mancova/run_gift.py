@@ -77,6 +77,7 @@ DEFAULT_THRESHDESC = 'fdr'
 DEFAULT_DIM = 53
 DEFAULT_ALG = 1
 DEFAULT_ICA_PARAM_FILE = ""
+DEFAULT_COMP_FILES = ""
 DEFAULT_REFS = os.path.join("/app", "template", "NeuroMark.nii")
 DEFAULT_RUN_NAME = "gift"
 DEFAULT_GROUP_PCA_TYPE = 0
@@ -334,6 +335,7 @@ def gift_mancova(
     image_values="positive",
     threshdesc=DEFAULT_THRESHDESC,
     display_p_threshold=DEFAULT_P_THRESHOLD,
+    display_local_result_summary=False
 ):
     gift.MancovanCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
 
@@ -347,18 +349,53 @@ def gift_mancova(
     gc.inputs.interactions = interactions
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
-    gc.inputs.display = {
+    if display_local_result_summary:
+        gc.inputs.display = {
+            "freq_limits": freq_limits,
+            "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",
+            "t_threshold": t_threshold,
+            "image_values": image_values,
+            "threshdesc": threshdesc,
+            "p_threshold": display_p_threshold,
+        }
+    
+    if univariate_tests is not None:
+        gc.inputs.univariate_tests = univariate_tests
+    return gc.run()
+
+
+def gift_mancova_aggregate_stats(
+    ica_param_file_list=DEFAULT_ICA_PARAM_FILE,
+    out_dir=DEFAULT_OUT_DIR,
+    freq_limits=[0.1, 0.15],
+    p_threshold=DEFAULT_P_THRESHOLD,
+    t_threshold=1.0,
+    image_values="positive",
+    threshdesc=DEFAULT_THRESHDESC,
+    display_p_threshold=DEFAULT_P_THRESHOLD,
+    comp_files=DEFAULT_COMP_FILES
+    ):
+
+    gift.MancovanCommand.set_mlab_paths(matlab_cmd = matlab_cmd, use_mcr = True)
+    mc = gift.MancovanCommand()
+    mc.inputs.out_dir = out_dir
+
+    # Pass stats info files
+    mc.inputs.ica_param_file = ica_param_file_list
+
+    # Display params
+    mc.inputs.display={
         "freq_limits": freq_limits,
         "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",
         "t_threshold": t_threshold,
         "image_values": image_values,
         "threshdesc": threshdesc,
         "p_threshold": display_p_threshold,
-    }
-    if univariate_tests is not None:
-        gc.inputs.univariate_tests = univariate_tests
-    return gc.run()
+        'display_connectogram':1,
+        #'compFiles':comp_files[0]
+        };
 
+    return mc.run()
 
 def gift_patch(**kwargs):
     gica_result = gift_gica(**kwargs)

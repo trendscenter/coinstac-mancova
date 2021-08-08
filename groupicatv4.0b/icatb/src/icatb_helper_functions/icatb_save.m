@@ -33,8 +33,17 @@ if (matlab_version <= 13)
     ENFORCE_MAT_FILE_VER = '';
 end
 
+chkAppend = 0;
+if ~isempty(find(strcmpi(varargin, '-append')))
+    chkAppend = 1;
+end
+
 if (~isempty(ENFORCE_MAT_FILE_VER))
-    save(varargin{1}, varargin{2:end}, ENFORCE_MAT_FILE_VER);
+    if (~chkAppend)
+        save(varargin{1}, varargin{2:end}, ENFORCE_MAT_FILE_VER);
+    else
+        save(varargin{1}, varargin{2:end});
+    end
 else
     save(varargin{1}, varargin{2:end});
 end

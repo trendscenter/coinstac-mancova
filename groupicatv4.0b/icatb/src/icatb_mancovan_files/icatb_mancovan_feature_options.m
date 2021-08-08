@@ -257,7 +257,7 @@ if (isempty(mask))
     return;
 end
 
-data = icatb_loadData(mask); % Mask data
+data = icatb_loadData(deblank(mask(1, :))); % Mask data
 size_data = size(data);
 if length(size_data) == 2
     size_data(3) = 1;

@@ -1049,8 +1049,8 @@ try
                     allLines = allLines(icatb_good_cells(allLines));
                     for nLine = 1:length(allLines)
                         
-                       allCols = textscan(allLines{nLine}, '%s', 'whitespace', '\t');
-                       allCols = allCols{1};
+                        allCols = textscan(allLines{nLine}, '%s', 'whitespace', '\t');
+                        allCols = allCols{1};
                         
                         if (nLine == 1)
                             tableStr = '<table align = "center" border = "1" width = "35%">';
@@ -1084,7 +1084,11 @@ try
     
     dlmwrite(html_file, results_string, '');
     
-    icatb_openHTMLHelpFile(html_file);
+    % if (~isdeployed)
+    
+    %     icatb_openHTMLHelpFile(html_file);
+    
+    % end
     
     try
         delete(helpH);

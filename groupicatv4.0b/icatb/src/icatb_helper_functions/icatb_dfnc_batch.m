@@ -37,7 +37,18 @@ if (exist(dfncInfo.userInput.outputDir, 'dir') ~= 7)
     mkdir(dfncInfo.userInput.outputDir);
 end
 
-dfncInfo.userInput.ica_param_file = inputData.ica_param_file;
+comp_network_names = inputData.comp_network_names;
+ica_param_file = inputData.ica_param_file;
+
+if (iscell(ica_param_file))
+    if (~isfield(inputData, 'merge_type'))
+        inputData.merge_type = 'stack_subjects';
+    end
+    [ica_param_file, comp_network_names] = icatb_merge_analyses(ica_param_file, 'merge_type', inputData.merge_type, 'outputDir', ...
+        dfncInfo.userInput.outputDir, 'comp_network_names', comp_network_names);
+end
+
+dfncInfo.userInput.ica_param_file = ica_param_file;
 load( dfncInfo.userInput.ica_param_file);
 
 dfncInfo.userInput.numOfSub = sesInfo.numOfSub;
@@ -49,7 +60,7 @@ dfncInfo.userInput.numICs = sesInfo.numComp;
 dfncInfo.userInput.HInfo = sesInfo.HInfo.V(1);
 
 %% Component network names
-comp_network_names = inputData.comp_network_names;
+%comp_network_names = inputData.comp_network_names;
 comp = repmat(struct('name', '', 'value', []), 1, size(comp_network_names, 1));
 
 for n = 1:size(comp_network_names, 1)
@@ -81,6 +92,22 @@ if (isfield(sesInfo, 'TR'))
 else
     dfncInfo.userInput.TR = inputData.TR;
 end
+
+
+aswc = 22;
+tv_dfnc = 1;
+try
+    aswc = inputData.aswc;
+catch
+end
+
+try
+    tv_dfnc = inputData.tv_dfnc;
+catch
+end
+
+dfncInfo.userInput.aswc = aswc;
+dfncInfo.userInput.tv_dfnc = tv_dfnc;
 
 covInfo.numOfDataSets = dfncInfo.userInput.numOfSub*dfncInfo.userInput.numOfSess;
 

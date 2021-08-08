@@ -14,9 +14,17 @@ outputDir = mancovanInfo.outputDir;
 comps = mancovanInfo.comps;
 results = mancovanInfo.outputFiles;
 
+try
+    p_threshold = mancovanInfo.display.p_threshold;
+catch
+    p_threshold = mancovanInfo.userInput.p_threshold;
+end
+
+mancovanInfo.display.p_threshold = p_threshold;
+
 display_connectogram = 1;
 try
-    display_connectogram = mancovanInfo.display_connectogram;
+    display_connectogram = mancovanInfo.display.display_connectogram;
 catch
 end
 
@@ -41,20 +49,20 @@ for nCov = 1:length(covariatesToPlot)
         if (strcmpi(featureName, 'spatial maps'))
             figTitle = 'Univariate Results (Spatial maps)';
             nRows = 2;
-            structFile = mancovanInfo.structFile;
+            structFile = mancovanInfo.display.structFile;
             gH = icatb_getGraphics(figTitle, 'graphics', 'univariate_results_spatial_maps', 'off');
             disp('Writing out composite images of covariates of interest ...');
             img_files = write_composite_sig_effects(mancovanInfo.HInfo(1), covariatesToPlot, results(nF).filesInfo.result_files, mancovanInfo.prefix, outputDir, ...
-                mancovanInfo.userInput.p_threshold, mancovanInfo.threshdesc, timeNo);
+                mancovanInfo.display.p_threshold, mancovanInfo.display.threshdesc, timeNo);
             axesH = subplot(nRows, 1, 1);
             axesPos = get(axesH, 'position');
             axesPos(1) = 0.055;
             set(axesH, 'position', axesPos);
             tmp = icatb_loadData(img_files{nCov});
             if (any(abs(tmp(:)) > eps))
-                tmpTitle = ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+                tmpTitle = ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
             else
-                tmpTitle = ['No Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+                tmpTitle = ['No Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
                 disp(['Feature ',featureName, ': ', tmpTitle]);
                 delete (gH);
                 continue;
@@ -65,7 +73,7 @@ for nCov = 1:length(covariatesToPlot)
                 tmpTitle = [tmpTitle, '(Time', num2str(timeNo), ')'];
             end
             
-            hD = getCompositeData(img_files{nCov}, 'anatomical_file', structFile, 'image_values', mancovanInfo.image_values, 'convert_to_zscores', 'no', ...
+            hD = getCompositeData(img_files{nCov}, 'anatomical_file', structFile, 'image_values', mancovanInfo.display.image_values, 'convert_to_zscores', 'no', ...
                 'threshold', eps);
             hD.currentFigure = gH;
             hD.axesH = axesH;
@@ -139,11 +147,11 @@ for nCov = 1:length(covariatesToPlot)
         elseif (strcmpi(featureName, 'timecourses spectra'))
             figTitle = 'Univariate Results (Spectra)';
             gH = icatb_getGraphics(figTitle, 'graphics', 'univariate_results_sepctra', 'on');
-            load icatb_colors coldhot_sensitive;
-            coldhot = coldhot_sensitive;
+            load icatb_colors coldhot;
+            %coldhot = coldhot_sensitive;
             load(fullfile(mancovanInfo.outputDir, mancovanInfo.outputFiles(nF).filesInfo.result_files{1}), 'freq');
             nRows = 2;
-            msgStr = ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+            msgStr = ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
             % for nCov = 1:length(covariatesToPlot)
             [S, status] = gather_univariate_stats(mancovanInfo, nF, covariatesToPlot{nCov}, timeNo);
             
@@ -162,7 +170,7 @@ for nCov = 1:length(covariatesToPlot)
             end
             
             
-            vars1 = {S, freq, mancovanInfo.comps, mancovanInfo.userInput.p_threshold, mancovanInfo.threshdesc, cmap1, 'Component', 'Frequency (Hz)', sh};
+            vars1 = {S, freq, mancovanInfo.comps, mancovanInfo.display.p_threshold, mancovanInfo.display.threshdesc, cmap1, 'Component', 'Frequency (Hz)', sh};
             ch1 = plotUnivStats (vars1{:});
             
             sh = subplot( nRows, 1, 2);
@@ -222,7 +230,7 @@ for nCov = 1:length(covariatesToPlot)
             % fnc plots
             [S, status] = gather_univariate_stats(mancovanInfo, nF, covariatesToPlot{nCov}, timeNo, 1);
             
-            msgStr =  ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+            msgStr =  ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
             
             
             if (status)
@@ -234,8 +242,8 @@ for nCov = 1:length(covariatesToPlot)
                 %             end
                 
                 gH = icatb_getGraphics(figTitle, 'graphics', 'univariate_results_fnc', 'on');
-                load icatb_colors coldhot_sensitive;
-                coldhot = coldhot_sensitive;
+                load icatb_colors coldhot;
+                %coldhot = coldhot_sensitive;
                 nRows = 1;
                 
                 
@@ -251,7 +259,7 @@ for nCov = 1:length(covariatesToPlot)
                 S2 = S;
                 S2.p = S.p;
                 S2.logp = M;
-                vars = {S2, mancovanInfo.comps, mancovanInfo.comps, mancovanInfo.userInput.p_threshold, mancovanInfo.threshdesc, cmap1, 'Component', 'Component', sh, 1};
+                vars = {S2, mancovanInfo.comps, mancovanInfo.comps, mancovanInfo.display.p_threshold, mancovanInfo.display.threshdesc, cmap1, 'Component', 'Component', sh, 1};
                 ch1 = plotUnivStats (vars{:});
                 %FNC_MAT = S.logp;
                 
@@ -292,7 +300,7 @@ for nCov = 1:length(covariatesToPlot)
                 if (display_connectogram)
                     try
                         % Show connectogram
-                        gH = icatb_plot_connectogram([], comp_network_names, 'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'threshold', mancovanInfo.t_threshold, ...
+                        gH = icatb_plot_connectogram([], comp_network_names, 'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'threshold', mancovanInfo.display.t_threshold, ...
                             'convert_to_zscores', 'yes', 'colorbar_label', '-sign(t) log10(p)', 'title', msgStr);
                         figs(length(figs) + 1).H = gH;
                     catch
@@ -310,7 +318,7 @@ for nCov = 1:length(covariatesToPlot)
                 % network average
                 [S, status] = gather_univariate_stats(mancovanInfo, nF, covariatesToPlot{nCov}, timeNo, 2, comp_network_names(:,1));
                 
-                msgStr =  ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ') network averaged'];
+                msgStr =  ['Significant Effects Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ') network averaged'];
                 
                 if (~status)
                     %delete(gH);
@@ -319,8 +327,8 @@ for nCov = 1:length(covariatesToPlot)
                 end
                 
                 gH = icatb_getGraphics(figTitle, 'graphics', 'univariate_results_fnc', 'on');
-                load icatb_colors coldhot_sensitive;
-                coldhot = coldhot_sensitive;
+                load icatb_colors coldhot;
+                %coldhot = coldhot_sensitive;
                 nRows = 1;
                 
                 
@@ -336,7 +344,7 @@ for nCov = 1:length(covariatesToPlot)
                 S2 = S;
                 S2.p = S.p;
                 S2.logp = M;
-                vars = {S2, 1:length(comp_network_names(:,1)), comp_network_names(:,1), mancovanInfo.userInput.p_threshold, mancovanInfo.threshdesc, cmap1, 'Component', 'Component', sh, 1};
+                vars = {S2, 1:length(comp_network_names(:,1)), comp_network_names(:,1), mancovanInfo.display.p_threshold, mancovanInfo.display.threshdesc, cmap1, 'Component', 'Component', sh, 1};
                 ch1 = plotUnivStats (vars{:});
                 %FNC_MAT = S.logp;
                 
@@ -374,6 +382,20 @@ for nCov = 1:length(covariatesToPlot)
                 
                 figs(length(figs) + 1).H = gH;
                 
+                
+                if (display_connectogram)
+                    try
+                        % Show connectogram
+                        %                         gH = icatb_plot_connectogram([], comp_network_names, 'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'threshold', mancovanInfo.display.t_threshold, ...
+                        %                             'convert_to_zscores', 'yes', 'colorbar_label', '-sign(t) log10(p)', 'title', msgStr);
+                        gH = icatb_plot_connectogram([], comp_network_names,'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'iscomposite', 1, 'exclude_zeros', 0, ...
+                            'comp_labels', comp_network_names(:, 1), 'threshold', mancovanInfo.display.t_threshold, ...
+                            'convert_to_zscores', 'yes', 'title', msgStr, 'colorbar_label', '-sign(t) log10(p)');
+                        figs(length(figs) + 1).H = gH;
+                    catch
+                    end
+                end
+                
             end
             
             
@@ -396,7 +418,7 @@ for nCov = 1:length(covariatesToPlot)
             S.p(:, chk_good_inds == 0) = 0;
             S.logp(:, chk_good_inds == 0) = 0;
             
-            msgStr =  ['Significant Effects (fnc using lag) Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+            msgStr =  ['Significant Effects (fnc using lag) Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
             
             if (~status)
                 %delete(gH);
@@ -408,8 +430,8 @@ for nCov = 1:length(covariatesToPlot)
             
             for nFncPlots = 1:size(S.logp, 1)
                 gH = icatb_getGraphics(figTitle, 'graphics', 'univariate_results_fnc', 'on');
-                load icatb_colors coldhot_sensitive;
-                coldhot = coldhot_sensitive;
+                load icatb_colors coldhot;
+                %coldhot = coldhot_sensitive;
                 nRows = 1;
                 %for nCov = 1:length(covariatesToPlot)
                 
@@ -417,7 +439,7 @@ for nCov = 1:length(covariatesToPlot)
                 colorbarTitle = '-sign(t) log10(p) (corr)';
                 if (nFncPlots == 2)
                     colorbarTitle = '-sign(t) log10(p) (Lag)';
-                    msgStr =  ['Significant Effects (lag) Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.userInput.p_threshold), ')'];
+                    msgStr =  ['Significant Effects (lag) Of ', covariatesToPlot{nCov}, ' (p < ', num2str(mancovanInfo.display.p_threshold), ')'];
                     plot_arrows = 1;
                 end
                 
@@ -434,7 +456,7 @@ for nCov = 1:length(covariatesToPlot)
                 S2 = S;
                 S2.p = S.p(nFncPlots, :);
                 S2.logp = M;
-                vars = {S2, mancovanInfo.comps, mancovanInfo.comps, mancovanInfo.userInput.p_threshold, mancovanInfo.threshdesc, cmap1, 'Component', 'Component', sh, 1};
+                vars = {S2, mancovanInfo.comps, mancovanInfo.comps, mancovanInfo.display.p_threshold, mancovanInfo.display.threshdesc, cmap1, 'Component', 'Component', sh, 1};
                 ch1 = plotUnivStats (vars{:});
                 %FNC_MAT = S.logp;
                 
@@ -479,7 +501,7 @@ for nCov = 1:length(covariatesToPlot)
                 if (display_connectogram)
                     try
                         % Show connectogram
-                        gH = icatb_plot_connectogram([], comp_network_names, 'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'threshold', mancovanInfo.t_threshold, ...
+                        gH = icatb_plot_connectogram([], comp_network_names, 'C', M, 'image_file_names', mancovanInfo.userInput.compFiles, 'threshold', mancovanInfo.display.t_threshold, ...
                             'convert_to_zscores', 'yes', 'colorbar_label', colorbarTitle, 'title', msgStr);
                         figs(length(figs) + 1).H = gH;
                     catch
@@ -501,7 +523,7 @@ function [S, status] = gather_univariate_stats(mancovanInfo, index, term, timeNo
 
 result_files = mancovanInfo.outputFiles(index).filesInfo.result_files;
 outputDir = mancovanInfo.outputDir;
-thresh = mancovanInfo.userInput.p_threshold;
+thresh = mancovanInfo.display.p_threshold;
 featureName = mancovanInfo.outputFiles(index).feature_name;
 
 if (~exist('resultsNum', 'var'))
@@ -529,11 +551,31 @@ for ii = resultInds
         load(fullfile(outputDir, result_files{ii}), 'freq');
         xdim = length(freq);
     elseif  (strcmpi(featureName, 'fnc correlations'))
-        load(fullfile(outputDir, result_files{ii}), 'fnc_corrs');
-        xdim = size(fnc_corrs, 2);
+        tmp_fnc_name = fullfile(outputDir, result_files{ii});
+        varsInFNCFile = whos('-file', tmp_fnc_name);
+        if (~isempty(strmatch('fnc_corrs', cellstr(char(varsInFNCFile.name)), 'exact')))
+            load(tmp_fnc_name, 'fnc_corrs');
+        end
+        
+        if (exist('fnc_corrs', 'var'))
+            xdim = size(fnc_corrs, 2);
+        else
+            load(tmp_fnc_name, 'UNI');
+            xdim = size(UNI.t{1}, 2);
+        end
     else
-        load(fullfile(outputDir, result_files{ii}), 'fnc_values');
-        xdim = size(fnc_values, 2);
+        tmp_fnc_name = fullfile(outputDir, result_files{ii});
+        varsInFNCFile = whos('-file', tmp_fnc_name);
+        if (~isempty(strmatch('fnc_values', cellstr(char(varsInFNCFile.name)), 'exact')))
+            load(tmp_fnc_name, 'fnc_values');
+        end
+        
+        if (exist('fnc_values', 'var'))
+            xdim = size(fnc_values, 2);
+        else
+            load(tmp_fnc_name, 'UNI');
+            xdim = size(UNI.t{1}, 2);
+        end
         
         %load(fullfile(outputDir, result_files{ii}), 'fnc_corrs');
         %xdim = size(fnc_corrs, 2);
@@ -552,8 +594,8 @@ for ii = resultInds
     if ~isempty(mIND)
         ps = UNI.p{mIND}(con_no, :);
         ts = UNI.t{mIND}(con_no, :);
-        [p_masked, ps]  = get_sig_pvalues(ps, thresh, mancovanInfo.threshdesc);
-        %         if (strcmpi(mancovanInfo.threshdesc, 'fdr'))
+        [p_masked, ps]  = get_sig_pvalues(ps, thresh, mancovanInfo.display.threshdesc);
+        %         if (strcmpi(mancovanInfo.display.threshdesc, 'fdr'))
         %             p_masked = icatb_fdr(ps, thresh);
         %         else
         %             p_masked = thresh;
@@ -593,7 +635,7 @@ function S = gather_univariate_effects(mancovanInfo, index, term, timeNo)
 
 result_files = mancovanInfo.outputFiles(index).filesInfo.result_files;
 outputDir = mancovanInfo.outputDir;
-thresh = mancovanInfo.userInput.p_threshold;
+thresh = mancovanInfo.display.p_threshold;
 featureName = mancovanInfo.outputFiles(index).feature_name;
 
 for ii = 1:length(result_files)
@@ -613,8 +655,8 @@ for ii = 1:length(result_files)
         ts = UNI.t{mIND}(con_no, :);
         betas = getBetaWeights(UNI.stats{mIND}, con_no);
         %betas = UNI.stats{mIND}.B(con_no + 1, :);
-        [p_masked, ps]  = get_sig_pvalues(ps, thresh, mancovanInfo.threshdesc);
-        %         if (strcmpi(mancovanInfo.threshdesc, 'fdr'))
+        [p_masked, ps]  = get_sig_pvalues(ps, thresh, mancovanInfo.display.threshdesc);
+        %         if (strcmpi(mancovanInfo.display.threshdesc, 'fdr'))
         %             [p_masked, p] = icatb_fdr(ps, thresh);
         %         else
         %             p_masked = thresh;
@@ -962,6 +1004,8 @@ function CB = make_bars(Y, YC, xdesc, ydesc, axesH, colorbarLabel, cmap)
 
 icatb_defaults;
 global FONT_COLOR;
+
+YC(YC > 1) = 1;
 
 % B1 = barh(1:length(xdesc),Y(1,:)) ; hold on
 % set_bar_color(B1, YC(1,:), 'r')
@@ -1401,6 +1445,7 @@ if (~exist('varName', 'var'))
 end
 
 result_files = mancovanInfo.outputFiles(nF).filesInfo.result_files;
+fnc_corrs = [];
 if (timeNo > 0)
     tmpFnc = load(fullfile(mancovanInfo.outputDir, result_files{loopNum}), 'time', varName);
     fnc_corrs = tmpFnc.(varName);
@@ -1408,13 +1453,16 @@ if (timeNo > 0)
     UNI = time.UNI{timeNo};
 else
     tmpFnc = load(fullfile(mancovanInfo.outputDir, result_files{loopNum}), 'UNI', varName);
-    fnc_corrs = tmpFnc.(varName);
+    try
+        fnc_corrs = tmpFnc.(varName);
+    catch
+    end
     UNI = tmpFnc.UNI;
 end
 
 [term_no, con_no] = getTermAndConNum(term_name, UNI);
 
-if (~isempty(term_no))
+if (~isempty(term_no) && ~isempty(fnc_corrs))
     
     covariateName = UNI.tests{term_no};
     try
@@ -1460,8 +1508,8 @@ function plotLevelMeans(hObject, event_data, mancovanInfo)
 %% Plot level means
 %
 
-load icatb_colors coldhot_sensitive;
-coldhot = coldhot_sensitive;
+load icatb_colors coldhot;
+%coldhot = coldhot_sensitive;
 ud = get(hObject, 'userdata');
 
 levelNames = ud.levelNames;
@@ -1508,7 +1556,9 @@ end
 
 function sliceData = getCompositeData(imFile, varargin)
 
-load icatb_colors coldhot_sensitive;
+load icatb_colors coldhot;
+
+coldhot_sensitive = coldhot;
 
 varsIn = varargin;
 

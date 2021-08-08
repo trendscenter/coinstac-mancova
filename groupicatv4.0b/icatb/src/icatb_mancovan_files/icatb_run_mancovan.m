@@ -1,4 +1,4 @@
-function icatb_run_mancovan(mancovanInfo, step, nuisance_cov_file)
+function mancovanInfo = icatb_run_mancovan(mancovanInfo, step, nuisance_cov_file)
 %% Run Mancovan
 %
 % Inputs:
@@ -59,8 +59,26 @@ mancovanInfo.designCriteria = desCriteria;
 cd(mancovanInfo.outputDir);
 
 univInfo = [];
-if (strcmpi(desCriteria, 'mancova') && isGUI)
-    univInfo = icatb_univariate_cov_sel(unique(cellstr(mancovanInfo.regressors)));
+
+if (isfield(mancovanInfo.userInput, 'univariate_tests'))
+    
+    for n = 1:size(mancovanInfo.userInput.univariate_tests, 1)
+        univInfo(n).name = mancovanInfo.userInput.univariate_tests{n, 1};
+        tmp_cov_str = mancovanInfo.userInput.univariate_tests{n, 2};
+        if (~iscell(tmp_cov_str))
+            tmp_cov_str = cellstr(tmp_cov_str);
+        end
+        univInfo(n).str = tmp_cov_str;
+    end
+    
+    mancovanInfo.userInput = rmfield(mancovanInfo.userInput, 'univariate_tests');
+    
+else
+    
+    if (strcmpi(desCriteria, 'mancova') && isGUI)
+        univInfo = icatb_univariate_cov_sel(unique(cellstr(mancovanInfo.regressors)));
+    end
+    
 end
 
 mancovanInfo.univInfo = univInfo;
@@ -229,6 +247,18 @@ if (~all(tmpTR == min(tmpTR)))
 end
 
 
+
+if (~isfield(mancovanInfo.userInput, 'avg_runs_info') || isempty(mancovanInfo.userInput.avg_runs_info))
+    avg_runs_info = cellfun(@(subj, sess)(subj - 1).*sesInfo.numOfSess + 1:subj.*sesInfo.numOfSess, num2cell(1:sesInfo.numOfSub), ...
+        repmat({sesInfo.numOfSess}, 1, sesInfo.numOfSub), 'UniformOutput', false);
+else
+    avg_runs_info = mancovanInfo.userInput.avg_runs_info;
+end
+
+if (strcmpi(desCriteria, 'mancova'))
+    avg_runs_info = avg_runs_info(good_sub_inds);
+end
+
 fprintf('\n');
 if ((step == 1) || (step == 2))
     %% Compute features
@@ -261,9 +291,15 @@ if ((step == 1) || (step == 2))
                 disp('Filtering timecourses ...');
             end
         end
-        fncVals = icatb_compute_fnc_corr(sesInfo, tmpTR(good_sub_inds), 'filter_params', filter_cutoff, 'comps', comp_inds, 'vars_to_load', 'tc', 'subjects', good_sub_inds, ...
+        %         fncVals = icatb_compute_fnc_corr(sesInfo, tmpTR(good_sub_inds), 'filter_params', filter_cutoff, 'comps', comp_inds, 'vars_to_load', 'tc', 'subjects', good_sub_inds, ...
+        %             'detrend_no', feature_params.final.fnc_tc_detrend, 'covariates', covariate_files, 'scansToInclude', scansToInclude, ...
+        %             'lag', fnc_lag, 'shift_resolution', fnc_shift_resolution);
+        
+        
+        fncVals = icatb_compute_fnc_corr(sesInfo, tmpTR, 'filter_params', filter_cutoff, 'comps', comp_inds, 'vars_to_load', 'tc', ...
             'detrend_no', feature_params.final.fnc_tc_detrend, 'covariates', covariate_files, 'scansToInclude', scansToInclude, ...
             'lag', fnc_lag, 'shift_resolution', fnc_shift_resolution);
+        
     end
     
     
@@ -277,9 +313,10 @@ if ((step == 1) || (step == 2))
             %% Spatial maps
             
             if (~strcmpi(feature_params.final.sm_mask, 'default'))
-                disp(['Loading mask ', feature_params.final.sm_mask_userdata, ' ...']);
-                userMask = icatb_loadData(feature_params.final.sm_mask_userdata);
-                userMask = find(abs(userMask) > eps);
+                disp('Loading user specified mask  ...');
+                userMask = compute_mask(feature_params.final.sm_mask_userdata);
+                %userMask = icatb_loadData(feature_params.final.sm_mask_userdata);
+                %userMask = find(abs(userMask) > eps);
                 [dd, mask_rel_inds] = intersect(sesInfo.mask_ind, userMask);
             end
             
@@ -299,29 +336,30 @@ if ((step == 1) || (step == 2))
                 disp(['Loading subject spatial maps of component ', num2str(ncomps), ' ...']);
                 
                 
-                if (~strcmpi(desCriteria, 'paired t-test'))
-                    SM = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'ic', 'subjects', good_sub_inds, 'average_runs', 1, ...
-                        'subject_ica_files', subjectICAFiles);
-                    
-                    % average runs
-                    meanmap = mean(SM);
-                    
-                else
-                    SM = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'ic', 'subjects', good_sub_inds, 'average_runs', 0, ...
-                        'subject_ica_files', subjectICAFiles);
-                    if (iscell(SM))
-                        SM = cat(2, SM{:});
-                        SM = SM'; % data-sets by voxels
-                    end
-                    SM = reshape(SM, sesInfo.numOfSub, sesInfo.numOfSess, length(sesInfo.mask_ind));
-                    meanmap = squeeze(mean(mean(SM, 2)));
-                    meanmap = meanmap(:)';
+                SM = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'ic', 'average_runs', 0, 'subject_ica_files', subjectICAFiles);
+                if (iscell(SM))
+                    SM = cat(2, SM{:});
+                    SM = SM'; % data-sets by voxels
                 end
+                
+                
+                %meanmap = zeros(1, size(SM, 2));
+                %if (~strcmpi(desCriteria, 'paired t-test'))
+                SM_avg = zeros(length(avg_runs_info), size(SM, 2));
+                
+                for nM = 1:length(avg_runs_info)
+                    tmpMap = squeeze(mean(reshape(SM(avg_runs_info{nM}, :), [length(avg_runs_info{nM}), 1, size(SM, 2)]), 1));
+                    SM_avg(nM, :) = tmpMap(:)';
+                end
+                
+                meanmap = squeeze(mean(SM_avg));
+                
                 
                 %% adjust magnitude
                 stdterm = norm(meanmap) / sqrt(length(meanmap) - 1);
                 meanmap = meanmap / stdterm;
-                SM = SM / stdterm;
+                SM_avg = SM_avg ./ stdterm;
+                SM = SM ./ stdterm;
                 
                 offset = 0;
                 
@@ -331,12 +369,58 @@ if ((step == 1) || (step == 2))
                     [meanmap, offset] = icatb_recenter_image(meanmap);
                 end
                 
+                SM_avg = SM_avg - offset;
                 SM = SM - offset;
+                
+                %if (~strcmpi(desCriteria, 'paired t-test'))
+                tmap = meanmap*sqrt(size(SM_avg, 1)) ./ std(SM_avg);
+                
+                
                 if (~strcmpi(desCriteria, 'paired t-test'))
-                    tmap = meanmap*sqrt(size(SM, 1)) ./ std(SM);
-                else
-                    tmap = meanmap*sqrt(size(SM, 1)) ./ std(squeeze(mean(SM, 2)));
+                    SM = SM_avg;
                 end
+                
+                clear SM_avg;
+                
+                
+                %                 if (~strcmpi(desCriteria, 'paired t-test'))
+                %                     SM = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'ic', 'subjects', good_sub_inds, 'average_runs', 1, ...
+                %                         'subject_ica_files', subjectICAFiles);
+                %
+                %                     % average runs
+                %                     meanmap = mean(SM);
+                %
+                %                 else
+                %                     SM = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'ic', 'subjects', good_sub_inds, 'average_runs', 0, ...
+                %                         'subject_ica_files', subjectICAFiles);
+                %                     if (iscell(SM))
+                %                         SM = cat(2, SM{:});
+                %                         SM = SM'; % data-sets by voxels
+                %                     end
+                %                     SM = reshape(SM, sesInfo.numOfSub, sesInfo.numOfSess, length(sesInfo.mask_ind));
+                %                     meanmap = squeeze(mean(mean(SM, 2)));
+                %                     meanmap = meanmap(:)';
+                %                 end
+                
+                %                 %% adjust magnitude
+                %                 stdterm = norm(meanmap) / sqrt(length(meanmap) - 1);
+                %                 meanmap = meanmap / stdterm;
+                %                 SM = SM / stdterm;
+                %
+                %                 offset = 0;
+                %
+                %                 if (strcmpi(feature_params.final.sm_center, 'yes'))
+                %                     disp('Centering component spatial maps ...');
+                %                     %% recenter
+                %                     [meanmap, offset] = icatb_recenter_image(meanmap);
+                %                 end
+                %
+                %                 SM = SM - offset;
+                %                 %if (~strcmpi(desCriteria, 'paired t-test'))
+                %                     tmap = meanmap*sqrt(size(SM, 1)) ./ std(SM);
+                %else
+                %    tmap = meanmap*sqrt(size(SM, 1)) ./ std(squeeze(mean(SM, 2)));
+                %end
                 
                 sm_params.offset = offset;
                 sm_params.std = stdterm;
@@ -377,17 +461,17 @@ if ((step == 1) || (step == 2))
                     fprintf('\n');
                 end
                 
-                if (~strcmpi(desCriteria, 'paired t-test'))
-                    SM = SM(:, mask_rel_inds);
-                    if (~strcmpi(desCriteria, 'mancova'))
-                        datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                        SM = SM(datasetNo, :);
-                    end
-                else
-                    SM = SM(:, :, mask_rel_inds);
+                %if (~strcmpi(desCriteria, 'paired t-test'))
+                SM = SM(:, mask_rel_inds);
+                if (~strcmpi(desCriteria, 'mancova'))
                     datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                    SM = convertDataTo2D(SM, datasetNo, sesInfo);
+                    SM = SM(datasetNo, :);
                 end
+                %                 else
+                %                     SM = SM(:, :, mask_rel_inds);
+                %                     datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+                %                     SM = convertDataTo2D(SM, datasetNo, sesInfo);
+                %                 end
                 
                 tmpData = zeros(Vol.dim(1:3));
                 tmpData(mask_ind) = tmap(mask_rel_inds);
@@ -479,12 +563,12 @@ if ((step == 1) || (step == 2))
                 disp('Doing multi-taper spectral estimation ...');
                 
                 %for nSubjects = 1:size(timecourses, 1)
-                for nSubjects = 1:length(good_sub_inds)
+                for nSubjects = 1:sesInfo.numOfSub
                     for nSessions = 1:sesInfo.numOfSess
-                        timecourses = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'tc', 'subjects', good_sub_inds(nSubjects), 'sessions', nSessions,  ...
+                        timecourses = icatb_loadComp(sesInfo, ncomps, 'vars_to_load', 'tc', 'subjects', nSubjects, 'sessions', nSessions,  ...
                             'subject_ica_files', subjectICAFiles, 'detrend_no', feature_params.final.spectra_detrend);
                         timecourses = squeeze(timecourses);
-                        currentTR = tmpTR(good_sub_inds(nSubjects));
+                        currentTR = tmpTR(nSubjects);
                         if (currentTR ~= min(tmpTR))
                             interpFactor = currentTR/min(tmpTR);
                             [numN, denomN] = rat(interpFactor);
@@ -493,7 +577,7 @@ if ((step == 1) || (step == 2))
                         timecourses = timecourses(1:minTpLength);
                         [temp_spectra, freq] = icatb_get_spectra(timecourses, min(tmpTR), spectra_params);
                         if ((nSubjects == 1) && (nSessions == 1))
-                            spectra_tc = zeros(length(good_sub_inds), sesInfo.numOfSess, length(temp_spectra));
+                            spectra_tc = zeros(sesInfo.numOfSub, sesInfo.numOfSess, length(temp_spectra));
                         end
                         spectra_tc(nSubjects, nSessions, :) = temp_spectra;
                     end
@@ -509,16 +593,30 @@ if ((step == 1) || (step == 2))
                 
                 spectra_tc_all = spectra_tc;
                 
-                if (~strcmpi(desCriteria, 'paired t-test'))
-                    spectra_tc = squeeze(mean(spectra_tc, 2));
-                    if (~strcmpi(desCriteria, 'mancova'))
-                        datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                        spectra_tc = spectra_tc(datasetNo, :);
-                    end
-                else
-                    datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                    spectra_tc = convertDataTo2D(spectra_tc, datasetNo, sesInfo);
+                spectra_tc = permute(spectra_tc, [2, 1, 3]);
+                spectra_tc = reshape(spectra_tc, size(spectra_tc, 1)*size(spectra_tc, 2), size(spectra_tc, 3));
+                
+                spectra_tc_avg = zeros(length(avg_runs_info), size(spectra_tc, 2));
+                
+                for nM = 1:length(avg_runs_info)
+                    tmpSpec = squeeze(mean(reshape(spectra_tc(avg_runs_info{nM}, :), [length(avg_runs_info{nM}), 1, ...
+                        size(spectra_tc, 2)]), 1));
+                    spectra_tc_avg(nM, :) = tmpSpec(:)';
                 end
+                
+                
+                if (~strcmpi(desCriteria, 'paired t-test'))
+                    spectra_tc = spectra_tc_avg;
+                end
+                
+                clear spectra_tc_avg;
+                
+                
+                if (~strcmpi(desCriteria, 'mancova'))
+                    datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+                    spectra_tc = spectra_tc(datasetNo, :);
+                end
+                
                 
                 resultsFile = fullfile(dirName, [mancovanInfo.prefix, '_results_spectra_', icatb_returnFileIndex(ncomps), '.mat']);
                 icatb_save(fullfile(mancovanInfo.outputDir, resultsFile), 'spectra_tc', 'spectra_tc_all');
@@ -585,19 +683,52 @@ if ((step == 1) || (step == 2))
             fnc_corrs = fncVals.lag.absCorr(:, :, :, 1);
             fnc_lag_values = fncVals.lag.absCorr(:, :, :, 3); % lag in seconds
             
-            if (~strcmpi(desCriteria, 'paired t-test'))
-                fnc_corrs = squeeze(mean(fnc_corrs, 2));
-                fnc_lag_values = squeeze(mean(fnc_lag_values, 2));
-                if (~strcmpi(desCriteria, 'mancova'))
-                    datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                    fnc_corrs = fnc_corrs(datasetNo, :);
-                    fnc_lag_values = fnc_lag_values(datasetNo, :);
-                end
-            else
-                datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                fnc_corrs = convertDataTo2D(fnc_corrs, datasetNo, sesInfo);
-                fnc_lag_values = convertDataTo2D(fnc_lag_values, datasetNo, sesInfo);
+            
+            fnc_corrs = permute(fnc_corrs, [2, 1, 3]);
+            fnc_lag_values = permute(fnc_lag_values, [2, 1, 3]);
+            
+            fnc_corrs = reshape(fnc_corrs, size(fnc_corrs, 1)*size(fnc_corrs, 2), size(fnc_corrs, 3));
+            fnc_lag_values = reshape(fnc_lag_values, size(fnc_lag_values, 1)*size(fnc_lag_values, 2), size(fnc_lag_values, 3));
+            
+            fnc_corrs_avg = zeros(length(avg_runs_info), size(fnc_corrs, 2));
+            fnc_lag_values_avg = zeros(length(avg_runs_info), size(fnc_lag_values, 2));
+            
+            for nM = 1:length(avg_runs_info)
+                tmpFNC = squeeze(mean(reshape(fnc_corrs(avg_runs_info{nM}, :), [length(avg_runs_info{nM}), 1, ...
+                    size(fnc_corrs, 2)]), 1));
+                fnc_corrs_avg(nM, :) = tmpFNC(:)';
+                tmpFNC = squeeze(mean(reshape(fnc_lag_values(avg_runs_info{nM}, :), [length(avg_runs_info{nM}), 1, ...
+                    size(fnc_lag_values, 2)]), 1));
+                fnc_lag_values_avg(nM, :) = tmpFNC(:)';
             end
+            
+            
+            if (~strcmpi(desCriteria, 'paired t-test'))
+                fnc_corrs = fnc_corrs_avg;
+                fnc_lag_values = fnc_lag_values_avg;
+            end
+            
+            clear fnc_corrs_avg fnc_lag_values_avg
+            
+            if (~strcmpi(desCriteria, 'mancova'))
+                datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+                fnc_corrs = fnc_corrs(datasetNo, :);
+                fnc_lag_values = fnc_lag_values(datasetNo, :);
+            end
+            
+            %             if (~strcmpi(desCriteria, 'paired t-test'))
+            %                 fnc_corrs = squeeze(mean(fnc_corrs, 2));
+            %                 fnc_lag_values = squeeze(mean(fnc_lag_values, 2));
+            %                 if (~strcmpi(desCriteria, 'mancova'))
+            %                     datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+            %                     fnc_corrs = fnc_corrs(datasetNo, :);
+            %                     fnc_lag_values = fnc_lag_values(datasetNo, :);
+            %                 end
+            %             else
+            %                 datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+            %                 fnc_corrs = convertDataTo2D(fnc_corrs, datasetNo, sesInfo);
+            %                 fnc_lag_values = convertDataTo2D(fnc_lag_values, datasetNo, sesInfo);
+            %             end
             
             
             comp_est = 0;
@@ -709,16 +840,43 @@ if ((step == 1) || (step == 2))
             fnc_corrs_all = fncVals.no_lag.values;
             fnc_corrs = fnc_corrs_all;
             
-            if (~strcmpi(desCriteria, 'paired t-test'))
-                fnc_corrs = squeeze(mean(fnc_corrs, 2));
-                if (~strcmpi(desCriteria, 'mancova'))
-                    datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                    fnc_corrs = fnc_corrs(datasetNo, :);
-                end
-            else
-                datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
-                fnc_corrs = convertDataTo2D(fnc_corrs, datasetNo, sesInfo);
+            
+            fnc_corrs = permute(fnc_corrs, [2, 1, 3]);
+            
+            fnc_corrs = reshape(fnc_corrs, size(fnc_corrs, 1)*size(fnc_corrs, 2), size(fnc_corrs, 3));
+            
+            fnc_corrs_avg = zeros(length(avg_runs_info), size(fnc_corrs, 2));
+            
+            for nM = 1:length(avg_runs_info)
+                tmpFNC = squeeze(mean(reshape(fnc_corrs(avg_runs_info{nM}, :), [length(avg_runs_info{nM}), 1, ...
+                    size(fnc_corrs, 2)]), 1));
+                fnc_corrs_avg(nM, :) = tmpFNC(:)';
             end
+            
+            
+            if (~strcmpi(desCriteria, 'paired t-test'))
+                fnc_corrs = fnc_corrs_avg;
+            end
+            
+            
+            if (~strcmpi(desCriteria, 'mancova'))
+                datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+                fnc_corrs = fnc_corrs(datasetNo, :);
+            end
+            
+            
+            clear fnc_corrs_avg;
+            %
+            %             if (~strcmpi(desCriteria, 'paired t-test'))
+            %                 fnc_corrs = squeeze(mean(fnc_corrs, 2));
+            %                 if (~strcmpi(desCriteria, 'mancova'))
+            %                     datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+            %                     fnc_corrs = fnc_corrs(datasetNo, :);
+            %                 end
+            %             else
+            %                 datasetNo = [mancovanInfo.ttestOpts.t.val{:}];
+            %                 fnc_corrs = convertDataTo2D(fnc_corrs, datasetNo, sesInfo);
+            %             end
             
             clear timecourses;
             
@@ -1605,3 +1763,20 @@ if (~isempty(val))
     
     set(handles, 'userdata', hd);
 end
+
+function mask = compute_mask(files)
+% Create binary mask from files
+
+[data, HInfo] = icatb_loadData(char(files));
+data2 = abs(data) > eps;
+for n = 1:size(data2, 4)
+    tmp = squeeze(data2(:, :, :, n));
+    tmp = reshape(tmp, HInfo.DIM(1:3));
+    if (n == 1)
+        mask = tmp;
+    else
+        mask = mask | tmp;
+    end
+end
+
+mask = find(mask == 1);

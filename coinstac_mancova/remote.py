@@ -1,12 +1,13 @@
 import sys
 import os
 import glob
+import copy
 import pandas as pd
 import shutil
 import ujson as json
 from utils import listRecursive
 import utils as ut
-from .run_gift import gift_mancova, gift_gica, gift_run_matlab_script
+from .run_gift import gift_mancova, gift_gica, gift_mancova_aggregate_stats
 
 
 NEUROMARK_NETWORKS = {
@@ -235,8 +236,7 @@ def chmod_dir_recursive(dir_name):
             for f in files:
                 os.chmod(os.path.join(dir_root, f), 0o777)
     except:
-        #ut.log("Error while changing permissions for files in dir: %s"%dir_name)
-        a=""
+        pass;
 
 def mancova_aggregate(args):
     inputs = args["input"]
@@ -245,11 +245,54 @@ def mancova_aggregate(args):
     ut.log("Checking the inputs on remote: " + str(inputs), state)
     ut.log("Checking the state: " + str(state), state)
     ut.log("Running remote mat script..", state)
-    gift_run_matlab_script('/computation/coinstac_mancova/matcode/remote_mat_script.m')
+    #gift_run_matlab_script('/computation/coinstac_mancova/matcode/remote_mat_script.m')
+
+    first = next(iter(inputs)) #Get key for local0 or equivalent in UI
+    if inputs[first]["run_univariate_tests"]:
+        stat_results={}
+        univariate_test_list = copy.deepcopy(inputs[first]["univariate_test_list"])
+        for univariate_test in univariate_test_list:
+            key = list(univariate_test.keys())[0]
+            test_name = key+"-"+univariate_test[key].pop("variable") if key != "regression" else key
+            univariate_out_dir = os.path.join(
+                state["outputDirectory"], "coinstac-univariate-%s" % (test_name)
+            )
+            os.makedirs(univariate_out_dir, exist_ok=True)
+            stat_results[univariate_out_dir] = dict()
+            stats_files = [f for f in list(
+                                glob.iglob(
+                                    os.path.join(state["baseDirectory"], "**",
+                                    "*mancovan_stats_info.mat"),
+                                    recursive=True,
+                                )) if os.path.exists(f)]
+            """comp_files = [f for f in list(
+                                glob.iglob(
+                                    os.path.join(state["baseDirectory"], "**",
+                                    "*mean_component_ica_s_all_.nii"),
+                                    recursive=True,
+                                )) if os.path.exists(f)]"""
+
+
+
+            gift_mancova_aggregate_stats(
+                        ica_param_file_list=stats_files,
+                        out_dir=univariate_out_dir,
+                        freq_limits=inputs[first].get("freq_limits", [0.1, 0.15]),
+                        t_threshold=inputs[first].get("t_threshold", 0.05),
+                        image_values=inputs[first].get("image_values", "positive"),
+                        threshdesc=inputs[first].get("threshdesc", "none"),
+                        p_threshold=inputs[first].get("p_threshold", 0.05),
+                        display_p_threshold=inputs[first].get("display_p_threshold", 0.05),
+                        #comp_files=comp_files
+                        )
+
+            stat_results[univariate_out_dir][key] = list(
+                glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
+            )
 
     output_dict = {
         "computation_phase": "scica_mancova_remote",
-        "stat_results": {},
+        "stat_results": stat_results,
     }
 
     ut.log("Output %s" % (output_dict), state)

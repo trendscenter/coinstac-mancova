@@ -35,13 +35,18 @@ if (matlab_version <= 13)
     ENFORCE_MAT_FILE_VER = '';
 end
 
+enforce_mat_ver = ENFORCE_MAT_FILE_VER;
+
 %% Append flags if any
 if (~isempty(optional))
     varnames{end + 1} = optional;
+    if (strcmpi(optional, '-append'))
+        enforce_mat_ver = '';
+    end
 end
 
-if (~isempty(ENFORCE_MAT_FILE_VER))
-    varnames{end + 1} = ENFORCE_MAT_FILE_VER;
+if (~isempty(enforce_mat_ver))
+    varnames{end + 1} = enforce_mat_ver;
 end
 
 %% Save variables

@@ -133,7 +133,7 @@ if (isempty(maxICAIM))
     maxICAIM = eps;
 end
 
-if (returnValue == 1)    
+if (returnValue == 1)
     maxICAIM = max(abs([minICAIM, maxICAIM]));
     minICAIM = -maxICAIM;
 end
@@ -178,7 +178,7 @@ end
 
 CLIM = [minInterval, 2*maxInterval];
 
-if (returnInterpdata)   
+if (returnInterpdata)
     composite_data = getCompositeData(structData, data, returnValue, minInterval, maxInterval, dataRange);
     handles_data.data = composite_data;
 else
@@ -334,6 +334,7 @@ for ncoords = 1:size(coords, 1)
         pos = [firstPos(1) + width/2 - colorBarWidth/2, lastPos(2) - 0.08, colorBarWidth, colorBarHeight];
         ch = colorbar('horiz');
         set(ch, 'units', 'normalized');
+        set(ch, 'tag', 'compviewerColorbar');
         set(ch, 'position', pos);
         %ch = colorbar(pos);
         set(ch, 'xLim', [minInterval, maxInterval]);
@@ -342,7 +343,7 @@ for ncoords = 1:size(coords, 1)
         set(ch, 'xTick', [xTicks(1), xTicks(end)]);
         set(ch, 'xTicklabel', cellstr(num2str([minICAIM;maxICAIM])));
         set(ch, 'XColor', FONT_COLOR, 'YColor', FONT_COLOR);
-        set(ch, 'tag', 'colorbar');
+        %set(ch, 'tag', 'colorbar');
         set(ch, 'units', 'normalized');
         handles_data.ch = ch;
     end
@@ -381,6 +382,10 @@ end
 
 handles_data.allAxes = allAxes;
 set(gH, 'userdata', handles_data);
+
+set(findobj(0, 'tag', 'compviewerColorbar'), 'xLim', [minInterval, maxInterval]);
+
+drawnow;
 
 set(gH, 'visible', 'on');
 

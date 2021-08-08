@@ -71,18 +71,20 @@ DEFAULT_DISPLAY_RESULTS = 1
 DEFAULT_NUM_COMPS = 53
 DEFAULT_COMP_NETWORK_NAMES = {}
 DEFAULT_TR = 2
+DEFAULT_THRESHDESC = 'fdr'
 
 # GICA DEFAULTS
 DEFAULT_DIM = 53
 DEFAULT_ALG = 1
 DEFAULT_ICA_PARAM_FILE = ""
+DEFAULT_COMP_FILES = ""
 DEFAULT_REFS = os.path.join("/app", "template", "NeuroMark.nii")
 DEFAULT_RUN_NAME = "gift"
 DEFAULT_GROUP_PCA_TYPE = 0
 DEFAULT_BACK_RECON_TYPE = 1
 DEFAULT_PREPROC_TYPE = 1
 DEFAULT_NUM_REDUCTION_STEPS = 1
-DEFAULT_SCALE_TYPE = 1
+DEFAULT_SCALE_TYPE = 2
 DEFAULT_GROUP_ICA_TYPE = "spatial"
 DEFAULT_WHICH_ANALYSIS = 1
 DEFAULT_MASK = None
@@ -130,6 +132,8 @@ def gift_gica(
     display_results=DEFAULT_DISPLAY_RESULTS,
     which_analysis=DEFAULT_WHICH_ANALYSIS,
     mask=DEFAULT_MASK,
+    TR=DEFAULT_TR,
+    threshdesc=DEFAULT_THRESHDESC,
     comp_network_names=None,
     **kwargs
 ):
@@ -152,12 +156,14 @@ def gift_gica(
         display_results     (Int)           :   0 - No display, 1 - HTML report, 2 - PDF
         which_analysis      (Int)           :   Options are 1, 2, and 3. 1 - standard group ica, 2 - ICASSO and 3 - MST.
         mask                (Str)           :   Enter file names using full path of the mask. If you wish to use default mask leave it empty
+        TR                (Float)           :   Enter experimental TR in seconds
+        threshdesc          (Str)           :   options 'none' and 'fdr'
 
         algoType full options:
         1           2           3       4           5       6
         'Infomax'   'Fast ICA'  'Erica' 'Simbec'    'Evd'   'Jade Opac',
-        7           8           9                   10 
-        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)' 
+        7           8           9                   10
+        'Amuse'     'SDD ICA'   'Semi-blind'        'Constrained ICA (Spatial)'
         11              12      13          14      15          16          17
         'Radical ICA'   'Combi' 'ICA-EBM'   'ERBM'  'IVA-GL'    'GIG-ICA'   'IVA-L'
 
@@ -165,8 +171,8 @@ def gift_gica(
         perfType            (Int)           :   Options are 1, 2, and 3. 1 - maximize performance, 2 - less memory usage  and 3 - user specified settings.
         prefix              (Str)           :   Enter prefix to be appended with the output files
         dummy_scans         (Int)           :   enter dummy scans
-        numWorkers          (Int)           :   Number of parallel workers    
-        doEstimation        (Int)           :   options are 0 and 1 
+        numWorkers          (Int)           :   Number of parallel workers
+        doEstimation        (Int)           :   options are 0 and 1
 
 
     """
@@ -188,6 +194,8 @@ def gift_gica(
     gc.inputs.which_analysis = which_analysis
     gc.inputs.refFiles = get_interpolated_nifti(in_files[0], refFiles, out_dir)
     gc.inputs.display_results = display_results
+    gc.inputs.TR = TR
+    #gc.inputs.threshdesc = threshdesc
     if mask is not None:
         gc.inputs.mask = mask
     if comp_network_names is not None:
@@ -262,7 +270,7 @@ def gift_dfnc(
         display_results     (Int)   :   0 - No display, 1 - HTML report, 2 - PDF
 
     Args (not supported here, but available for nipype):
-        Regularisation      (Str)   :   Options are 'none' and 'L1'. 
+        Regularisation      (Str)   :   Options are 'none' and 'L1'.
     """
     out_dir = os.path.join(out_dir, run_name)
 
@@ -325,8 +333,9 @@ def gift_mancova(
     freq_limits=[0.1, 0.15],
     t_threshold=1.0,
     image_values="positive",
-    threshdesc="fdr",
+    threshdesc=DEFAULT_THRESHDESC,
     display_p_threshold=DEFAULT_P_THRESHOLD,
+    display_local_result_summary=False
 ):
     gift.MancovanCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
 
@@ -340,19 +349,53 @@ def gift_mancova(
     gc.inputs.interactions = interactions
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
-    gc.inputs.p_threshold = p_threshold
-    gc.inputs.display = {
+    if display_local_result_summary:
+        gc.inputs.display = {
+            "freq_limits": freq_limits,
+            "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",
+            "t_threshold": t_threshold,
+            "image_values": image_values,
+            "threshdesc": threshdesc,
+            "p_threshold": display_p_threshold,
+        }
+    
+    if univariate_tests is not None:
+        gc.inputs.univariate_tests = univariate_tests
+    return gc.run()
+
+
+def gift_mancova_aggregate_stats(
+    ica_param_file_list=DEFAULT_ICA_PARAM_FILE,
+    out_dir=DEFAULT_OUT_DIR,
+    freq_limits=[0.1, 0.15],
+    p_threshold=DEFAULT_P_THRESHOLD,
+    t_threshold=1.0,
+    image_values="positive",
+    threshdesc=DEFAULT_THRESHDESC,
+    display_p_threshold=DEFAULT_P_THRESHOLD,
+    comp_files=DEFAULT_COMP_FILES
+    ):
+
+    gift.MancovanCommand.set_mlab_paths(matlab_cmd = matlab_cmd, use_mcr = True)
+    mc = gift.MancovanCommand()
+    mc.inputs.out_dir = out_dir
+
+    # Pass stats info files
+    mc.inputs.ica_param_file = ica_param_file_list
+
+    # Display params
+    mc.inputs.display={
         "freq_limits": freq_limits,
         "structFile": "/app/groupicatv4.0b/icatb/src/icatb_templates/ch2bet.nii",
         "t_threshold": t_threshold,
         "image_values": image_values,
         "threshdesc": threshdesc,
         "p_threshold": display_p_threshold,
-    }
-    if univariate_tests is not None:
-        gc.inputs.univariate_tests = univariate_tests
-    return gc.run()
+        'display_connectogram':1,
+        #'compFiles':comp_files[0]
+        };
 
+    return mc.run()
 
 def gift_patch(**kwargs):
     gica_result = gift_gica(**kwargs)

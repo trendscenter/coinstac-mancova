@@ -82,8 +82,7 @@ def chmod_dir_recursive(dir_name):
             for f in files:
                 os.chmod(os.path.join(dir_root, f), 0o777)
     except:
-        #ut.log("Error while changing permissions for files in dir: %s"%dir_name)
-        a=""
+        pass;
 
 def local_run_mancova(args):
     state = args["state"]
@@ -149,6 +148,9 @@ def local_run_mancova(args):
         ut.log("Running group ICA", state)
         gica_out_dir = os.path.join(state["outputDirectory"], "coinstac-gica")
         os.makedirs(gica_out_dir, exist_ok=True)
+        curr_TR = args["input"].get("TR", [2])
+        curr_TR = curr_TR if type(curr_TR) is list else [curr_TR]
+
         output = gift_gica(
             in_files=in_files,
             refFiles=template,
@@ -158,7 +160,7 @@ def local_run_mancova(args):
             algoType=16,
             run_name="coinstac-gica",
             scaleType=2,
-            TR=args["input"].get("TR", 2),
+            TR=curr_TR,
         )
         baseDir=gica_out_dir
         """
@@ -289,12 +291,14 @@ def local_run_mancova(args):
                     display_p_threshold=args["input"].get(
                         "display_p_threshold", 0.05
                     ),
+                    display_local_result_summary=False
                 )
                 stat_results[univariate_out_dir][key] = list(
                     glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
                 )
                 #shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(univariate_out_dir)))
-                extract_univariate_stats(state, args["input"]["features"], univariate_out_dir)
+                #extract_univariate_stats(state, args["input"]["features"], univariate_out_dir)
+                transfer_univariate_stats(state, univariate_out_dir)
 
             except Exception as e:
                 ut.log(
@@ -305,8 +309,6 @@ def local_run_mancova(args):
                 )
     else:
         ut.log("Skipping univariate tests", state)
-
-
 
     output_dict = dict(
         computation_phase="scica_mancova_1",
@@ -340,6 +342,21 @@ def local_run_mancova(args):
     return computation_output
 
 
+def transfer_univariate_stats(state, univariate_out_dir):
+    stats_files = [f for f in list(
+                        glob.iglob(
+                            os.path.join(univariate_out_dir, "**", "*mancovan_stats_info.mat"),
+                            recursive=True,
+                        )) if os.path.exists(f)]
+    test_name=os.path.basename(univariate_out_dir)
+
+    for f in stats_files:
+        shutil.copy(
+            f, os.path.join(state["transferDirectory"],
+              os.path.basename(f))
+        )
+
+
 def extract_univariate_stats(state, features, univariate_out_dir):
     import hdf5storage
     matfiledata = {}
@@ -347,7 +364,7 @@ def extract_univariate_stats(state, features, univariate_out_dir):
     matfiledata[u'outputDirs'] = [state["transferDirectory"], state["outputDirectory"]]
     matfiledata[u'featureStats'] = features
     matfiledata[u'univariateResultsDir'] = univariate_out_dir
-    matfiledata[u'mancovanInputFilesPrefix'] = 'rest_hcp_' #'coinstac-gica_' OR 'coinstac-gica_merge_'
+    matfiledata[u'mancovanInputFilesPrefix'] = 'coinstac-gica_'#'rest_hcp_' #'coinstac-gica_' OR 'coinstac-gica_merge_'
     output_file = '/computation/'+state["clientId"]+'_mancova_structure_info.mat';
 
     ut.log("Writing mat data %s" % (matfiledata), state)

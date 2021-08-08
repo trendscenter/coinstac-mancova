@@ -1,4 +1,4 @@
-function icatb_image_viewer(file_names, varargin)
+function dispParameters = icatb_image_viewer(file_names, varargin)
 %% Image viewer
 %
 % Inputs:
@@ -55,18 +55,24 @@ for n = 1:2:length(varargin)
         useColorbar = varargin{n + 1};
     elseif (strcmpi(varargin{n}, 'iscomposite'))
         isComposite = varargin{n + 1};
+    elseif (strcmpi(varargin{n}, 'usegui'))
+        useGUI = varargin{n + 1};
     end
 end
 
-useGUI = 0;
-if (~exist('file_names', 'var'))
-    useGUI = 1;
+if (~exist('useGUI', 'var'))
+    useGUI = 0;
+    if (~exist('file_names', 'var'))
+        useGUI = 1;
+    end
 end
-
 
 if (useGUI)
     
-    file_names = icatb_selectEntry('typeEntity', 'file', 'typeSelection', 'multiple', 'filter', '*.img;*.nii', 'filetype', 'image', 'title', 'Select file/files ...');
+    if (~exist('file_names', 'var'))
+        file_names = icatb_selectEntry('typeEntity', 'file', 'typeSelection', 'multiple', 'filter', '*.img;*.nii', 'filetype', 'image', 'title', ...
+            'Select file/files ...');
+    end
     
     drawnow;
     
@@ -148,16 +154,27 @@ for nF = 1:size(allFileNames, 1)
     
     fig_title = currentLabel;
     
-    load icatb_colors coldhot_sensitive;
+    %load icatb_colors coldhot_sensitive;
+    load icatb_colors coldhot cold hot;
     if (returnValue == 1)
-        cmap = coldhot_sensitive(1:4:end, :);
+        % positive and negative
+        cmap = coldhot(1:4:end, :);
     elseif (returnValue == 4)
-        cmap = coldhot_sensitive(1:128, :);
-        cmap = cmap(1:2:end, :);
+        % negative
+        cmap = cold(1:4:end, :);
     else
-        cmap = coldhot_sensitive(129:end, :);
-        cmap = cmap(1:2:end, :);
+        % hot
+        cmap = hot(1:4:end, :);
     end
+    %     if (returnValue == 1)
+    %         cmap = coldhot_sensitive(1:4:end, :);
+    %     elseif (returnValue == 4)
+    %         cmap = coldhot_sensitive(1:128, :);
+    %         cmap = cmap(1:2:end, :);
+    %     else
+    %         cmap = coldhot_sensitive(129:end, :);
+    %         cmap = cmap(1:2:end, :);
+    %     end
     
     
     if (strcmpi(display_type, 'montage'))

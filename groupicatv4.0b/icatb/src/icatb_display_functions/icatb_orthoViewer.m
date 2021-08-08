@@ -599,7 +599,12 @@ set(ImageAxis,'YTickLabel',[]);
 colorPos = [0.85 0.4 .045 .25];
 drawnow;
 %cbAxis = axes('Parent', handles, 'units','normalized', 'position', colorbarPos, 'color', [1 1 1]);
-ColorBarHandle = colorbar; %(cbAxis);
+if (isempty(findobj(handles, 'tag', 'orthviewColorbar')))
+    ColorBarHandle = colorbar; %(cbAxis);
+    set(ColorBarHandle, 'tag', 'orthviewColorbar');
+else
+    ColorBarHandle = findobj(handles, 'tag', 'orthviewColorbar');
+end
 set(ColorBarHandle, 'position', colorPos);
 %colorPos = get(ColorBarHandle, 'position');
 %axis off;
@@ -610,7 +615,8 @@ imInd = strmatch('image', lower(get(childH, 'Type')), 'exact');
 set(childH(imInd), 'YData', [minInterval 2*maxInterval]);
 set(ColorBarHandle, 'YLim', [minInterval maxInterval]);
 set(ColorBarHandle, 'YColor', FONT_COLOR);
-set(ColorBarHandle, 'YTick', [minInterval maxInterval]);
+YTicksMinMax = get(ColorBarHandle, 'YTick');
+set(ColorBarHandle, 'YTick', [YTicksMinMax(1), YTicksMinMax(end)]);
 icaCLIM = round(icaCLIM*10)/10;
 set(ColorBarHandle, 'YTickLabel', [icaCLIM(1) icaCLIM(2)]);
 %colorPos=get(ColorBarHandle,'position');

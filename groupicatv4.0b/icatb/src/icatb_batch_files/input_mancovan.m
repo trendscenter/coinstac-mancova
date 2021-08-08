@@ -36,6 +36,18 @@ comp_network_names = {'BG', 21;                    % Basal ganglia 21st componen
                       'DMN', [25 50 53 68];        % DMN comps
                       'ATTN', [34 52 55 60 71 72]; % ATTN Comps
                       'FRONT', [20 42 47 49]};     % Frontal comps
+                  
+            
+                  
+ %% Univariate info. If specified, multivariate tests will be skipped 
+ % Specify covariate to test in a new row. Columns description are below:
+ % a. Covariate to test
+ % b. nuisance covariates in a cell array if you have multiple covariates.
+ % Leave it empty if none specified.
+ % c. Subjects to use
+ univInfo = {'Gender',             {'Age'};
+             'Age',                {'Gender'};
+             'Gender_X_Age',       {}};      
 
 %% Enter no. of principal components of length equal to no. of features selected which will be used to determine the significant covariates. The dimension reduction will be done in the feature 
 % dimension (voxels, spectra, etc). This number should be less than the total no of components of all networks.
@@ -97,5 +109,17 @@ feature_params.spectra_transform = 'yes';
 feature_params.fnc_tc_detrend = 3;
 feature_params.fnc_tc_despike = 'yes';
 feature_params.fnc_tc_filter = 0.15;
+
+
+
+%% Display settings
+display.freq_limits = [0.1, 0.15];
+display.structFile = fullfile(fileparts(which('gift.m')), 'icatb_templates', 'ch2bet.nii');
+% features display threshold (spatial maps)
+display.t_threshold = 1;
+% image values
+display.image_values = 'Positive';
+% options are fdr and none used in univariate results
+display.threshdesc = 'fdr';
 
 

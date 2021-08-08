@@ -9,6 +9,70 @@ try
 catch
 end
 
+if (isfield(mancovanInfo.userInput, 'univariate_tests'))
+    
+    testName = mancovanInfo.userInput.univariate_tests{1, 1};
+    
+    if (strcmpi(testName, 'ttest') || strcmpi(testName, 'ttest2'))
+        
+        if (strcmpi(testName, 'ttest'))
+            desCriteria = 'one sample t-test';
+            data_vals = (1:mancovanInfo.userInput.numOfSub);
+            try
+                data_vals = mancovanInfo.userInput.univariate_tests{1, 2};
+            catch
+            end
+            
+            if (~iscell(data_vals))
+                data_vals = {data_vals};
+            end
+            
+            if (length(data_vals) == 2)
+                desCriteria = 'paired t-test';
+                group_names = {'Condition 1', 'Condition 2'};
+            else
+                group_names = {'Group'};
+            end
+            
+            try
+                group_names = mancovanInfo.userInput.univariate_tests{1, 3};
+            catch
+            end
+            
+        else
+            
+            desCriteria = 'two sample t-test';
+            data_vals = mancovanInfo.userInput.univariate_tests{1, 2};
+            
+            if (~iscell(data_vals))
+                error('subjects related to group 1 and group 2 needs to be passed in a cell');
+            end
+            
+            if (length(data_vals) ~= 2)
+                error('Subjects passed for two sample t-test needs to be in a cell array');
+            end
+            
+            group_names = {'Group 1', 'Group 2'};
+            try
+                group_names = mancovanInfo.userInput.univariate_tests{1, 3};
+            catch
+            end
+            
+        end
+        
+        mancovanInfo.userInput.ttestOpts.t.des = desCriteria;
+        mancovanInfo.userInput.ttestOpts.t.name = group_names;
+        mancovanInfo.userInput.ttestOpts.t.val = data_vals;
+        
+        mancovanInfo.userInput = rmfield(mancovanInfo.userInput, 'univariate_tests');
+        
+    end
+    
+    %mancovanInfo.userInput.designCriteria = designCriteria;
+end
+
+mancovanInfo.userInput.designCriteria = desCriteria;
+
 if (~strcmpi(desCriteria, 'mancova'))
     
     mancovanInfo.prefix = mancovanInfo.userInput.prefix;
@@ -199,8 +263,10 @@ if (~isempty(groups) && ~isempty(covariates) && ~isempty(strmatch('group-covaria
     X        = cat(2, X, x);
 end
 
-if (rcond(X'*X) < eps)
-    error('Design matrix is highly ill-conditioned. Please remove redundant covariates');
+if ~(isfield(mancovanInfo.userInput, 'univariate_tests') && ~isempty(mancovanInfo.userInput.univariate_tests))
+    if (rcond(X'*X) < eps)
+        error('Design matrix is highly ill-conditioned. Please remove redundant covariates');
+    end
 end
 
 %% Create labels for the columns
@@ -217,24 +283,28 @@ for ii = 2:length(terms) %skip the constant term
     end
 end
 
-
-%% Variance inflation factor and leverage
-X2 = detrend(X(:, 2:end), 0);
-vif = diag(inv(icatb_corr(X2)));
-leverage_design = diag(X2*inv(X2'*X2)*X2');
-
-fprintf('\n');
-disp('Variance inflation factor of covariates is/are: ');
-disp([char(term_names), repmat(': ', length(term_names), 1), num2str(vif(:), '%0.6f')]);
-fprintf('\n');
-
-fprintf('\n');
-if (any(vif > 5))
-    warning('Variance inflation factor is greater than 5 in one or more covariates. Multi collinearity is high in the design matrix.');
+if ~(isfield(mancovanInfo.userInput, 'univariate_tests') && ~isempty(mancovanInfo.userInput.univariate_tests))
+    
+    %% Variance inflation factor and leverage
+    X2 = detrend(X(:, 2:end), 0);
+    vif = diag(inv(icatb_corr(X2)));
+    leverage_design = diag(X2*inv(X2'*X2)*X2');
+    
+    fprintf('\n');
+    disp('Variance inflation factor of covariates is/are: ');
+    disp([char(term_names), repmat(': ', length(term_names), 1), num2str(vif(:), '%0.6f')]);
+    fprintf('\n');
+    
+    fprintf('\n');
+    if (any(vif > 5))
+        warning('Variance inflation factor is greater than 5 in one or more covariates. Multi collinearity is high in the design matrix.');
+    end
+    fprintf('\n');
+    mancovanInfo.vif = vif;
+    mancovanInfo.leverage = leverage_design;
+    
 end
-fprintf('\n');
-mancovanInfo.vif = vif;
-mancovanInfo.leverage = leverage_design;
+
 mancovanInfo.regressors = term_names;
 mancovanInfo.X = X;
 mancovanInfo.terms = terms;

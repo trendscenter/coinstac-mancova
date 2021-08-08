@@ -1,4 +1,4 @@
-function [F,A,C,I] = icatb_plot_FNC(FNC, CLIM, LABEL, RSN_I, F, T, sh, MOD, MOD_NAMES)
+function [F,A,C,I] = icatb_plot_FNC(FNC, CLIM, LABEL, RSN_I, F, T, sh, MOD, MOD_NAMES,excludeDiagonals)
 % [F,A,C,I] = plot_FNC(FNC, CLIM, LABEL, RSN_I, F, T)
 
 % define the size of each "MODULE"
@@ -25,13 +25,19 @@ if (~isempty(MOD_NAMES))
     MOD_NAMES = tmpNames;
 end
 
+if (~exist('excludeDiagonals', 'var'))
+    excludeDiagonals = 1;
+end
+
 
 
 if isvector(FNC)
     FNC = icatb_vec2mat(FNC, 1);
 else
     % make sure Nans are along the diagonal
-    FNC = icatb_vec2mat(icatb_mat2vec(FNC),1);
+    if (excludeDiagonals)
+        FNC = icatb_vec2mat(icatb_mat2vec(FNC),1);
+    end
 end
 
 
@@ -106,9 +112,9 @@ if exist('MOD_NAMES', 'var') && ~isempty(MOD_NAMES)
     ypos = c(end) + 4;
     xpos = b(end) + 4;
     th=text(repmat(-4,length(b),1), 1:length(b), MOD_NAMES(RSN_I),'HorizontalAlignment','right','rotation',90, ...
-        'color', foregroundcolor, 'fontweight', 'bold');
+        'color', foregroundcolor, 'fontweight', 'bold', 'units', 'data');
     th=text(1:length(c),repmat(xpos,length(c),1), MOD_NAMES(RSN_I),'HorizontalAlignment','right','rotation',90, ...,
-        'color', foregroundcolor, 'fontweight', 'bold');
+        'color', foregroundcolor, 'fontweight', 'bold', 'units', 'data');
 end
 
 
@@ -116,7 +122,7 @@ if exist('RSN_I', 'var') && ~isempty(RSN_I)
     hold on;
     
     for ii = 1:length(RSN_I);
-        T =text(ii,ii,num2str(RSN_I(ii)));
+        T =text(ii,ii,LABEL{ii});
         set(T, 'Color', foregroundcolor, 'HorizontalAlignment', 'Center');
     end
 end

@@ -90,7 +90,12 @@ sesInfo.userInput.which_analysis = which_analysis;
 % ICASSO Options
 if (which_analysis == 2)
     
-    icasso_opts = inputData.icasso_opts;
+    icasso_opts = struct('sel_mode', 'randinit', 'num_ica_runs', 10, 'min_cluster_size', 8, 'max_cluster_size', 10);
+    try
+        icasso_opts = inputData.icasso_opts;
+    catch
+    end
+    
     sel_mode = lower(icasso_opts.sel_mode);
     num_ica_runs = icasso_opts.num_ica_runs;
     
@@ -109,7 +114,14 @@ end
 
 % MST options
 if (which_analysis == 3)
-    sesInfo.userInput.mst_opts = inputData.mst_opts;
+    
+    mst_opts = struct('num_ica_runs', 10);
+    try
+        mst_opts = inputData.mst_opts;
+    catch
+    end
+    sesInfo.userInput.mst_opts = mst_opts;
+    
 end
 
 %% Group PCA performance settings
@@ -492,6 +504,10 @@ ICA_Options = chkICAOptions(ICA_Options, inputData);
 
 sesInfo.userInput.ICA_Options = ICA_Options;
 
+if (isfield(inputData, 'refFunNames'))
+    sesInfo.userInput.refFunNames = inputData.refFunNames;
+end
+
 if strcmpi(ica_algo{algoType}, 'semi-blind infomax')
     % SBICA
     sesInfo = sbICACallback(sesInfo, inputData.refFunNames);
@@ -520,11 +536,11 @@ catch
 end
 
 
-if (isfield(inputData, 'network_summary_opts') && (~isempty(inputData.network_summary_opts)))    
+if (isfield(inputData, 'network_summary_opts') && (~isempty(inputData.network_summary_opts)))
     try
         sesInfo.userInput.network_summary_opts = inputData.network_summary_opts;
     catch
-    end        
+    end
 end
 
 %% Save Parameter file
@@ -631,11 +647,21 @@ imDims = imHInfo(1).DIM(1:3);
 funcDims = sesInfo.userInput.HInfo.DIM(1:3);
 
 if (length(find((imDims == funcDims) ~= 0)) ~= length(funcDims))
-    error('Error:Dimensions', 'Spatial reference image dimensions ([%s]) are not equal to functional image dimensions ([%s])', ...
+    fprintf('Spatial reference image dimensions ([%s]) are not equal to functional image dimensions ([%s]). Resizing template image/images to match functional image\n\n', ...
         num2str(imDims), num2str(funcDims));
+    
+    spatial_references = noisecloud_spm_coregister(deblank(sesInfo.userInput.files(1).name(1, :)), deblank(spatial_references(1, :)), spatial_references, sesInfo.userInput.pwd);
 end
 
-images = reshape(images, prod(imDims), numSpatialFiles);
+[images, imHInfo] = icatb_loadData(spatial_references);
+
+
+% if (length(find((imDims == funcDims) ~= 0)) ~= length(funcDims))
+%     error('Error:Dimensions', 'Spatial reference image dimensions ([%s]) are not equal to functional image dimensions ([%s])', ...
+%         num2str(imDims), num2str(funcDims));
+% end
+
+images = reshape(images, prod(funcDims), numSpatialFiles);
 images = (images(sesInfo.userInput.mask_ind, :))';
 
 ICAOptions = sesInfo.userInput.ICA_Options;

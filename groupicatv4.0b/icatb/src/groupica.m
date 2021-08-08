@@ -60,6 +60,9 @@ function groupica_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to groupica (see VARARGIN)
 
+icatb_defaults;
+global EXIT_GICA_APP;
+
 % Choose default command line output for groupica
 handles.output = hObject;
 
@@ -72,7 +75,17 @@ icatb_check_path;
 % move the gui at the center of the screen
 movegui(hObject, 'center');
 
-if length(varargin) == 1
+exit_gica_app = 1;
+try
+	exit_gica_app = EXIT_GICA_APP;
+catch
+end
+
+if (isempty(exit_gica_app))
+    exit_gica_app = 1;
+end
+
+if (length(varargin) >= 1)
     if ischar(varargin{1})
         if strcmpi(varargin{1}, 'fmri')
             % fMRI Callback
@@ -96,8 +109,10 @@ if length(varargin) == 1
             exit_button_Callback(hObject, eventdata, handles);
         else
             % batch callback
-            icatb_eval_script(varargin{1});
-            exit_button_Callback(hObject, eventdata, handles);
+            icatb_eval_script([varargin{:}]);	
+			if (exit_gica_app)
+			    exit_button_Callback(hObject, eventdata, handles);
+			end
         end
     end
 end

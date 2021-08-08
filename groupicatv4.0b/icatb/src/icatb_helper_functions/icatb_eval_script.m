@@ -10,18 +10,28 @@ function inputData = icatb_eval_script(file_name)
 
 if (isdeployed)
     % execute scripts differently in deployed mode
-    fid = fopen(file_name, 'r');
+	fid = -1;
+	try
+		fid = fopen(file_name, 'r');
+	catch
+	end
     
     if (fid == -1)
-        error(['File ', file_name, ' cannot be opened']);
+		try
+			tmp_strs = file_name;			
+		catch
+			error(['File ', file_name, ' cannot be opened']);
+		end
+	else
+		try
+			tmp_strs = fread(fid, '*char');
+			fclose(fid);
+		catch
+			fclose(fid);
+		end
+		
     end
     
-    try
-        tmp_strs = fread(fid, '*char');
-        fclose(fid);
-    catch
-        fclose(fid);
-    end
     
     eval(tmp_strs');
     

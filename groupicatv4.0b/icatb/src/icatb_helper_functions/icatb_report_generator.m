@@ -64,7 +64,9 @@ end
 disp('Generating reults summary. Please wait ....');
 drawnow;
 
-if (~isdeployed)
+isDeployedVer = isdeployed;
+
+if (~isDeployedVer)
     
     assignin('base', 'param_file', param_file);
     assignin('base', 'results', results);
@@ -83,10 +85,12 @@ else
     
 end
 
-%if (strcmpi(opts.format, 'html'))
-%    icatb_openHTMLHelpFile(fullfile(outDir, [resultsFile, '.html']));
-%else
-%    open(fullfile(outDir, [resultsFile, '.pdf']));
-%end
+if (~isDeployedVer)
+    if (strcmpi(opts.format, 'html'))
+        icatb_openHTMLHelpFile(fullfile(outDir, [resultsFile, '.html']));
+    else
+        open(fullfile(outDir, [resultsFile, '.pdf']));
+    end
+end
 
 disp('Done');

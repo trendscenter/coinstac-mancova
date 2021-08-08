@@ -111,7 +111,7 @@ dInterpBy = floor((minTR / dMaxLag) *nShiftResolution);
 anComb = nchoosek(1:length(comps), 2);
 nCombCnt = size(anComb,1);
 rovdInnerLoop = -nShiftResolution:nShiftResolution;
-adCorrTemp = zeros(sesInfo.numOfSub*sesInfo.numOfSess, nCombCnt, size(rovdInnerLoop, 2) );
+adCorrTemp = zeros(length(subjects)*sesInfo.numOfSess, nCombCnt, size(rovdInnerLoop, 2) );
 
 
 

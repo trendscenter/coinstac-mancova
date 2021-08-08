@@ -105,7 +105,7 @@ end
 printRes = '';
 
 try
-    print_res = GICA_RESULTS_SUMMARY.print_resolution;
+    printRes = GICA_RESULTS_SUMMARY.print_resolution;
 catch
 end
 
@@ -114,17 +114,10 @@ if (isempty(printRes))
 end
 
 if (saveFigInfo)
-    if (~exist(resultsDir, 'dir'))
+    if (exist(resultsDir, 'dir') ~= 7)
         mkdir(resultsDir);
     end
-    delete(fullfile(resultsDir, '*.*'));
-    copyfile(which('icatb_gica_toc.html'), resultsDir);
-    copyfile(which('icatb_gica_html_report.html'), resultsDir);
-    copyfile(which('treeview.gif'), resultsDir);
-    copyfile(which('plus.gif'), resultsDir);
-    copyfile(which('minus.gif'), resultsDir);
-    copyfile(which('style.css'), resultsDir);
-    pdfPrefix = 'icatb_gica_html_report';
+    pdfPrefix = mfilename;
 end
 
 resultsInfo = [];
@@ -171,7 +164,7 @@ if (saveFigInfo)
         
         tmpImFile = [pdfPrefix, '_', icatb_returnFileIndex(1), '.pdf'];
         set(gH, 'PaperPositionMode', 'auto');
-        print(gH, '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+        print(gH, '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
         countPdfs = 1;
         pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
         delete(gH);
@@ -223,7 +216,7 @@ if (sesInfo.which_analysis == 2)
                             countPdfs = countPdfs + 1;
                             tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
                             set(icassoFigs(nPdfs), 'PaperPositionMode', 'auto');
-                            print(icassoFigs(nPdfs), '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+                            print(icassoFigs(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
                             pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
                         end
                         
@@ -330,6 +323,7 @@ for nF = 1:size(compFiles, 1)
     
     gH = icatb_getGraphics([fN, extn], 'graphics', 'imviewer', figVisible);
     set(gH, 'resize', 'on');
+    colormap(cmap);
     
     xOffSet = 0.05;
     yOffSet = 0.05;
@@ -340,7 +334,6 @@ for nF = 1:size(compFiles, 1)
     sh = axes('parent', gH, 'units', 'normalized', 'position', [0.01, yOffSet, width2, height2]);
     icatb_image_viewer(cn, 'structfile', structFile, 'image_values', image_values, 'convert_to_zscores', convert_to_zscores, 'threshold', threshold, ...
         'slices_in_mm', slices_in_mm, 'anatomical_view', slice_plane, 'axesh', sh, 'colorbar', 0, 'labels', ' ');
-    
     
     width = 0.4;
     height = 0.4;
@@ -390,7 +383,6 @@ for nF = 1:size(compFiles, 1)
     
     clear tc;
     
-    
     meanH(end + 1) = gH;
     
 end
@@ -417,7 +409,7 @@ if (saveFigInfo)
             countPdfs = countPdfs + 1;
             tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
             set(meanH(nPdfs), 'PaperPositionMode', 'auto');
-            print(meanH(nPdfs), '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+            print(meanH(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
             pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
         end
     end
@@ -797,7 +789,7 @@ if (exist('kurt_comp', 'var'))
                 countPdfs = countPdfs + 1;
                 tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
                 set(kurtH(nPdfs), 'PaperPositionMode', 'auto');
-                print(kurtH(nPdfs), '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+                print(kurtH(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
                 pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
             end
         end
@@ -872,7 +864,7 @@ if (saveFigInfo)
             countPdfs = countPdfs + 1;
             tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
             set(fncHandles(nPdfs), 'PaperPositionMode', 'auto');
-            print(fncHandles(nPdfs), '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+            print(fncHandles(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
             pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
         end
         
@@ -951,7 +943,7 @@ if (saveFigInfo)
             countPdfs = countPdfs + 1;
             tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
             set(fncHandles(nPdfs), 'PaperPositionMode', 'auto');
-            print(fncHandles(nPdfs), '-dpdf', print_res, '-noui', fullfile(resultsDir, tmpImFile));
+            print(fncHandles(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
             pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
         end
     end
@@ -969,7 +961,7 @@ if (saveFigInfo)
             end
         end
     else
-        writeHTML2(fullfile(resultsDir, 'icatb_gica_html_report.html'), htmlSummaryStr);
+        writeHTML2(fullfile(resultsDir, [mfilename, '.html']), htmlSummaryStr);
     end
 end
 

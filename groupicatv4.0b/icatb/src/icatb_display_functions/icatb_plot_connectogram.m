@@ -100,6 +100,9 @@ try
 catch
 end
 
+isComposite = 0;
+plot_colorbar = 1;
+
 for nF = 1:2:length(varargin)
     if (strcmpi(varargin{nF}, 'C'))
         C = varargin{nF + 1};
@@ -153,6 +156,12 @@ for nF = 1:2:length(varargin)
     elseif (strcmpi(varargin{nF}, 'radius_sm'))
         % Radius for plotting spatial maps
         radius_sm = varargin{nF + 1};
+    elseif (strcmpi(varargin{nF}, 'iscomposite'))
+        % composite plots
+        isComposite = varargin{nF + 1};
+    elseif (strcmpi(varargin{nF}, 'plot_colorbar'))
+        % plot_colorbar
+        plot_colorbar = varargin{nF + 1};
     end
 end
 
@@ -181,6 +190,12 @@ if (isempty(conn_threshold))
     conn_threshold = -Inf;
 end
 
+legendOn = 1;
+if (isComposite)
+    legendOn = 0;
+    %plot_colorbar = 0;
+    [I, comp_network_names] = getImageData(fileNames, comp_network_names, template_file, image_values, convert_to_zscores, threshold, slice_plane, display_type);
+end
 
 comps = [comp_network_names{:, 2}];
 comps = comps(:)';
@@ -255,7 +270,9 @@ end
 
 
 % Change diagonals to zeros
-C = C - diag(diag(C));
+if (~isComposite)
+    C = C - diag(diag(C));
+end
 
 C(abs(C) < conn_threshold) = 0;
 
@@ -431,33 +448,36 @@ xlims = [1, size(cmap, 1)];
 colormap(cmap);
 set(gca, 'clim', [1, size(cmap, 1)]);
 
-cbWidth = 0.12;
-cbHeight = 0.025;
-ch = colorbar('horiz');
-cpos = get(ch, 'position');
-cpos(1) = 0.75 - 0.5*cbWidth;
-cpos(2) = 0.062;
-cpos(3) = cbWidth;
-cpos(4) = cbHeight;
-set(ch, 'position', cpos);
-%set(ch, 'xlim', xlims);
-%xlims = get(ch,'xlim');
-set(ch, 'xtick', [xlims(1), xlims(end)]);
-set(ch, 'xticklabel', num2str(colorlims','%0.1f'));
-xlabel(colorbar_label, 'parent', ch);
-set(ch, 'XCOLOR', FONT_COLOR);
-set(ch, 'YCOLOR', FONT_COLOR);
-set(ch, 'fontsize', UI_FS - 2);
+if (plot_colorbar)
+    cbWidth = 0.12;
+    cbHeight = 0.025;
+    ch = colorbar('horiz');
+    cpos = get(ch, 'position');
+    cpos(1) = 0.75 - 0.5*cbWidth;
+    cpos(2) = 0.062;
+    cpos(3) = cbWidth;
+    cpos(4) = cbHeight;
+    set(ch, 'position', cpos);
+    %set(ch, 'xlim', xlims);
+    %xlims = get(ch,'xlim');
+    set(ch, 'xtick', [xlims(1), xlims(end)]);
+    set(ch, 'xticklabel', num2str(colorlims','%0.1f'));
+    xlabel(colorbar_label, 'parent', ch);
+    set(ch, 'XCOLOR', FONT_COLOR);
+    set(ch, 'YCOLOR', FONT_COLOR);
+    set(ch, 'fontsize', UI_FS - 2);
+end
 
-handles_data = get(fH, 'userdata');
-%uistack(handles_data.PH, 'top');
-cns = comp_network_names(:,1);
-lH = legend(handles_data.PH, cns{:}, 'location', 'eastoutside');
-lpos = get(lH, 'position');
-lpos(1) = lpos(1)+ 0.045;
-set(lH, 'position', lpos);
-set(lH, 'fontsize', UI_FS - 1);
-
+if (legendOn)
+    handles_data = get(fH, 'userdata');
+    %uistack(handles_data.PH, 'top');
+    cns = comp_network_names(:,1);
+    lH = legend(handles_data.PH, cns{:}, 'location', 'bestoutside');
+    lpos = get(lH, 'position');
+    lpos(1) = lpos(1)+ 0.045;
+    set(lH, 'position', lpos);
+    set(lH, 'fontsize', UI_FS - 1);
+end
 
 fprintf('Done\n\n');
 
@@ -693,8 +713,15 @@ t      = (0.025: 0.05 :1)';
 % Create figure
 axes(gH);
 
+
+r(isnan(r)) = 0;
+
 % Index only low triangular matrix without main diag
-tf        = tril(true(sz),-1);
+%   tf        = tril(true(sz),-1);
+tf = (triu(ones(sz) - eye(sz)) == 0);
+tf(r == 0) = 0;
+%   r = r2;
+
 
 % Index correlations into bucketed colormap to determine plotting order (darkest to brightest)
 N2        = 2*N;
@@ -713,23 +740,47 @@ plotorder = reshape([N:-1:1; N+1:N2],N2,1);
 x     = cos(theta);
 y     = sin(theta);
 
+if (~isempty(r(eye(size(tf)) == 1)))
+    
+    startAngle = -pi / 2;
+    pi_incr = 2*pi / length(theta);
+    px = cell(1, length(theta));
+    py = px;
+    for nTheta = 1:length(theta)
+        endAngle = startAngle + pi_incr;
+        px{nTheta} = [cos(startAngle), cos(endAngle)];
+        py{nTheta} = [sin(startAngle), sin(endAngle)];
+        startAngle = endAngle;
+    end
+    
+end
+
 % PLOT BEZIER CURVES
 % Calculate Bx and By positions of quadratic Bezier curves with P1 at (0,0)
 % B(t) = (1-t)^2*P0 + t^2*P2 where t is a vector of points in [0, 1] and determines, i.e.
 % how many points are used for each curve, and P0-P2 is the node pair with (x,y) coordinates.
 t2  = [1-t, t].^2;
-s.l = NaN(N2,1);
+s.l = NaN(N2, 1);
 %plotAnnnotation = 1;
 % LOOP per color bucket
 for c = 1:N2
     pos = plotorder(c);
     idx = isrt == pos;
     if nnz(idx)
-        Bx     = [t2*[x(col(idx)); x(row(idx))]; NaN(1,n(pos))];
-        By     = [t2*[y(col(idx)); y(row(idx))]; NaN(1,n(pos))];
+        if ~(col(idx) == row(idx))
+            Bx     = [t2*[x(col(idx)); x(row(idx))]; NaN(1,n(pos))];
+            By     = [t2*[y(col(idx)); y(row(idx))]; NaN(1,n(pos))];
+        else
+            tmpx = px{col(idx)};
+            tmpy = py{col(idx)};
+            Bx = [t2*[tmpx(1); tmpx(end)]; NaN(1,n(pos))];
+            By = [t2*[tmpy(1); tmpy(end)]; NaN(1,n(pos))];
+        end
+        
         xx = Bx(:);
         yy = By(:);
         [x0, y0] = getAxesPos(xx, yy, gH);
+        
         s.l(c) = plot(Bx(:), By(:), 'Color', ccolor(pos, :), 'LineWidth', line_width, 'parent', gH);
         
         if (plotAnnotation)
@@ -754,7 +805,6 @@ for c = 1:N2
 end
 
 h = s;
-
 
 function scaledData = scaleIm(tmin, tmax, imageData, returnValue, data_range)
 %% Scale images
@@ -1690,3 +1740,54 @@ else
     end
     
 end
+
+
+function [I, comp_network_names] = getImageData(fileNames, comp_network_names, template_file, image_values, convert_to_zscores, threshold, ...
+    slice_plane, display_type)
+
+fileNames = icatb_rename_4d_file(fileNames);
+fileNames = cellstr(fileNames);
+
+structVol = icatb_spm_vol(template_file);
+structVol = structVol(1);
+structDIM = structVol.dim(1:3);
+
+load icatb_colors hot;
+
+cn = comp_network_names;
+I = cell(1, size(comp_network_names, 1));
+for n = 1:size(comp_network_names, 1)
+    fn = fileNames(comp_network_names{n, 2});
+    cmap = hot(1:4:end, :);
+    cmap = repmat({cmap}, length(fn), 1);
+    cmap = cat(1, cmap{:});
+    if (~strcmpi(display_type, 'render'))
+        dat = icatb_display_composite(fn, 'anatomical_file', template_file, 'display_type', 'ortho', 'anatomical_view', 'axial', 'image_values', ...
+            image_values, 'threshold', threshold, 'convert_to_zscores', convert_to_zscores, 'uniform_color', 0, 'cmap', cmap);
+        imageTmp = dat.data;
+        pixelPos = dat.pixelPos;
+        
+        
+        if (strcmpi(slice_plane, 'sagittal'))
+            cdata = rot90((squeeze(imageTmp(pixelPos(1),:,:))));
+        elseif (strcmpi(slice_plane, 'coronal'))
+            cdata = rot90((squeeze(imageTmp(:,pixelPos(2),:))));
+        else
+            cdata = rot90((squeeze(imageTmp(:,:,pixelPos(3)))));
+        end
+        
+        cdata = reshape(dat.cmap(cdata(:), :), [size(cdata), 3]);
+        I{n} = cdata;
+    else
+        hOut = icatb_display_composite(fn, 'image_values', image_values, 'convert_to_z', convert_to_zscores, 'threshold', threshold, ...
+            'display_type', 'render', 'cmap', cmap);
+        [ddOut, indsOut] = max(hOut.countVoxelsRend);
+        I{n} = hOut.slices_all{indsOut(1)};
+    end
+    
+    
+    cn{n, 2} = n;
+    
+end
+
+comp_network_names = cn;

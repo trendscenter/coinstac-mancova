@@ -71,6 +71,28 @@ for nFile = 1:length(inputFiles)
     %% Run Analysis (All steps)
     sesInfo = icatb_runAnalysis(sesInfo, 1);
     
+    spm_files = {};
+    try
+        spm_files = cellstr(char(sesInfo.userInput.designMatrix.name));
+    catch
+    end
+    
+    if (~isempty(spm_files) && ~isempty(spm_files{1}))
+        % r^2 statistic and stats on beta plots
+        
+        if (~isfield(sesInfo.userInput, 'refFunNames') || isempty(sesInfo.userInput.refFunNames))
+            selectedRegressors = selectRegressors(sesInfo);
+        else
+            selectedRegressors = strtrim(regexprep(cellstr(char(sesInfo.userInput.refFunNames)),'Sn\(\d+\)',''));
+        end
+        
+        if (~isempty(selectedRegressors))
+            sesInfo = icatb_temporal_regress(param_file, selectedRegressors, []);
+            results.temporal_stats_betas = sesInfo.temporal_stats_betas;
+        end
+        
+    end
+    
     
     if ((display_results ~= 0) && ~strcmpi(sesInfo.modality, 'eeg'))
         results.formatName = display_results;
@@ -95,7 +117,7 @@ for nFile = 1:length(inputFiles)
             else
                 fnc_corrs_all = squeeze(fnc_corrs_all);
             end
-	    fnc_corrs_all = icatb_z_to_r(fnc_corrs_all);
+            fnc_corrs_all = icatb_z_to_r(fnc_corrs_all);
             network_opts.fnc_matrix_file = fnc_corrs_all;
             network_opts.save_info = 1;
             network_opts.outputDir = fullfile(sesInfo.outputDir, 'network_summary');
@@ -133,3 +155,28 @@ for nFile = 1:length(inputFiles)
     cd(oldDir);
     
 end
+
+
+function regressor_names = selectRegressors(sesInfo)
+% Select regressors
+
+
+spm_files = cellstr(char(sesInfo.userInput.designMatrix.name));
+
+if (length(spm_files) > sesInfo.numOfSub)
+    error('Number of design matrix/matrices should not exceed the number of subjects');
+end
+
+regressor_names = cell(1, length(spm_files));
+for nF = 1:length(spm_files)
+    
+    load(spm_files{nF});
+    names = strtrim(regexprep(cellstr(char(SPM.xX.name)),'Sn\(\d+\)',''));
+    regressor_names{nF} = char(lower(names));
+    
+end
+
+
+regressor_names = cellstr(char(regressor_names));
+[dd, inds] = unique(regressor_names);
+regressor_names = regressor_names(sort(inds));

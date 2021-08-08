@@ -60,10 +60,15 @@ end
 
 dlmwrite(html_file, results_string, '');
 
-%icatb_openHTMLHelpFile(html_file);
+
+%if (~isdeployed)
+
+%    icatb_openHTMLHelpFile(html_file);
+
+%end
 
 %try
-%    delete(helpH);
+%        delete(helpH);
 %catch
 %end
 

@@ -259,7 +259,7 @@ imStr = lower(imStr{get(imValH, 'value')});
 threshDescH = findobj(handles, 'tag', 'threshdesc');
 threshdesc = cellstr(get(threshDescH, 'string'));
 threshdesc = lower(threshdesc{get(threshDescH, 'value')});
-handles_data.mancovan.threshdesc = threshdesc;
+handles_data.mancovan.display.threshdesc = threshdesc;
 
 t_threshold = str2num(get(findobj(handles, 'tag', 't_threshold'), 'string'));
 
@@ -270,13 +270,13 @@ p_val_thresh = str2num(get(findobj(handles, 'tag', 'thresh'), 'string'));
 structFile = handles_data.structFile;
 
 display_connectogram = get(findobj(handles, 'tag', 'display_connectogram'),'value');
-handles_data.mancovan.display_connectogram = display_connectogram;
+handles_data.mancovan.display.display_connectogram = display_connectogram;
 
-handles_data.mancovan.image_values = imStr;
-handles_data.mancovan.freq_limits = freq_limits;
-handles_data.mancovan.structFile = structFile;
-handles_data.mancovan.t_threshold = t_threshold;
-handles_data.mancovan.userInput.p_threshold = p_val_thresh;
+handles_data.mancovan.display.image_values = imStr;
+handles_data.mancovan.display.freq_limits = freq_limits;
+handles_data.mancovan.display.structFile = structFile;
+handles_data.mancovan.display.t_threshold = t_threshold;
+handles_data.mancovan.display.p_threshold = p_val_thresh;
 
 %load(fullfile(handles_data.mancovan.outputDir, [handles_data.mancovan.resultsFile]));
 
@@ -567,23 +567,23 @@ imStr = lower(imStr{get(imValH, 'value')});
 
 
 p_val_thresh = str2num(get(findobj(handles, 'tag', 'thresh'), 'string'));
-mancovanInfo.userInput.p_threshold = p_val_thresh;
+mancovanInfo.display.p_threshold = p_val_thresh;
 
 threshDescH = findobj(handles, 'tag', 'threshdesc');
 threshdesc = cellstr(get(threshDescH, 'string'));
 threshdesc = lower(threshdesc{get(threshDescH, 'value')});
-mancovanInfo.threshdesc = threshdesc;
+mancovanInfo.display.threshdesc = threshdesc;
 
 t_threshold = str2num(get(findobj(handles, 'tag', 't_threshold'), 'string'));
 
 freq_limits = str2num(get(findobj(handles, 'tag', 'freq_limits'), 'string'));
 
-mancovanInfo.structFile = handles_data.structFile;
+mancovanInfo.display.structFile = handles_data.structFile;
 
-mancovanInfo.image_values = imStr;
-mancovanInfo.freq_limits = freq_limits;
+mancovanInfo.display.image_values = imStr;
+mancovanInfo.display.freq_limits = freq_limits;
 %handles_data.mancovan.structFile = structFile;
-mancovanInfo.t_threshold = t_threshold;
+mancovanInfo.display.t_threshold = t_threshold;
 
 outDir = fullfile(mancovanInfo.outputDir, [mancovanInfo.prefix, '_results_summary']);
 opts.outputDir = outDir;
@@ -618,6 +618,6 @@ function displayConnectCallback(hObject, event_data, handles)
 handles_data = get(handles, 'userdata');
 
 display_connectogram = get(findobj(handles, 'tag', 'display_connectogram'),'value');
-handles_data.mancovan.display_connectogram = display_connectogram;
+handles_data.mancovan.display.display_connectogram = display_connectogram;
 
 set(handles, 'userdata', handles_data);

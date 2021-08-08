@@ -10,6 +10,9 @@ global IMAGE_VALUES;
 global THRESHOLD_VALUE;
 global ANATOMICAL_PLANE;
 global TIMECOURSE_POSTPROCESS;
+global FONT_COLOR;
+global UI_FS;
+global GICA_RESULTS_SUMMARY;
 
 if (~isempty(GICA_PARAM_FILE))
     param_file = GICA_PARAM_FILE;
@@ -34,10 +37,26 @@ end
 
 sesInfo.outputDir = outputDir;
 
-structFile = fullfile(fileparts(which('groupica.m')), 'icatb_templates', 'ch2bet.nii');
+
+if (~strcmpi(sesInfo.modality, 'smri'))
+    error('You need to use gift toolbox to display results');
+end
+
+isGIFTI = 0;
 try
-    structFile = opts.anatomical_file;
+    isGIFTI = isfield(sesInfo.userInput.HInfo.V, 'gifti');
 catch
+end
+
+if (~isGIFTI)
+    structFile = fullfile(fileparts(which('groupica.m')), 'icatb_templates', 'ch2bet.nii');
+    try
+        structFile = opts.anatomical_file;
+    catch
+    end
+else
+    structFile = '';
+    %structFile = sesInfo.HInfo.V.gifti;
 end
 
 slices_in_mm = (-40:4:72);
@@ -79,6 +98,53 @@ try
 catch
 end
 
+
+resultsFormat = 'html';
+try
+    resultsFormat = opts.format;
+catch
+end
+
+resultsDir =  fullfile(outputDir, [sesInfo.userInput.prefix, '_sbm_results']);
+try
+    resultsDir = opts.outputDir;
+catch
+end
+
+
+saveFigInfo = 0;
+try
+    saveFigInfo = opts.save_info;
+catch
+end
+
+figVisible = 'on';
+if (saveFigInfo)
+    
+    figVisible = 'off';
+end
+
+printRes = '';
+
+try
+    printRes = GICA_RESULTS_SUMMARY.print_resolution;
+catch
+end
+
+if (isempty(printRes))
+    printRes = '-r72';
+end
+
+
+if (saveFigInfo)
+    if (exist(resultsDir, 'dir') ~= 7)
+        mkdir(resultsDir);
+    end
+    pdfPrefix = mfilename;
+end
+
+resultsInfo = [];
+
 %% Group ICA Parameters
 sesInfo.structFile = structFile;
 sesInfo.slice_plane = slice_plane;
@@ -88,6 +154,50 @@ sesInfo.groupsInfo = groupsInfo;
 sesInfo.convert_to_zscores = convert_to_zscores;
 newText = dispParams(sesInfo);
 disp(newText);
+
+
+
+pdfFiles = {};
+
+htmlSummaryStr = [];
+
+if (saveFigInfo)
+    if (~strcmpi(resultsFormat, 'pdf'))
+        icatb_print_table(cellstr(newText), fullfile(resultsDir, 'params.txt'));
+        resultsInfo(end + 1).title = 'SBM ICA Parameters';
+        resultsInfo(end).text = ' ';
+        resultsInfo(end).files = {'params.txt'};
+        htmlSummaryStr(end + 1).title = 'SBM ICA Parameters';
+        htmlSummaryStr(end).tag =  'sbmica_params';
+        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+        %writeHTML(resultsDir, resultsInfo(end), 'introduction.html', 'Group ICA Parameters');
+    else
+        print_strs = cellstr(char('SBM ICA parameters:', '', newText));
+        yPos = 1.1;
+        gH = icatb_getGraphics(print_strs{1}, 'graphics', 'contentspdf', figVisible);
+        aH = axes('units', 'normalized', 'position', [0.1, 0.1, 0.8, 0.8], 'parent', gH, 'visible', 'off', 'color', get(gH, 'color'));
+        for n = 1:length(print_strs)
+            if (n == 1)
+                tmpFont = UI_FS;
+            else
+                tmpFont = UI_FS - 2;
+            end
+            text(0.45, yPos, print_strs{n}, 'units', 'normalized', 'horizontalalignment', 'center', 'verticalAlignment', 'middle', 'color', FONT_COLOR, 'fontsize', tmpFont);
+            yPos = yPos - 0.075;
+        end
+        
+        tmpImFile = [pdfPrefix, '_', icatb_returnFileIndex(1), '.pdf'];
+        set(gH, 'PaperPositionMode', 'auto');
+        print(gH, '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+        countPdfs = 1;
+        pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+        delete(gH);
+        
+    end
+end
+
+resultsInfo =[];
+
 
 drawnow;
 
@@ -107,11 +217,45 @@ if (sesInfo.which_analysis == 2)
         load(icassoResultsFile, 'sR');
         try
             icassoShow(sR, 'L', sesInfo.numComp, 'colorlimit', [.8 .9]);
+            try
+                icassoFigs = findobj(0, 'type', 'figure');
+                icassoFigNames = get(icassoFigs, 'name');
+                icassoFigInds = icatb_good_cells(regexpi(icassoFigNames, 'icasso:'));
+                icassoFigs = icassoFigs(icassoFigInds);
+                if (saveFigInfo)
+                    if (~strcmpi(resultsFormat, 'pdf'))
+                        outFiles = printFigs(icassoFigs, resultsDir, 'icasso');
+                        resultsInfo(end+1).title = 'ICASSO Plots';
+                        resultsInfo(end).text = ' ';
+                        resultsInfo(end).files = outFiles;
+                        %writeHTML(resultsDir, resultsInfo(end), 'icasso.html', 'ICASSO');
+                        htmlSummaryStr(end + 1). title = 'ICASSO Plots';
+                        htmlSummaryStr(end).tag =  'icasso';
+                        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+                    else
+                        
+                        for nPdfs = 1:length(icassoFigs)
+                            countPdfs = countPdfs + 1;
+                            tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
+                            set(icassoFigs(nPdfs), 'PaperPositionMode', 'auto');
+                            print(icassoFigs(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+                            pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+                        end
+                        
+                        
+                    end
+                    delete(icassoFigs);
+                end
+            catch
+            end
         catch
         end
     end
     
 end
+
+resultsInfo = [];
+outFiles = {''};
 
 %% SBM components
 % Group spatial maps and subject loading coefficients
@@ -146,16 +290,35 @@ spatial_maps_MI = icatb_compute_mi(ic');
 
 components = (1:size(compFiles, 1))';
 
+returnValue = strmatch(lower(image_values), {'positive and negative', 'positive', 'absolute value', 'negative'}, 'exact');
+cmap = icatb_getColormap(1, returnValue, 0);
+if (strcmpi(convert_to_zscores, 'yes'))
+    cbar_title='Z-scores';
+else
+    scale_opts = icatb_scaleICA;
+    if ~ischar(sesInfo.scaleType)
+        cbar_title = deblank(scale_opts(sesInfo.scaleType+1, :));
+    else
+        cbar_title = sesInfo.scaleType;
+    end
+end
+
+meanH = [];
 for nF = 1:size(compFiles, 1)
     
     cn = deblank(compFiles(nF, :));
     
     [dd, fN, extn] = fileparts(cn);
     
-    gH = icatb_getGraphics([fN, extn], 'graphics', 'imviewer', 'on');
-    set(gH, 'resize', 'on');
+    if (~isGIFTI)
+        gH = icatb_getGraphics([fN, extn], 'graphics', 'imviewer', 'on');
+        set(gH, 'resize', 'on');
+        sh = subplot(4, 1, 1);
+    else
+        gH = icatb_getGraphics([fN, extn], 'timecourse', 'imviewer', 'on');
+        sh = gca;
+    end
     
-    sh = subplot(4, 1, 1);
     tc =  icaTimecourse(:, nF);
     tc_label = 'Data units';
     if (strcmpi(convert_to_zscores, 'yes'))
@@ -163,31 +326,131 @@ for nF = 1:size(compFiles, 1)
     end
     icatb_plotTimecourse('data', tc, 'parent', sh, 'color', 'm', 'title', ['Component ', icatb_returnFileIndex(nF)], 'xlabelstr', 'Subjects', 'ylabelstr', tc_label);
     
-    sh = subplot(4, 1, 2:4);
-    icatb_image_viewer(cn, 'structfile', structFile, 'image_values', image_values, 'convert_to_zscores', convert_to_zscores, 'threshold', threshold, ...
-        'slices_in_mm', slices_in_mm, 'anatomical_view', slice_plane, 'axesh', sh, 'colorbar', 1, 'labels', ' ');
+    if (~isGIFTI)
+        sh = subplot(4, 1, 2:4);
+        icatb_image_viewer(cn, 'structfile', structFile, 'image_values', image_values, 'convert_to_zscores', convert_to_zscores, 'threshold', threshold, ...
+            'slices_in_mm', slices_in_mm, 'anatomical_view', slice_plane, 'axesh', sh, 'colorbar', 1, 'labels', ' ');
+    else
+        %gH = icatb_getGraphics([fN, extn], 'graphics', 'imviewer', 'on');
+        %set(gH, 'resize', 'on');
+        %gS = gifti(structFile);
+        %gS = sesInfo.HInfo.V.gifti;
+        gC = gifti(cn);
+        tmp = icatb_applyDispParameters_comp(gC.cdata(:)', strcmpi(convert_to_zscores, 'yes'), returnValue, threshold);
+        colormap(cmap);
+        gC.cdata = reshape(tmp, size(gC.cdata));
+        cn2=[cn(1:end-4),'_tmp','.gii'];
+        save(gC, cn2);
+        icatb_display_gifti(cn2, 'colorbar_title', cbar_title, 'title', ['Component ', icatb_returnFileIndex(nF)]);
+        
+        
+        pause(0.5);
+        
+        delete(cn2);
+        %         if (strcmpi(convert_to_zscores, 'yes'))
+        %         gC.cdata = icatb_zscore(gC.cdata);
+        %         end
+        %         gC.cdata(abs(gC.cdata) < threshold) = 0;
+        % axis(sh);
+        %  plot(gS, gC);
+        %  ColorbarHandle = colorbar;
+        %         if ((icatb_get_matlab_version <= 2013) || strcmpi(version('-release'), '2014a'))
+        %             set(gca, 'xcolor', FONT_COLOR, 'ycolor', FONT_COLOR);
+        %         else
+        %             labelsH = get(ColorbarHandle, 'label');
+        %             set(ColorbarHandle, 'color', FONT_COLOR);
+        %         end
+        % title(cn, 'parent', sh, 'color', FONT_COLOR, 'Horizontalalignment', 'center');
+    end
+    
+    meanH(end + 1) = gH;
+    
 end
 
+resultsInfo = [];
+figurePos = get(gH, 'position');
+
+if (saveFigInfo)
+    if (~strcmpi(resultsFormat, 'pdf'))
+        resultsInfo(end + 1).title = 'SBM Components';
+        resultsInfo(end).text = ['<ul> <li> <b> a) Subject loading coefficients </b> </li>', ...
+            '<li> <b> b) Group spatial maps </b> </li> </ul>'];
+        
+        resultsInfo(end).files = printFigs(meanH, resultsDir, 'group_comp');
+        %writeHTML(resultsDir, resultsInfo(end), 'mean_comp.html', 'Mean Components');
+        htmlSummaryStr(end + 1). title = 'Group Components';
+        htmlSummaryStr(end).tag = 'group_comp';
+        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+        
+    else
+        
+        for nPdfs = 1:length(meanH)
+            countPdfs = countPdfs + 1;
+            tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
+            set(meanH(nPdfs), 'PaperPositionMode', 'auto');
+            print(meanH(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+            pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+        end
+    end
+    
+    delete(meanH);
+end
+
+outFiles = {''};
+resultsInfo = [];
 
 %% PCA components variance summary
 % * *Percent variance* - Percent variance is reported for each component.
 %
+
 if (isfield(sesInfo, 'pca_variances'))
     pca_variances = sesInfo.pca_variances;
     pca_variances = pca_variances(:);
     varNames = {'ComponentNumber', 'PercentVariance'};
-    try
-        T = table(components, pca_variances, 'VariableNames', varNames);
-        disp(T);
-    catch
-        fprintf('%20s\t%20s\n', varNames{:});
-        fprintf('\n');
-        for n = 1:length(components)
-            fprintf('%20s\t%20s\n', num2str(components(n), '%d'), num2str(pca_variances(n), '%0.3f'));
+    
+    
+    if (saveFigInfo)
+        if (~strcmpi(resultsFormat, 'pdf'))
+            
+            resultsInfo(end + 1).title = 'PCA Percent Variance Summary';
+            resultsInfo(end).text = '<ul> <li> Percent variance - Percent variance is reported for each PCA component </li> </ul>';
+            
+            numPara = 1;
+            varStruct(numPara).tag = varNames{1};
+            varStruct(numPara).value = components(:);
+            
+            numPara = numPara + 1;
+            varStruct(numPara).tag = varNames{2};
+            varStruct(numPara).value = num2str(pca_variances(:), '%0.3f');
+            
+            resultsInfo(end).files = {'pca_summary.txt'};
+            icatb_printToFile(fullfile(resultsDir,  resultsInfo(end).files{1}), varStruct, '', 'column_wise');
+            
+            htmlSummaryStr(end + 1). title = 'PCA Percent Variance Summary';
+            htmlSummaryStr(end).tag = 'pca_summary';
+            htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+            
         end
-        fprintf('\n');
+        
+    else
+        
+        try
+            T = table(components, pca_variances, 'VariableNames', varNames);
+            disp(T);
+        catch
+            fprintf('%20s\t%20s\n', varNames{:});
+            fprintf('\n');
+            for n = 1:length(components)
+                fprintf('%20s\t%20s\n', num2str(components(n), '%d'), num2str(pca_variances(n), '%0.3f'));
+            end
+            fprintf('\n');
+        end
+        
     end
 end
+
+outFiles = {''};
+resultsInfo = [];
 
 %% ICA components variance summary
 % * *Percent variance* - Percent variance is reported for each component.
@@ -196,22 +459,98 @@ if (isfield(sesInfo, 'ica_variances'))
     ica_variances = sesInfo.ica_variances;
     ica_variances = ica_variances(:);
     varNames = {'ComponentNumber', 'PercentVariance'};
-    try
-        T = table(components, ica_variances, 'VariableNames', varNames);
-        disp(T);
-    catch
-        fprintf('%20s\t%20s\n', varNames{:});
-        fprintf('\n');
-        for n = 1:length(components)
-            fprintf('%20s\t%20s\n', num2str(components(n), '%d'), num2str(ica_variances(n), '%0.3f'));
+    
+    
+    if (saveFigInfo)
+        if (~strcmpi(resultsFormat, 'pdf'))
+            
+            resultsInfo(end + 1).title = 'ICA Percent Variance Summary';
+            resultsInfo(end).text = '<ul> <li> Percent variance - Percent variance is reported for each ICA component </li> </ul>';
+            
+            numPara = 1;
+            varStruct(numPara).tag = varNames{1};
+            varStruct(numPara).value = components(:);
+            
+            numPara = numPara + 1;
+            varStruct(numPara).tag = varNames{2};
+            varStruct(numPara).value = num2str(ica_variances(:), '%0.3f');
+            
+            resultsInfo(end).files = {'ica_summary.txt'};
+            icatb_printToFile(fullfile(resultsDir,  resultsInfo(end).files{1}), varStruct, '', 'column_wise');
+            
+            htmlSummaryStr(end + 1). title = 'ICA Percent Variance Summary';
+            htmlSummaryStr(end).tag = 'ica_summary';
+            htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+            
         end
-        fprintf('\n');
+        
+    else
+        
+        try
+            T = table(components, ica_variances, 'VariableNames', varNames);
+            disp(T);
+        catch
+            fprintf('%20s\t%20s\n', varNames{:});
+            fprintf('\n');
+            for n = 1:length(components)
+                fprintf('%20s\t%20s\n', num2str(components(n), '%d'), num2str(ica_variances(n), '%0.3f'));
+            end
+            fprintf('\n');
+        end
+        
     end
 end
 
 
+outFiles = {''};
+resultsInfo = [];
+
 %% Kurtosis of loading coefficients and spatial maps
 %
+
+varNames = {'ComponentNumber', 'Timecourses', 'SpatialMaps'};
+
+if (saveFigInfo)
+    
+    if (~strcmpi(resultsFormat, 'pdf'))
+        
+        resultsInfo(end + 1).title = 'Kurtosis of timecourses and spatial maps';
+        resultsInfo(end).text = 'Kurtosis is reported for each component.';
+        
+        clear varStruct;
+        
+        numPara = 1;
+        varStruct(numPara).tag = varNames{1};
+        varStruct(numPara).value = components(:);
+        
+        numPara = numPara + 1;
+        varStruct(numPara).tag = varNames{2};
+        varStruct(numPara).value = num2str(kurt_tc(:), '%0.3f');
+        
+        numPara = numPara + 1;
+        varStruct(numPara).tag = varNames{3};
+        varStruct(numPara).value = num2str(kurt_ic(:), '%0.3f');
+        
+        resultsInfo(end).files = {'kurtosis_info.txt'};
+        icatb_printToFile(fullfile(resultsDir,  resultsInfo(end).files{1}), varStruct, '', 'column_wise');
+    end
+    
+else
+    
+    try
+        T = table(components, kurt_tc(:),  kurt_ic(:), 'VariableNames', varNames);
+        disp(T);
+    catch
+        fprintf('%20s\t%20s\t%20s\n', varNames{:});
+        fprintf('\n');
+        for n = 1:length(components)
+            fprintf('%20s\t%20s\t%20s\n', num2str(components(n), '%d'), num2str(kurt_tc(n), '%0.3f'), num2str(kurt_ic(n), '%0.3f'));
+        end
+        fprintf('\n');
+    end
+    
+end
+
 gH = figure('color', 'w');
 set(gH, 'resize', 'on');
 sh = axes('parent', gH, 'units', 'normalized', 'position', [0.1, 0.1, 0.8, 0.8]);
@@ -221,6 +560,8 @@ ylabel('Kurtosis', 'parent', sh);
 title('Loading coefficents', 'parent', sh);
 axis(sh, 'tight');
 
+kurtH(1) = gH;
+
 gH = figure('color', 'w');
 set(gH, 'resize', 'on');
 sh = axes('parent', gH, 'units', 'normalized', 'position', [0.1, 0.1, 0.8, 0.8]);
@@ -229,6 +570,35 @@ xlabel('Components', 'parent', sh);
 ylabel('Kurtosis', 'parent', sh);
 title('Spatial maps', 'parent', sh);
 axis(sh, 'tight');
+kurtH(2) = gH;
+
+if (saveFigInfo)
+    
+    if (~strcmpi(resultsFormat, 'pdf'))
+        kurtosisPNGFiles = printFigs(kurtH, resultsDir, 'kurtosis');
+        resultsInfo(end + 1).title = ' ';
+        resultsInfo(end).text = ' ';
+        resultsInfo(end).files = kurtosisPNGFiles;
+        %resultsInfo(end).files(2:2+length(kurtosisPNGFiles)-1) = kurtosisPNGFiles;
+        %writeHTML(resultsDir, resultsInfo(end-1:end), 'kurtosis_info.html', 'Kurtosis of timecourses and spatial maps');
+        htmlSummaryStr(end + 1). title = 'Kurtosis of timecourses and spatial maps';
+        htmlSummaryStr(end).tag = 'kurtosis';
+        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end-1:end), htmlSummaryStr(end).tag);
+    else
+        for nPdfs = 1:length(kurtH)
+            countPdfs = countPdfs + 1;
+            tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
+            set(kurtH(nPdfs), 'PaperPositionMode', 'auto');
+            print(kurtH(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+            pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+        end
+    end
+    delete(kurtH);
+end
+
+
+outFiles = {''};
+resultsInfo = [];
 
 %% FNC correlations of subject loadings
 % Functional network connectivity correlations
@@ -247,6 +617,7 @@ for n = 1:length(groupsInfo)
     CLIMG = max([CLIMG, max(abs(tmp(:)))]);
 end
 
+fncHandles = [];
 comps = (1:sesInfo.numComp)';
 CLIM = max(abs(fnc_corrs_all(:)));
 gH = figure('color', 'w');
@@ -255,6 +626,7 @@ axesH = axes('parent', gH, 'units', 'normalized', 'position', [0.1, 0.1, 0.8, 0.
 icatb_plot_FNC(fnc_corrs_all, [-CLIM, CLIM], cellstr(num2str(comps)), (1:length(comps)), gH, [], axesH);
 colormap(jet(64));
 title('FNC Correlations', 'parent', axesH);
+fncHandles(end + 1) = gH;
 
 for n = 1:length(grp_names)
     gH = figure('color', 'w');
@@ -263,7 +635,39 @@ for n = 1:length(grp_names)
     icatb_plot_FNC(fnc_grps{n}, [-CLIMG, CLIMG], cellstr(num2str(comps)), (1:length(comps)), gH, [], axesH);
     colormap(jet(64));
     title(['FNC Correlations of ', grp_names{n}], 'parent', axesH);
+    fncHandles(end + 1) = gH;
 end
+
+
+%fncHandles(1) = gH;
+resultsInfo = [];
+if (saveFigInfo)
+    
+    if (~strcmpi(resultsFormat, 'pdf'))
+        resultsInfo(end + 1).title = 'FNC correlations on loadings';
+        resultsInfo(end).text = 'Functional network connectivity correlations on subject loading coefficients.';
+        FNCTPNGFiles = printFigs(fncHandles, resultsDir, 'FNC_loadings');
+        resultsInfo(end).files = FNCTPNGFiles;
+        %writeHTML(resultsDir, resultsInfo(end), 'fnc_timecourses.html', 'FNC correlations on timecourses');
+        htmlSummaryStr(end + 1).title = 'FNC correlations on subject loadings';
+        htmlSummaryStr(end).tag  = 'fnc_corrs_loadings';
+        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+        
+    else
+        
+        for nPdfs = 1:length(fncHandles)
+            countPdfs = countPdfs + 1;
+            tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
+            set(fncHandles(nPdfs), 'PaperPositionMode', 'auto');
+            print(fncHandles(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+            pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+        end
+        
+    end
+    
+    delete(fncHandles);
+end
+
 
 
 %% FNC metrics of component spatial maps
@@ -276,6 +680,46 @@ axesH = axes('parent', gH, 'units', 'normalized', 'position', [0.1, 0.1, 0.8, 0.
 icatb_plot_FNC(spatial_maps_MI, CLIM, cellstr(num2str(comps)), (1:length(comps)), gH, ' ', axesH);
 colormap(jet(64));
 title('FNC metrics (Spatial maps)', 'parent', axesH);
+
+resultsInfo = [];
+fncHandles = gH;
+if (saveFigInfo)
+    
+    if (~strcmpi(resultsFormat, 'pdf'))
+        resultsInfo(end + 1).title = 'FNC metrics of component spatial maps';
+        resultsInfo(end).text = 'Mutual information is computed between components spatially.';
+        FNCSPNGFiles = printFigs(fncHandles, resultsDir, 'FNC_maps');
+        resultsInfo(end).files = FNCSPNGFiles;
+        %writeHTML(resultsDir, resultsInfo(end), 'fnc_spatial_maps.html', 'FNC metrics of component spatial maps');
+        htmlSummaryStr(end + 1). title = 'FNC metrics of component spatial maps';
+        htmlSummaryStr(end).tag = 'fnc_corrs_sm';
+        htmlSummaryStr(end).str = get_result_strings(resultsDir, resultsInfo(end), htmlSummaryStr(end).tag);
+    else
+        for nPdfs = 1:length(fncHandles)
+            countPdfs = countPdfs + 1;
+            tmpImFile = [pdfPrefix, '_', num2str(countPdfs), '.pdf'];
+            set(fncHandles(nPdfs), 'PaperPositionMode', 'auto');
+            print(fncHandles(nPdfs), '-dpdf', printRes, '-noui', fullfile(resultsDir, tmpImFile));
+            pdfFiles{countPdfs} = fullfile(resultsDir, tmpImFile);
+        end
+    end
+    delete(fncHandles);
+end
+
+
+if (saveFigInfo)
+    if (strcmpi(resultsFormat, 'pdf'))
+        append_pdfs(fullfile(resultsDir, [pdfPrefix, '.pdf']), pdfFiles{:});
+        for nF = 1:length(pdfFiles)
+            try
+                delete(pdfFiles{nF});
+            catch
+            end
+        end
+    else
+        writeHTML2(fullfile(resultsDir, [mfilename, '.html']), htmlSummaryStr);
+    end
+end
 
 if (exist('files_in_zip', 'var') && ~isempty(files_in_zip))
     icatb_cleanupFiles(files_in_zip, outputDir);
@@ -579,3 +1023,125 @@ x = icatb_remove_mean(x);
 s2 = mean(x.^2);
 m4 = mean(x.^4);
 k = (m4 ./ (s2.^2));
+
+
+function writeHTML2(fileName, resultsStr)
+
+
+start_string = '<html><head><title> SBM ICA Results </title></head>';
+start_string = [start_string, '<p> </p><h2> Contents </h2><p><ul>'];
+
+
+titles = cellstr(char(resultsStr.title));
+
+for nR = 1:length(titles)
+    start_string = [start_string, '<li><h3><a href="#', resultsStr(nR).tag, '">', titles{nR}, '</a></h3></li>'];
+end
+
+start_string = [start_string, '</ul></p><p> </p>'];
+end_string =  '</html>';
+results{1} = start_string;
+results{2} = char(resultsStr.str);
+results{3} = end_string;
+
+
+dlmwrite(fileName, char(results), '');
+
+
+function results_string = get_result_strings(htmlDir, sdFNCResults, tagStr)
+
+%html_file = fullfile(htmlDir, outFile);
+% start_string = ['<html><head><title>', titleStr, '</title>', ...
+%     '<meta http-equiv="Content-Type" content="HTML, DHTML, CSS, XML, XHTML, JavaScript, VBScript; charset=iso-8859-1">', ...
+%     '<link rel="stylesheet" type="text/css" href="./style.css"></head>'];
+
+results_string1 = [];
+for nR = 1:length(sdFNCResults)
+    results_string1 = [results_string1, '<h2 align = "center"><a name = "', tagStr, '">', sdFNCResults(nR).title, '</a></h2>'];
+    %results_string1 = [results_string1, '<hr>'];
+    results_string1 = [results_string1, '<p align = "center">', sdFNCResults(nR).text, '</p>'];
+    files =  sdFNCResults(nR).files;
+    
+    [pp,ff,extn]= fileparts(files{1});
+    
+    if (~strcmpi(extn, '.txt'))
+        
+        num_cols = 2;
+        num_rows = ceil(length(files)/num_cols);
+        countF = 0;
+        results_string1 = [results_string1, '<table>'];
+        for nrows = 1:num_rows
+            results_string1 = [results_string1, '</tr>'];
+            for ncols = 1:num_cols
+                countF = countF + 1;
+                if (countF <= length(files))
+                    results_string1 = [results_string1,  '<td align="center"><img align="center" src = "', files{countF}, '" > </img></td>'];
+                end
+            end
+            results_string1 = [results_string1, '</tr>'];
+        end
+        results_string1 = [results_string1, '</table>'];
+        
+    else
+        
+        for nrows = 1:length(files)
+            allLines = icatb_textscan(fullfile(htmlDir, files{nrows}));
+            allLines = allLines(icatb_good_cells(allLines));
+            for nLine = 1:length(allLines)
+                
+                allCols = textscan(allLines{nLine}, '%s', 'whitespace', '\t');
+                allCols = allCols{1};
+                
+                if (nLine == 1)
+                    tableStr = '<table align = "center" border = "1" width = "35%">';
+                    tDStart = '<th align = "center">';
+                    tDEnd = '</th>';
+                else
+                    tDStart = '<td align = "center">';
+                    tDEnd = '</td>';
+                end
+                
+                tableStr = [tableStr, '<tr>'];
+                
+                for nCols = 1:length(allCols)
+                    tableStr = [tableStr, tDStart, allCols{nCols}, tDEnd];
+                end
+                
+                tableStr = [tableStr, '</tr>'];
+                
+            end
+            results_string1 = [results_string1, tableStr, '</table>'];
+        end
+    end
+    
+    results_string1 = [results_string1, '<p>&nbsp;&nbsp;</p>'];
+end
+
+end_string =  '</html>';
+
+
+results_string = ['<p> </p> <hr>', results_string1, ' <p> </p>'];
+
+%dlmwrite(html_file, results_string, '');
+
+
+function imNames = printFigs(Figs, outdir, filename)
+
+icatb_defaults;
+global GICA_RESULTS_SUMMARY;
+
+PRINT_RESOLUTION = '';
+try
+    PRINT_RESOLUTION = GICA_RESULTS_SUMMARY.print_resolution;
+catch
+end
+
+if (isempty(PRINT_RESOLUTION))
+    PRINT_RESOLUTION = '-r72';
+end
+
+imNames = cell(1, length(Figs));
+for nF = 1:length(Figs)
+    imNames{nF} = [filename, '_', icatb_returnFileIndex(nF), '.png'];
+    print(Figs(nF), '-dpng', PRINT_RESOLUTION, '-noui', fullfile(outdir, imNames{nF}));
+end

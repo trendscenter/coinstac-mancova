@@ -349,6 +349,7 @@ def gift_mancova(
     gc.inputs.interactions = interactions
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
+    gc.inputs.p_threshold = p_threshold
     if display_local_result_summary:
         gc.inputs.display = {
             "freq_limits": freq_limits,
@@ -358,7 +359,7 @@ def gift_mancova(
             "threshdesc": threshdesc,
             "p_threshold": display_p_threshold,
         }
-    
+
     if univariate_tests is not None:
         gc.inputs.univariate_tests = univariate_tests
     return gc.run()

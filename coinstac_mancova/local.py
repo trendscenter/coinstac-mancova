@@ -232,6 +232,10 @@ def local_run_mancova(args):
         ) if os.path.exists(f)]
         ica_parameters.sort()
 
+        ut.log("ICA params file" + ''.join(ica_parameters),  state)
+
+        if len(ica_parameters) == 0:
+            raise (ValueError("Ica parameter files could not be found in the outupt"))
         ut.log("Running univariate tests", state)
         univariate_test_list = copy.deepcopy(args["input"]["univariate_test_list"])
         for univariate_test in univariate_test_list:
@@ -269,6 +273,27 @@ def local_run_mancova(args):
             if key == "regression":
                 univariate_test = univariate_test[key]
             try:
+                mancova_params_dict={'ica_param_file':ica_parameters,
+                                        'out_dir':univariate_out_dir,
+                                        'TR':args["input"].get("TR", 2),
+                                        'features':args["input"]["features"],
+                                        'comp_network_names':args["input"].get("comp_network_names", NEUROMARK_NETWORKS),
+                                        'covariates':covariates,
+                                        'univariate_tests':univariate_test,
+                                        'run_name':"coinstac-mancovan-univariate",
+                                        'numOfPCs':args["input"].get("numOfPCs", [4, 4, 4]),
+                                        'freq_limits':args["input"].get("freq_limits", [0.1, 0.15]),
+                                        't_threshold':args["input"].get("t_threshold", 0.05),
+                                        'image_values':args["input"].get("image_values", "positive"),
+                                        'threshdesc':args["input"].get("threshdesc", "fdr"),
+                                        'p_threshold':args["input"].get("p_threshold", 0.05),
+                                        'display_p_threshold':args["input"].get("display_p_threshold", 0.05),
+                                        'display_local_result_summary':False
+                                     }
+                ut.log(
+                    "Calling GIFT MANCOVA Univariate with params: %s"% (json.dumps(mancova_params_dict)),
+                    state,
+                )
                 gift_mancova(
                     ica_param_file=ica_parameters,
                     out_dir=univariate_out_dir,
@@ -293,9 +318,11 @@ def local_run_mancova(args):
                     ),
                     display_local_result_summary=False
                 )
-                stat_results[univariate_out_dir][key] = list(
-                    glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
-                )
+                ut.log("Done with  GIFT MANCOVA call", state)
+                #stat_results[univariate_out_dir][key] = list(
+                #    glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
+                #)
+                #ut.log("Updated stats_results: ", state)
                 #shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(univariate_out_dir)))
                 #extract_univariate_stats(state, args["input"]["features"], univariate_out_dir)
                 transfer_univariate_stats(state, univariate_out_dir)
@@ -343,13 +370,16 @@ def local_run_mancova(args):
 
 
 def transfer_univariate_stats(state, univariate_out_dir):
+    ut.log("Extracting stats info files", state)
     stats_files = [f for f in list(
                         glob.iglob(
                             os.path.join(univariate_out_dir, "**", "*mancovan_stats_info.mat"),
                             recursive=True,
                         )) if os.path.exists(f)]
     test_name=os.path.basename(univariate_out_dir)
+    ut.log("mancovan_stats_info files generated: %s" % (''.join(stats_files)), state)
 
+    ut.log("Copying mancovan_stats_info to remote", state)
     for f in stats_files:
         shutil.copy(
             f, os.path.join(state["transferDirectory"],

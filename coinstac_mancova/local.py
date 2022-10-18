@@ -290,10 +290,6 @@ def local_run_mancova(args):
                                         'display_p_threshold':args["input"].get("display_p_threshold", 0.05),
                                         'display_local_result_summary':False
                                      }
-                ut.log(
-                    "Calling GIFT MANCOVA Univariate with params: %s"% (json.dumps(mancova_params_dict)),
-                    state,
-                )
                 gift_mancova(
                     ica_param_file=ica_parameters,
                     out_dir=univariate_out_dir,

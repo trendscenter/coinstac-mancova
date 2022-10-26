@@ -335,7 +335,8 @@ def gift_mancova(
     image_values="positive",
     threshdesc=DEFAULT_THRESHDESC,
     display_p_threshold=DEFAULT_P_THRESHOLD,
-    display_local_result_summary=False
+    display_local_result_summary=False,
+    write_stats_info=1
 ):
     gift.MancovanCommand.set_mlab_paths(matlab_cmd=matlab_cmd, use_mcr=True)
 
@@ -350,6 +351,7 @@ def gift_mancova(
     gc.inputs.numOfPCs = numOfPCs
     gc.inputs.feature_params = feature_params
     gc.inputs.p_threshold = p_threshold
+    gc.inputs.write_stats_info= write_stats_info
     if display_local_result_summary:
         gc.inputs.display = {
             "freq_limits": freq_limits,

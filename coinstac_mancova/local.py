@@ -101,11 +101,19 @@ def local_run_mancova(args):
     file_list.remove(cov_filename[0])
     file_list.remove(ctype_filename[0])
 
+    '''
     in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
     ut.log("Loaded files %s" % ", ".join(in_files), state)
     covariates, covariates_df, covariate_types = convert_covariates(
         covariate_file, state, covariate_types=covariate_type_file, N=len(in_files)
     )
+    '''
+    covariates, covariates_df, covariate_types = convert_covariates(
+        covariate_file, state, covariate_types=covariate_type_file, N=len(file_list)
+    )
+    file_list=covariates_df['filename'].tolist() if len(file_list)==0 else file_list
+    in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
+    ut.log("Loaded files %s" % ", ".join(in_files), state)
 
     maskfile = args["input"]["mask"]
 
@@ -239,6 +247,7 @@ def local_run_mancova(args):
         ut.log("Running univariate tests", state)
         univariate_test_list = copy.deepcopy(args["input"]["univariate_test_list"])
         for univariate_test in univariate_test_list:
+            write_stats_info = 0
             key = list(univariate_test.keys())[0]
 
             ut.log(
@@ -272,8 +281,9 @@ def local_run_mancova(args):
             os.makedirs(univariate_out_dir, exist_ok=True)
             if key == "regression":
                 univariate_test = univariate_test[key]
-            try:
-                mancova_params_dict={'ica_param_file':ica_parameters,
+                write_stats_info = 1
+            #try:
+            mancova_params_dict={'ica_param_file':ica_parameters,
                                         'out_dir':univariate_out_dir,
                                         'TR':args["input"].get("TR", 2),
                                         'features':args["input"]["features"],
@@ -290,7 +300,8 @@ def local_run_mancova(args):
                                         'display_p_threshold':args["input"].get("display_p_threshold", 0.05),
                                         'display_local_result_summary':False
                                      }
-                gift_mancova(
+            ut.log("Calling GIFT MANCOVA Univariate with params: %s"% (str(mancova_params_dict)), state )
+            gift_mancova(
                     ica_param_file=ica_parameters,
                     out_dir=univariate_out_dir,
                     TR=args["input"].get("TR", 2),
@@ -312,24 +323,25 @@ def local_run_mancova(args):
                     display_p_threshold=args["input"].get(
                         "display_p_threshold", 0.05
                     ),
-                    display_local_result_summary=False
+                    display_local_result_summary=False,
+                    write_stats_info=write_stats_info
                 )
-                ut.log("Done with  GIFT MANCOVA call", state)
+            ut.log("Done with  GIFT MANCOVA call", state)
                 #stat_results[univariate_out_dir][key] = list(
                 #    glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
                 #)
                 #ut.log("Updated stats_results: ", state)
                 #shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(univariate_out_dir)))
                 #extract_univariate_stats(state, args["input"]["features"], univariate_out_dir)
-                transfer_univariate_stats(state, univariate_out_dir)
+            transfer_univariate_stats(state, univariate_out_dir)
 
-            except Exception as e:
-                ut.log(
-                    "Univariate analysis ({key}, {variable}) raised an exception. Full error string {err}".format(
-                        key=key, variable=variable, err=str(e)
-                    ),
-                    state,
-                )
+            #except Exception as e:
+            #    ut.log(
+            #        "Univariate analysis ({key}, {variable}) raised an exception. Full error string {err}".format(
+            #            key=key, variable=variable, err=str(e)
+            #        ),
+            #        state,
+            #    )
     else:
         ut.log("Skipping univariate tests", state)
 

@@ -273,6 +273,7 @@ def mancova_aggregate(args):
                                 )) if os.path.exists(f)]"""
 
 
+            ut.log("Received stats_info files at remote: " + str(stats_files), state)
 
             gift_mancova_aggregate_stats(
                         ica_param_file_list=stats_files,

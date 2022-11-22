@@ -1,30 +1,114 @@
 [
     {
-        "data": {
-            "value": [
-                "rtswa_1TR_M511.nii",
-                "rtswa_1YM_2X11.nii",
-                "rtswa_34F_YG11.nii",
-                "rtswa_1DH_NL11.nii",
-                "rtswa_1MD_F111.nii",
-                "rtswa_2CF_YT11.nii",
-                "rtswa_14R_3F11.nii",
-                "rtswa_1SF_MB11.nii",
-                "rtswa_2RG_F111.nii",
-                "rtswa_1NB_NL11.nii",
-                "rtswa_2LV_YG11.nii",
-                "rtswa_2EX_YG11.nii",
-                "rtswa_3FW_6J11.nii",
-                "rtswa_33N_7P11.nii",
-                "rtswa_1JR_S911.nii",
-                "rtswa_38R_F111.nii",
-                "rtswa_1VX_F111.nii",
-                "rtswa_2ZG_F111.nii",
-                "rtswa_3JG_NL11.nii",
-                "rtswa_383_F111.nii",
-                "covariates.csv",
-                "covariate_keys.csv"
-            ]
+        "covariates": {
+            "value":
+                {
+                      "coinstac-gica_sub001_timecourses_ica_s1_.nii": {
+                        "age:continuous": 41,
+                        "niftifilename": "rtswa_1TR_M511.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub002_timecourses_ica_s1_.nii": {
+                        "age:continuous": 15,
+                        "niftifilename": "rtswa_1YM_2X11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub003_timecourses_ica_s1_.nii": {
+                        "age:continuous": 31,
+                        "niftifilename": "rtswa_34F_YG11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub004_timecourses_ica_s1_.nii": {
+                        "age:continuous": 34,
+                        "niftifilename": "rtswa_1DH_NL11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub005_timecourses_ica_s1_.nii": {
+                        "age:continuous": 16,
+                        "niftifilename": "rtswa_1MD_F111.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub006_timecourses_ica_s1_.nii": {
+                        "age:continuous": 13,
+                        "niftifilename": "rtswa_2CF_YT11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub007_timecourses_ica_s1_.nii": {
+                        "age:continuous": 14,
+                        "niftifilename": "rtswa_14R_3F11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub008_timecourses_ica_s1_.nii": {
+                        "age:continuous": 41,
+                        "niftifilename": "rtswa_1SF_MB11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub009_timecourses_ica_s1_.nii": {
+                        "age:continuous": 29,
+                        "niftifilename": "rtswa_2RG_F111.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub010_timecourses_ica_s1_.nii": {
+                        "age:continuous": 43,
+                        "niftifilename": "rtswa_1NB_NL11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub011_timecourses_ica_s1_.nii": {
+                        "age:continuous": 19,
+                        "niftifilename": "rtswa_2LV_YG11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub012_timecourses_ica_s1_.nii": {
+                        "age:continuous": 44,
+                        "niftifilename": "rtswa_2EX_YG11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub013_timecourses_ica_s1_.nii": {
+                        "age:continuous": 21,
+                        "niftifilename": "rtswa_3FW_6J11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub014_timecourses_ica_s1_.nii": {
+                        "age:continuous": 19,
+                        "niftifilename": "rtswa_33N_7P11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub015_timecourses_ica_s1_.nii": {
+                        "age:continuous": 38,
+                        "niftifilename": "rtswa_1JR_S911.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub016_timecourses_ica_s1_.nii": {
+                        "age:continuous": 22,
+                        "niftifilename": "rtswa_38R_F111.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub017_timecourses_ica_s1_.nii": {
+                        "age:continuous": 20,
+                        "niftifilename": "rtswa_1VX_F111.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub018_timecourses_ica_s1_.nii": {
+                        "age:continuous": 37,
+                        "niftifilename": "rtswa_2ZG_F111.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub019_timecourses_ica_s1_.nii": {
+                        "age:continuous": 18,
+                        "niftifilename": "rtswa_3JG_NL11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub020_timecourses_ica_s1_.nii": {
+                        "age:continuous": 22,
+                        "niftifilename": "rtswa_383_F111.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_ica_parameter_info.mat": {
+                        "age:continuous": "",
+                        "niftifilename": "",
+                        "gender:categorical": ""
+                      }
+                    }
         },
         "mask": {
             "value": "/computation/local_data/mask.nii"
@@ -39,12 +123,6 @@
         },
         "scica_template": {
             "value": "/computation/local_data/NeuroMark.nii"
-        },
-        "covariates": {
-            "value": "covariates.csv"
-        },
-        "covariate_types": {
-            "value": "covariate_keys.csv"
         },
         "interactions": {
             "value": []
@@ -185,31 +263,115 @@
         }
     },
     {
-        "data": {
-            "value": [
-                "rtswa_1FA_NL11.nii",
-                "rtswa_2WJ_E511.nii",
-                "rtswa_255_NL11.nii",
-                "rtswa_3G7_F111.nii",
-                "rtswa_11G_1G11.nii",
-                "rtswa_26F_BA11.nii",
-                "rtswa_1TN_F111.nii",
-                "rtswa_2TD_MB11.nii",
-                "rtswa_18S_NL11.nii",
-                "rtswa_1CJ_NL11.nii",
-                "rtswa_156_NL11.nii",
-                "rtswa_2P7_2X31.nii",
-                "rtswa_2A5_NL11.nii",
-                "rtswa_1BW_1G11.nii",
-                "rtswa_1GG_NX11.nii",
-                "rtswa_1NF_BN11.nii",
-                "rtswa_2HA_F111.nii",
-                "rtswa_1D6_4311.nii",
-                "rtswa_1RB_B211.nii",
-                "rtswa_1PH_5811.nii",
-                "covariates.csv",
-                "covariate_keys.csv"
-            ]
+        "covariates": {
+            "value":
+                    {
+                      "coinstac-gica_sub001_timecourses_ica_s1_.nii": {
+                        "age:continuous": 22,
+                        "niftifilename": "rtswa_1FA_NL11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub002_timecourses_ica_s1_.nii": {
+                        "age:continuous": 17,
+                        "niftifilename": "rtswa_2WJ_E511.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub003_timecourses_ica_s1_.nii": {
+                        "age:continuous": 15,
+                        "niftifilename": "rtswa_255_NL11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub004_timecourses_ica_s1_.nii": {
+                        "age:continuous": 16,
+                        "niftifilename": "rtswa_3G7_F111.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub005_timecourses_ica_s1_.nii": {
+                        "age:continuous": 22,
+                        "niftifilename": "rtswa_11G_1G11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub006_timecourses_ica_s1_.nii": {
+                        "age:continuous": 23,
+                        "niftifilename": "rtswa_26F_BA11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub007_timecourses_ica_s1_.nii": {
+                        "age:continuous": 25,
+                        "niftifilename": "rtswa_1TN_F111.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub008_timecourses_ica_s1_.nii": {
+                        "age:continuous": 39,
+                        "niftifilename": "rtswa_2TD_MB11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub009_timecourses_ica_s1_.nii": {
+                        "age:continuous": 20,
+                        "niftifilename": "rtswa_18S_NL11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub010_timecourses_ica_s1_.nii": {
+                        "age:continuous": 24,
+                        "niftifilename": "rtswa_1CJ_NL11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub011_timecourses_ica_s1_.nii": {
+                        "age:continuous": 15,
+                        "niftifilename": "rtswa_156_NL11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub012_timecourses_ica_s1_.nii": {
+                        "age:continuous": 14,
+                        "niftifilename": "rtswa_2P7_2X31.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub013_timecourses_ica_s1_.nii": {
+                        "age:continuous": 19,
+                        "niftifilename": "rtswa_2A5_NL11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub014_timecourses_ica_s1_.nii": {
+                        "age:continuous": 33,
+                        "niftifilename": "rtswa_1BW_1G11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub015_timecourses_ica_s1_.nii": {
+                        "age:continuous": 18,
+                        "niftifilename": "rtswa_1GG_NX11.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub016_timecourses_ica_s1_.nii": {
+                        "age:continuous": 28,
+                        "niftifilename": "rtswa_1NF_BN11.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub017_timecourses_ica_s1_.nii": {
+                        "age:continuous": 25,
+                        "niftifilename": "rtswa_2HA_F111.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub018_timecourses_ica_s1_.nii": {
+                        "age:continuous": 28,
+                        "niftifilename": "rtswa_1D6_4311.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_sub019_timecourses_ica_s1_.nii": {
+                        "age:continuous": 26,
+                        "niftifilename": "rtswa_1RB_B211.nii",
+                        "gender:categorical": "Female"
+                      },
+                      "coinstac-gica_sub020_timecourses_ica_s1_.nii": {
+                        "age:continuous": 14,
+                        "niftifilename": "rtswa_1PH_5811.nii",
+                        "gender:categorical": "Male"
+                      },
+                      "coinstac-gica_ica_parameter_info.mat": {
+                        "age:continuous": "",
+                        "niftifilename": "",
+                        "gender:categorical": ""
+                      }
+                    }
         },
         "mask": {
             "value": "/computation/local_data/mask.nii"
@@ -224,12 +386,6 @@
         },
         "scica_template": {
             "value": "/computation/local_data/NeuroMark.nii"
-        },
-        "covariates": {
-            "value": "covariates.csv"
-        },
-        "covariate_types": {
-            "value": "covariate_keys.csv"
         },
         "interactions": {
             "value": []

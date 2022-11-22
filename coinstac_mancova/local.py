@@ -28,52 +28,6 @@ NEUROMARK_NETWORKS = {
     "CR": [50, 51, 52, 53],
 }
 
-
-def convert_covariates(covariate_filename, state, covariate_types=None, N=None):
-    df = pd.read_csv(covariate_filename)
-    #out_dir = state["transferDirectory"]
-    out_dir = state["outputDirectory"]
-    shutil.copy(
-        covariate_filename, os.path.join(out_dir, os.path.basename(covariate_filename))
-    )
-    cov_types = {"name": [], "type": []}
-    if covariate_types is not None:
-        cov_types = pd.read_csv(covariate_types)
-    covariates = {}
-    ut.log("Covariate Types %s" % (cov_types), state)
-    ut.log("Covariate Types name %s" % (cov_types["name"].values), state)
-    for covariate_name in df.columns:
-        if covariate_types is not None:
-            if covariate_name not in cov_types["name"].values:
-                continue
-        covariate_series = df[covariate_name]
-        if covariate_name == "filename":
-            continue
-        if N is not None:
-            ut.log("Covariate series for covariate_name %s" % (covariate_name), state)
-            if N>0 :
-                covariate_series = covariate_series[:N]
-            else:
-                covariate_series = covariate_series[:]
-
-        if covariate_name in cov_types["name"].values:
-            cov_type = cov_types["type"][list(cov_types["name"].values).index(covariate_name)]
-        else:
-            cov_type = "continuous"
-
-        ut.log("Covariate name %s , type %s " % (covariate_name, cov_type), state)
-        ut.log("Covariate values %s " % (",".join([str(s) for s in list(covariate_series)])), state)
-        fname = os.path.join(out_dir, "COINSTAC_COVAR_%s.txt" % covariate_name)
-        with open(fname, "w") as file:
-            file.write("\n".join([str(s) for s in list(covariate_series)]))
-        ut.log("Wrote covariates %s to file %s" % (covariate_name, fname), state)
-        covariates[covariate_name] = [cov_type, fname]
-    ut.log("Covariates are %s -df %s" % (covariates, df), state)
-    if N is not None and N>0:
-        df = df.head(N)
-    ut.log("AFTER Covariates are %s -df %s" % (covariates, df), state)
-    return covariates, df, cov_types
-
 def chmod_dir_recursive(dir_name):
     try:
         for dir_root, dirs, files in os.walk(dir_name):
@@ -84,6 +38,102 @@ def chmod_dir_recursive(dir_name):
     except:
         pass;
 
+
+def convert_covariates(covariate_df, state, covariate_types=None, N=None):
+
+    out_dir = state["outputDirectory"]
+    #shutil.copy(
+    #    covariate_filename, os.path.join(out_dir, os.path.basename(covariate_filename))
+    #)
+
+    df = covariate_df
+    cov_types = covariate_types
+    covariates = {}
+
+    ut.log("Covariate Types %s" % (cov_types), state)
+    ut.log("Covariate Types name %s" % (cov_types["name"].values), state)
+
+    for covariate_name in df.columns:
+        if covariate_types is not None:
+            if covariate_name not in cov_types["name"].values:
+                continue
+        covariate_series = df[covariate_name]
+        if covariate_name == "filename" or covariate_name == "niftifilename":
+            continue
+        if N is not None:
+            ut.log("Covariate series for covariate_name %s" % (covariate_name), state)
+            covariate_series = covariate_series[:N] if N>0 else covariate_series[:]
+
+        if covariate_name in cov_types["name"].values:
+            cov_type = cov_types["type"][list(cov_types["name"].values).index(covariate_name)]
+        else:
+            cov_type = "continuous"
+
+        ut.log("Covariate name %s , type %s " % (covariate_name, cov_type), state)
+        ut.log("Covariate values %s " % (",".join([str(s) for s in list(covariate_series)])), state)
+
+        fname = os.path.join(out_dir, "COINSTAC_COVAR_%s.txt" % covariate_name)
+
+        with open(fname, "w") as file:
+            file.write("\n".join([str(s) for s in list(covariate_series)]))
+        ut.log("Wrote covariates %s to file %s" % (covariate_name, fname), state)
+
+        covariates[covariate_name] = [cov_type, fname]
+
+    ut.log("Covariates are %s -df %s" % (covariates, df), state)
+
+    if N is not None and N > 0:
+        df = df.head(N)
+
+    ut.log("AFTER Covariates are %s -df %s" % (covariates, df), state)
+
+    #print(covariates)
+    return covariates, df, cov_types
+
+
+def extract_covariates(covariate_dict):
+    from pandas.api.types import is_numeric_dtype
+
+    # filename key has GICA output filenames; the rest of the columns are
+    # covariate columns with : separting the covariate name and its type
+    df = pd.DataFrame.from_dict(covariate_dict).T
+
+    # Remove index as it correspond to GICA filenames and not relevant with covariates
+    df.reset_index(drop=True, inplace=True)
+
+    # GICA files are more than number of subjects/covariates; when we remove index there will be nan rows.
+    df = df.replace(r'^\s*$', np.nan, regex=True);
+    df = df.dropna()
+
+    # Correcting datatypes
+    covar_df = df.apply(pd.to_numeric, errors='ignore')
+
+    # extract covariate keys - name and its type
+    cov_types = {"name": [], "type": []}
+    rename_cols = {}
+    for colname in df.columns:
+        if 'filename' not in colname:
+            vals = colname.strip().split(':')
+            pd_col_type = 'continuous' if is_numeric_dtype(df.dtypes[colname]) else 'categorical'
+            if len(vals) > 0:
+                covar_name = vals[0].strip();covar_type = vals[1].strip()
+                rename_cols[colname] = covar_name
+                cov_types['name'].append(covar_name)
+                cov_types['type'].append(covar_type)
+
+                # check column type in pandas, correct column type if string column is converted to numeric
+                if covar_type == 'categorical' and pd_col_type != covar_type:
+                    covar_df[colname] = covar_df[colname].astype(str)
+
+            else:
+                cov_types['name'].append(vals)
+                cov_types['type'].append(pd_col_type)
+    covar_df.rename(rename_cols, axis='columns', inplace=True)
+
+    return covar_df, pd.DataFrame(cov_types)
+
+
+
 def local_run_mancova(args):
     state = args["state"]
     ut.log("Got input %s" % (args["input"]), state)
@@ -92,34 +142,16 @@ def local_run_mancova(args):
     args["cache"]["gica_input_dir"] = args["input"]["gica_input_dir"]
     args["cache"]["univariate_test_list"] = args["input"]["univariate_test_list"]
 
-    cov_filename = [i for i in args["input"]["data"] if "covariates.csv" in i]
-    ctype_filename = [i for i in args["input"]["data"] if "covariate_keys.csv" in i]
-    covariate_file = os.path.join(state["baseDirectory"], cov_filename[0])
-    covariate_type_file = os.path.join(state["baseDirectory"], ctype_filename[0])
-    ut.log("Covariate File Name:" + covariate_file, state)
-    file_list = args["input"]["data"]
-    file_list.remove(cov_filename[0])
-    file_list.remove(ctype_filename[0])
+    covariates_df, covariate_types_df = extract_covariates(args["input"]["covariates"])
+    file_list=covariates_df['niftifilename'].tolist()
 
-    '''
-    in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
-    ut.log("Loaded files %s" % ", ".join(in_files), state)
-    covariates, covariates_df, covariate_types = convert_covariates(
-        covariate_file, state, covariate_types=covariate_type_file, N=len(in_files)
+    covariates, covariates_df, covariate_types_df = convert_covariates(
+        covariates_df, state, covariate_types_df, N=len(file_list)
     )
-    '''
-    covariates, covariates_df, covariate_types = convert_covariates(
-        covariate_file, state, covariate_types=covariate_type_file, N=len(file_list)
-    )
-    file_list=covariates_df['filename'].tolist() if len(file_list)==0 else file_list
-    in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
-    ut.log("Loaded files %s" % ", ".join(in_files), state)
 
     maskfile = args["input"]["mask"]
-
     TR = args["input"]["TR"]
 
-    #pyscript = os.path.join(state["transferDirectory"], "pyscript_gicacommand.m")
     pyscript = os.path.join(state["outputDirectory"], "pyscript_gicacommand.m")
     if args["cache"]["skip_gica"] is False:
         if os.path.exists(pyscript):
@@ -151,6 +183,10 @@ def local_run_mancova(args):
             destination_dir=state["outputDirectory"],
         )
         """
+
+        in_files = [os.path.join(state["baseDirectory"], f) for f in file_list]
+        ut.log("Loaded files %s" % ", ".join(in_files), state)
+
         template=args["input"]["scica_template"]
         ut.log("Interpolated template at file %s" % template, state)
         ut.log("Running group ICA", state)
@@ -171,35 +207,7 @@ def local_run_mancova(args):
             TR=curr_TR,
         )
         baseDir=gica_out_dir
-        """
-        # Copying output of coinstac-gica to transfer directory.
-        os.makedirs(
-            os.path.join(state["transferDirectory"], "coinstac-gica"))
-        ut.log(
-            "Copying  output from %s to %s"
-            % (gica_out_dir, os.path.join(state["transferDirectory"]),),
-            state,
-        )
-        for filename in glob.glob(gica_out_dir):
-            if os.path.isdir(filename):
-                shutil.copytree(
-                    filename,
-                    os.path.join(
-                        state["transferDirectory"],
-                        "coinstac-gica",
-                        os.path.basename(filename),
-                    ),
-                )
-            else:
-                shutil.copy(
-                    filename,
-                    os.path.join(
-                        state["transferDirectory"],
-                        "coinstac-gica",
-                        os.path.basename(filename),
-                    ),
-                )
-        """
+
     else:
         if args["cache"]["skip_gica"] is False:
             baseDir = os.path.join(state["baseDirectory"], args["cache"]["gica_input_dir"])
@@ -210,23 +218,6 @@ def local_run_mancova(args):
                 % ( baseDir ),
                 state,
             )
-        """
-        ut.log(
-            "Copying preexisting output from %s to %s"
-            % (
-                baseDir,
-                os.path.join(
-                    state["transferDirectory"], args["cache"]["gica_input_dir"]
-                ),
-            ),
-            state,
-        )
-        if os.path.isdir(os.path.join(state["transferDirectory"], args["cache"]["gica_input_dir"])) is False:
-            shutil.copytree(
-                baseDir,
-                os.path.join(state["transferDirectory"], args["cache"]["gica_input_dir"])
-            )
-        """
 
     ut.log( "Done with GICA ", state)
 
@@ -282,7 +273,6 @@ def local_run_mancova(args):
             if key == "regression":
                 univariate_test = univariate_test[key]
                 write_stats_info = 1
-            #try:
             mancova_params_dict={'ica_param_file':ica_parameters,
                                         'out_dir':univariate_out_dir,
                                         'TR':args["input"].get("TR", 2),
@@ -327,21 +317,7 @@ def local_run_mancova(args):
                     write_stats_info=write_stats_info
                 )
             ut.log("Done with  GIFT MANCOVA call", state)
-                #stat_results[univariate_out_dir][key] = list(
-                #    glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
-                #)
-                #ut.log("Updated stats_results: ", state)
-                #shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"], os.path.basename(univariate_out_dir)))
-                #extract_univariate_stats(state, args["input"]["features"], univariate_out_dir)
             transfer_univariate_stats(state, univariate_out_dir)
-
-            #except Exception as e:
-            #    ut.log(
-            #        "Univariate analysis ({key}, {variable}) raised an exception. Full error string {err}".format(
-            #            key=key, variable=variable, err=str(e)
-            #        ),
-            #        state,
-            #    )
     else:
         ut.log("Skipping univariate tests", state)
 
@@ -350,7 +326,7 @@ def local_run_mancova(args):
         univariate_test_list=args["input"]["univariate_test_list"],
         covariates=covariates,
         covariates_df=covariates_df.to_dict(),
-        covariate_types=covariate_types.to_dict(),
+        covariate_types=covariate_types_df.to_dict(),
         TR=args["input"].get("TR", 2),
         features=args["input"]["features"],
         interactions=args["input"].get("interactions", []),
@@ -393,37 +369,6 @@ def transfer_univariate_stats(state, univariate_out_dir):
             f, os.path.join(state["transferDirectory"],
               os.path.basename(f))
         )
-
-
-def extract_univariate_stats(state, features, univariate_out_dir):
-    import hdf5storage
-    matfiledata = {}
-    matfiledata[u'clientID'] = state["clientId"]
-    matfiledata[u'outputDirs'] = [state["transferDirectory"], state["outputDirectory"]]
-    matfiledata[u'featureStats'] = features
-    matfiledata[u'univariateResultsDir'] = univariate_out_dir
-    matfiledata[u'mancovanInputFilesPrefix'] = 'coinstac-gica_'#'rest_hcp_' #'coinstac-gica_' OR 'coinstac-gica_merge_'
-    output_file = '/computation/'+state["clientId"]+'_mancova_structure_info.mat';
-
-    ut.log("Writing mat data %s" % (matfiledata), state)
-    hdf5storage.write(matfiledata, '', output_file, matlab_compatible=True)
-    ut.log("Done writing mat data", state)
-
-    #orig_mat_script='/computation/local_mat_script.m'
-    orig_mat_script='/computation/coinstac_mancova/matcode/local_mat_script.m'
-    temp_mat_script='/computation/temp_%s_mat_script.m'%(state["clientId"])
-    temp_mat_script=os.path.join(state["cacheDirectory"], "temp_%s_mat_script.m"%(state["clientId"]))
-    # open both files
-    with open(orig_mat_script, 'r') as orig_file, open(temp_mat_script, 'a') as tmp_file:
-        tmp_file.write("mat_info=load('"+output_file+"');")
-        # read content from first file
-        for line in orig_file:
-            # append content to second file
-            tmp_file.write(line)
-
-    ut.log("Running local matlab script: %s"%temp_mat_script, state)
-    gift_run_matlab_script(temp_mat_script)
-
 
 
 def scica_check_out(args):

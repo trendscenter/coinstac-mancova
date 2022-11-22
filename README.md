@@ -1,3 +1,24 @@
+#This branch specific requirements 
+The changes in this branch are made for decentralized mancova(this tool) to be compatible with COINSTAC vaults. 
+This repo usually requires two csv files, one with fixed covariates and the other specifying those covariate names and types. 
+COINSTAC Vault currently allows only one csv file for communication, so both these covariates.csv and covariate_keys.csv 
+files are merged into one as follows: 
+```
+         filename   -  This column lists the GICA output files that are required for MANCOVA compuation
+     niftifilename  -  This column lists the nifti file names of the subjects; if GICA output files are provided as inputs then
+                       these nifti files need not be actually present in the nifti file, however this column still needs to be 
+                       populated for computation. 
+covariatename:type  -  The column name contains covariate name and its type separated by a ':' .
+                       Example age:continuous or gender:categorical 
+                       
+An example of this format can be found in test/input/local0/simulatorRun/covariates.csv file.
+```
+
+```
+For groupica file, please download the GIFT standalone from: https://drive.google.com/file/d/1U-IoiOJQYPikj7uwxS9n4wUdwb66LOum/view 
+Extract GroupICATv4.0b_standalone_Aug_05_2021.zip and copy these file into groupicatv4.0b/GroupICATv4.0b_standalone/ directory.  
+```
+
 # Coinstac Group ICA/dMANCOVA
 
 This repository compiles submodules utilized for Group ICA and MANCOVA
@@ -93,7 +114,7 @@ Run using the following commands
 
 ```
 docker build  -t dmancova .
-coinstac-simulator --silly
+coinstac-simulator --loglevel silly
 ```
 
 ## Spatially Constrained ICA

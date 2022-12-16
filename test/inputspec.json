@@ -1,114 +1,958 @@
 [
     {
         "covariates": {
-            "value":
-                {
-                      "coinstac-gica_sub001_timecourses_ica_s1_.nii": {
-                        "age:continuous": 41,
-                        "niftifilename": "rtswa_1TR_M511.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub002_timecourses_ica_s1_.nii": {
-                        "age:continuous": 15,
-                        "niftifilename": "rtswa_1YM_2X11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub003_timecourses_ica_s1_.nii": {
-                        "age:continuous": 31,
-                        "niftifilename": "rtswa_34F_YG11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub004_timecourses_ica_s1_.nii": {
-                        "age:continuous": 34,
-                        "niftifilename": "rtswa_1DH_NL11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub005_timecourses_ica_s1_.nii": {
-                        "age:continuous": 16,
-                        "niftifilename": "rtswa_1MD_F111.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub006_timecourses_ica_s1_.nii": {
-                        "age:continuous": 13,
-                        "niftifilename": "rtswa_2CF_YT11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub007_timecourses_ica_s1_.nii": {
-                        "age:continuous": 14,
-                        "niftifilename": "rtswa_14R_3F11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub008_timecourses_ica_s1_.nii": {
-                        "age:continuous": 41,
-                        "niftifilename": "rtswa_1SF_MB11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub009_timecourses_ica_s1_.nii": {
-                        "age:continuous": 29,
-                        "niftifilename": "rtswa_2RG_F111.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub010_timecourses_ica_s1_.nii": {
-                        "age:continuous": 43,
-                        "niftifilename": "rtswa_1NB_NL11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub011_timecourses_ica_s1_.nii": {
-                        "age:continuous": 19,
-                        "niftifilename": "rtswa_2LV_YG11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub012_timecourses_ica_s1_.nii": {
-                        "age:continuous": 44,
-                        "niftifilename": "rtswa_2EX_YG11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub013_timecourses_ica_s1_.nii": {
-                        "age:continuous": 21,
-                        "niftifilename": "rtswa_3FW_6J11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub014_timecourses_ica_s1_.nii": {
-                        "age:continuous": 19,
-                        "niftifilename": "rtswa_33N_7P11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub015_timecourses_ica_s1_.nii": {
-                        "age:continuous": 38,
-                        "niftifilename": "rtswa_1JR_S911.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub016_timecourses_ica_s1_.nii": {
-                        "age:continuous": 22,
-                        "niftifilename": "rtswa_38R_F111.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub017_timecourses_ica_s1_.nii": {
-                        "age:continuous": 20,
-                        "niftifilename": "rtswa_1VX_F111.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub018_timecourses_ica_s1_.nii": {
-                        "age:continuous": 37,
-                        "niftifilename": "rtswa_2ZG_F111.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub019_timecourses_ica_s1_.nii": {
-                        "age:continuous": 18,
-                        "niftifilename": "rtswa_3JG_NL11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub020_timecourses_ica_s1_.nii": {
-                        "age:continuous": 22,
-                        "niftifilename": "rtswa_383_F111.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_ica_parameter_info.mat": {
-                        "age:continuous": "",
-                        "niftifilename": "",
-                        "gender:categorical": ""
-                      }
-                    }
+            "value": {
+                "gica_cmd_sub001_timecourses_ica_s1_.nii": {
+                    "age:continuous": 25.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87101227_SM_short.nii"
+                },
+                "gica_cmd_sub002_timecourses_ica_s1_.nii": {
+                    "age:continuous": 56.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87193753_SM_short.nii"
+                },
+                "gica_cmd_sub003_timecourses_ica_s1_.nii": {
+                    "age:continuous": 32.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87188116_SM_short.nii"
+                },
+                "gica_cmd_sub004_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87119634_SM_short.nii"
+                },
+                "gica_cmd_sub005_timecourses_ica_s1_.nii": {
+                    "age:continuous": 25.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87162516_SM_short.nii"
+                },
+                "gica_cmd_sub006_timecourses_ica_s1_.nii": {
+                    "age:continuous": 58.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87129912_SM_short.nii"
+                },
+                "gica_cmd_sub007_timecourses_ica_s1_.nii": {
+                    "age:continuous": 27.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87118855_SM_short.nii"
+                },
+                "gica_cmd_sub008_timecourses_ica_s1_.nii": {
+                    "age:continuous": 27.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87195914_SM_short.nii"
+                },
+                "gica_cmd_sub009_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87172340_SM_short.nii"
+                },
+                "gica_cmd_sub010_timecourses_ica_s1_.nii": {
+                    "age:continuous": 37.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87144936_SM_short.nii"
+                },
+                "gica_cmd_sub011_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87179851_SM_short.nii"
+                },
+                "gica_cmd_sub012_timecourses_ica_s1_.nii": {
+                    "age:continuous": 57.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87139588_SM_short.nii"
+                },
+                "gica_cmd_sub013_timecourses_ica_s1_.nii": {
+                    "age:continuous": 18.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87108065_SM_short.nii"
+                },
+                "gica_cmd_sub014_timecourses_ica_s1_.nii": {
+                    "age:continuous": 33.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87152869_SM_short.nii"
+                },
+                "gica_cmd_sub015_timecourses_ica_s1_.nii": {
+                    "age:continuous": 62.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87158784_SM_short.nii"
+                },
+                "gica_cmd_sub016_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87134466_SM_short.nii"
+                },
+                "gica_cmd_sub017_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87151222_SM_short.nii"
+                },
+                "gica_cmd_sub018_timecourses_ica_s1_.nii": {
+                    "age:continuous": 18.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87112292_SM_short.nii"
+                },
+                "gica_cmd_sub019_timecourses_ica_s1_.nii": {
+                    "age:continuous": 35.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87108422_SM_short.nii"
+                },
+                "gica_cmd_sub020_timecourses_ica_s1_.nii": {
+                    "age:continuous": 58.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87137928_SM_short.nii"
+                },
+                "gica_cmd_sub021_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87141735_SM_short.nii"
+                },
+                "gica_cmd_sub022_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87101199_SM_short.nii"
+                },
+                "gica_cmd_sub023_timecourses_ica_s1_.nii": {
+                    "age:continuous": 34.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87136318_SM_short.nii"
+                },
+                "gica_cmd_sub024_timecourses_ica_s1_.nii": {
+                    "age:continuous": 57.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87106164_SM_short.nii"
+                },
+                "gica_cmd_sub025_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87139598_SM_short.nii"
+                },
+                "gica_cmd_sub026_timecourses_ica_s1_.nii": {
+                    "age:continuous": 38.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87119424_SM_short.nii"
+                },
+                "gica_cmd_sub027_timecourses_ica_s1_.nii": {
+                    "age:continuous": 37.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87110374_SM_short.nii"
+                },
+                "gica_cmd_sub028_timecourses_ica_s1_.nii": {
+                    "age:continuous": 43.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87179113_SM_short.nii"
+                },
+                "gica_cmd_sub029_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87128655_SM_short.nii"
+                },
+                "gica_cmd_sub030_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87120535_SM_short.nii"
+                },
+                "gica_cmd_sub031_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163018_SM_short.nii"
+                },
+                "gica_cmd_sub032_timecourses_ica_s1_.nii": {
+                    "age:continuous": 42.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163039_SM_short.nii"
+                },
+                "gica_cmd_sub033_timecourses_ica_s1_.nii": {
+                    "age:continuous": 21.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87130520_SM_short.nii"
+                },
+                "gica_cmd_sub034_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87113502_SM_short.nii"
+                },
+                "gica_cmd_sub035_timecourses_ica_s1_.nii": {
+                    "age:continuous": 49.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87138107_SM_short.nii"
+                },
+                "gica_cmd_sub036_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87170347_SM_short.nii"
+                },
+                "gica_cmd_sub037_timecourses_ica_s1_.nii": {
+                    "age:continuous": 64.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87148423_SM_short.nii"
+                },
+                "gica_cmd_sub038_timecourses_ica_s1_.nii": {
+                    "age:continuous": 18.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87142686_SM_short.nii"
+                },
+                "gica_cmd_sub039_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87183499_SM_short.nii"
+                },
+                "gica_cmd_sub040_timecourses_ica_s1_.nii": {
+                    "age:continuous": 25.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87110738_SM_short.nii"
+                },
+                "gica_cmd_sub041_timecourses_ica_s1_.nii": {
+                    "age:continuous": 57.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87141611_SM_short.nii"
+                },
+                "gica_cmd_sub042_timecourses_ica_s1_.nii": {
+                    "age:continuous": 27.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87113425_SM_short.nii"
+                },
+                "gica_cmd_sub043_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87177552_SM_short.nii"
+                },
+                "gica_cmd_sub044_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87156128_SM_short.nii"
+                },
+                "gica_cmd_sub045_timecourses_ica_s1_.nii": {
+                    "age:continuous": 47.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87122904_SM_short.nii"
+                },
+                "gica_cmd_sub046_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87139975_SM_short.nii"
+                },
+                "gica_cmd_sub047_timecourses_ica_s1_.nii": {
+                    "age:continuous": 60.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87125087_SM_short.nii"
+                },
+                "gica_cmd_sub048_timecourses_ica_s1_.nii": {
+                    "age:continuous": 38.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87119958_SM_short.nii"
+                },
+                "gica_cmd_sub049_timecourses_ica_s1_.nii": {
+                    "age:continuous": 35.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87125112_SM_short.nii"
+                },
+                "gica_cmd_sub050_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87194877_SM_short.nii"
+                },
+                "gica_cmd_sub051_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87197356_SM_short.nii"
+                },
+                "gica_cmd_sub052_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87182667_SM_short.nii"
+                },
+                "gica_cmd_sub053_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87169368_SM_short.nii"
+                },
+                "gica_cmd_sub054_timecourses_ica_s1_.nii": {
+                    "age:continuous": 39.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87174476_SM_short.nii"
+                },
+                "gica_cmd_sub055_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87119438_SM_short.nii"
+                },
+                "gica_cmd_sub056_timecourses_ica_s1_.nii": {
+                    "age:continuous": 50.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87158537_SM_short.nii"
+                },
+                "gica_cmd_sub057_timecourses_ica_s1_.nii": {
+                    "age:continuous": 65.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87103823_SM_short.nii"
+                },
+                "gica_cmd_sub058_timecourses_ica_s1_.nii": {
+                    "age:continuous": 47.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87109031_SM_short.nii"
+                },
+                "gica_cmd_sub059_timecourses_ica_s1_.nii": {
+                    "age:continuous": 33.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87120631_SM_short.nii"
+                },
+                "gica_cmd_sub060_timecourses_ica_s1_.nii": {
+                    "age:continuous": 47.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87175187_SM_short.nii"
+                },
+                "gica_cmd_sub061_timecourses_ica_s1_.nii": {
+                    "age:continuous": 51.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87132404_SM_short.nii"
+                },
+                "gica_cmd_sub062_timecourses_ica_s1_.nii": {
+                    "age:continuous": 25.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87146780_SM_short.nii"
+                },
+                "gica_cmd_sub063_timecourses_ica_s1_.nii": {
+                    "age:continuous": 50.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87103074_SM_short.nii"
+                },
+                "gica_cmd_sub064_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87164709_SM_short.nii"
+                },
+                "gica_cmd_sub065_timecourses_ica_s1_.nii": {
+                    "age:continuous": 63.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87140707_SM_short.nii"
+                },
+                "gica_cmd_sub066_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87189300_SM_short.nii"
+                },
+                "gica_cmd_sub067_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87146545_SM_short.nii"
+                },
+                "gica_cmd_sub068_timecourses_ica_s1_.nii": {
+                    "age:continuous": 36.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87107805_SM_short.nii"
+                },
+                "gica_cmd_sub069_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87176800_SM_short.nii"
+                },
+                "gica_cmd_sub070_timecourses_ica_s1_.nii": {
+                    "age:continuous": 35.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87106603_SM_short.nii"
+                },
+                "gica_cmd_sub071_timecourses_ica_s1_.nii": {
+                    "age:continuous": 19.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87148415_SM_short.nii"
+                },
+                "gica_cmd_sub072_timecourses_ica_s1_.nii": {
+                    "age:continuous": 56.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87144416_SM_short.nii"
+                },
+                "gica_cmd_sub073_timecourses_ica_s1_.nii": {
+                    "age:continuous": 38.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87106055_SM_short.nii"
+                },
+                "gica_cmd_sub074_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87148607_SM_short.nii"
+                },
+                "gica_cmd_sub075_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87160684_SM_short.nii"
+                },
+                "gica_cmd_sub076_timecourses_ica_s1_.nii": {
+                    "age:continuous": 47.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87115685_SM_short.nii"
+                },
+                "gica_cmd_sub077_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87198018_SM_short.nii"
+                },
+                "gica_cmd_sub078_timecourses_ica_s1_.nii": {
+                    "age:continuous": 35.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87190427_SM_short.nii"
+                },
+                "gica_cmd_sub079_timecourses_ica_s1_.nii": {
+                    "age:continuous": 50.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87108958_SM_short.nii"
+                },
+                "gica_cmd_sub080_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87199559_SM_short.nii"
+                },
+                "gica_cmd_sub081_timecourses_ica_s1_.nii": {
+                    "age:continuous": 33.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87165660_SM_short.nii"
+                },
+                "gica_cmd_sub082_timecourses_ica_s1_.nii": {
+                    "age:continuous": 50.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87153421_SM_short.nii"
+                },
+                "gica_cmd_sub083_timecourses_ica_s1_.nii": {
+                    "age:continuous": 27.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87165160_SM_short.nii"
+                },
+                "gica_cmd_sub084_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87135109_SM_short.nii"
+                },
+                "gica_cmd_sub085_timecourses_ica_s1_.nii": {
+                    "age:continuous": 44.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87153658_SM_short.nii"
+                },
+                "gica_cmd_sub086_timecourses_ica_s1_.nii": {
+                    "age:continuous": 30.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87129467_SM_short.nii"
+                },
+                "gica_cmd_sub087_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87123391_SM_short.nii"
+                },
+                "gica_cmd_sub088_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87158740_SM_short.nii"
+                },
+                "gica_cmd_sub089_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87158469_SM_short.nii"
+                },
+                "gica_cmd_sub090_timecourses_ica_s1_.nii": {
+                    "age:continuous": 45.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87110616_SM_short.nii"
+                },
+                "gica_cmd_sub091_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87139409_SM_short.nii"
+                },
+                "gica_cmd_sub092_timecourses_ica_s1_.nii": {
+                    "age:continuous": 37.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87142218_SM_short.nii"
+                },
+                "gica_cmd_sub093_timecourses_ica_s1_.nii": {
+                    "age:continuous": 65.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87141241_SM_short.nii"
+                },
+                "gica_cmd_sub094_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87173064_SM_short.nii"
+                },
+                "gica_cmd_sub095_timecourses_ica_s1_.nii": {
+                    "age:continuous": 46.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87107537_SM_short.nii"
+                },
+                "gica_cmd_sub096_timecourses_ica_s1_.nii": {
+                    "age:continuous": 49.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87157509_SM_short.nii"
+                },
+                "gica_cmd_sub097_timecourses_ica_s1_.nii": {
+                    "age:continuous": 25.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87110138_SM_short.nii"
+                },
+                "gica_cmd_sub098_timecourses_ica_s1_.nii": {
+                    "age:continuous": 42.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87145254_SM_short.nii"
+                },
+                "gica_cmd_sub099_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87101037_SM_short.nii"
+                },
+                "gica_cmd_sub100_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87136522_SM_short.nii"
+                },
+                "gica_cmd_sub101_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87101811_SM_short.nii"
+                },
+                "gica_cmd_sub102_timecourses_ica_s1_.nii": {
+                    "age:continuous": 41.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87192277_SM_short.nii"
+                },
+                "gica_cmd_sub103_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87170919_SM_short.nii"
+                },
+                "gica_cmd_sub104_timecourses_ica_s1_.nii": {
+                    "age:continuous": 43.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87173661_SM_short.nii"
+                },
+                "gica_cmd_sub105_timecourses_ica_s1_.nii": {
+                    "age:continuous": 30.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87182613_SM_short.nii"
+                },
+                "gica_cmd_sub106_timecourses_ica_s1_.nii": {
+                    "age:continuous": 42.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87110696_SM_short.nii"
+                },
+                "gica_cmd_sub107_timecourses_ica_s1_.nii": {
+                    "age:continuous": 33.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87182428_SM_short.nii"
+                },
+                "gica_cmd_sub108_timecourses_ica_s1_.nii": {
+                    "age:continuous": 50.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87140955_SM_short.nii"
+                },
+                "gica_cmd_sub109_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87103558_SM_short.nii"
+                },
+                "gica_cmd_sub110_timecourses_ica_s1_.nii": {
+                    "age:continuous": 36.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87129245_SM_short.nii"
+                },
+                "gica_cmd_sub111_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87131520_SM_short.nii"
+                },
+                "gica_cmd_sub112_timecourses_ica_s1_.nii": {
+                    "age:continuous": 34.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87101027_SM_short.nii"
+                },
+                "gica_cmd_sub113_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87171589_SM_short.nii"
+                },
+                "gica_cmd_sub114_timecourses_ica_s1_.nii": {
+                    "age:continuous": 59.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87123867_SM_short.nii"
+                },
+                "gica_cmd_sub115_timecourses_ica_s1_.nii": {
+                    "age:continuous": 38.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87147020_SM_short.nii"
+                },
+                "gica_cmd_sub116_timecourses_ica_s1_.nii": {
+                    "age:continuous": 40.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87126118_SM_short.nii"
+                },
+                "gica_cmd_sub117_timecourses_ica_s1_.nii": {
+                    "age:continuous": 62.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87195360_SM_short.nii"
+                },
+                "gica_cmd_sub118_timecourses_ica_s1_.nii": {
+                    "age:continuous": 29.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87142309_SM_short.nii"
+                },
+                "gica_cmd_sub119_timecourses_ica_s1_.nii": {
+                    "age:continuous": 21.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87180649_SM_short.nii"
+                },
+                "gica_cmd_sub120_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87185837_SM_short.nii"
+                },
+                "gica_cmd_sub121_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87176223_SM_short.nii"
+                },
+                "gica_cmd_sub122_timecourses_ica_s1_.nii": {
+                    "age:continuous": 34.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87177386_SM_short.nii"
+                },
+                "gica_cmd_sub123_timecourses_ica_s1_.nii": {
+                    "age:continuous": 62.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87188317_SM_short.nii"
+                },
+                "gica_cmd_sub124_timecourses_ica_s1_.nii": {
+                    "age:continuous": 30.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87155773_SM_short.nii"
+                },
+                "gica_cmd_sub125_timecourses_ica_s1_.nii": {
+                    "age:continuous": 54.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87165947_SM_short.nii"
+                },
+                "gica_cmd_sub126_timecourses_ica_s1_.nii": {
+                    "age:continuous": 33.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87188480_SM_short.nii"
+                },
+                "gica_cmd_sub127_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87141421_SM_short.nii"
+                },
+                "gica_cmd_sub128_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87165798_SM_short.nii"
+                },
+                "gica_cmd_sub129_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163031_SM_short.nii"
+                },
+                "gica_cmd_sub130_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87129121_SM_short.nii"
+                },
+                "gica_cmd_sub131_timecourses_ica_s1_.nii": {
+                    "age:continuous": 41.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87100636_SM_short.nii"
+                },
+                "gica_cmd_sub132_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87187211_SM_short.nii"
+                },
+                "gica_cmd_sub133_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87172142_SM_short.nii"
+                },
+                "gica_cmd_sub134_timecourses_ica_s1_.nii": {
+                    "age:continuous": 37.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87149848_SM_short.nii"
+                },
+                "gica_cmd_sub135_timecourses_ica_s1_.nii": {
+                    "age:continuous": 43.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87179516_SM_short.nii"
+                },
+                "gica_cmd_sub136_timecourses_ica_s1_.nii": {
+                    "age:continuous": 44.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87173663_SM_short.nii"
+                },
+                "gica_cmd_sub137_timecourses_ica_s1_.nii": {
+                    "age:continuous": 54.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87192473_SM_short.nii"
+                },
+                "gica_cmd_sub138_timecourses_ica_s1_.nii": {
+                    "age:continuous": 41.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87145417_SM_short.nii"
+                },
+                "gica_cmd_sub139_timecourses_ica_s1_.nii": {
+                    "age:continuous": 29.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87124872_SM_short.nii"
+                },
+                "gica_cmd_sub140_timecourses_ica_s1_.nii": {
+                    "age:continuous": 51.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87190893_SM_short.nii"
+                },
+                "gica_cmd_sub141_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87172850_SM_short.nii"
+                },
+                "gica_cmd_sub142_timecourses_ica_s1_.nii": {
+                    "age:continuous": 56.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163073_SM_short.nii"
+                },
+                "gica_cmd_sub143_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87114129_SM_short.nii"
+                },
+                "gica_cmd_sub144_timecourses_ica_s1_.nii": {
+                    "age:continuous": 43.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87167444_SM_short.nii"
+                },
+                "gica_cmd_sub145_timecourses_ica_s1_.nii": {
+                    "age:continuous": 30.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87187448_SM_short.nii"
+                },
+                "gica_cmd_sub146_timecourses_ica_s1_.nii": {
+                    "age:continuous": 58.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87151809_SM_short.nii"
+                },
+                "gica_cmd_sub147_timecourses_ica_s1_.nii": {
+                    "age:continuous": 56.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87174491_SM_short.nii"
+                },
+                "gica_cmd_sub148_timecourses_ica_s1_.nii": {
+                    "age:continuous": 44.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163083_SM_short.nii"
+                },
+                "gica_cmd_sub149_timecourses_ica_s1_.nii": {
+                    "age:continuous": 42.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87174402_SM_short.nii"
+                },
+                "gica_cmd_sub150_timecourses_ica_s1_.nii": {
+                    "age:continuous": 51.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87144544_SM_short.nii"
+                },
+                "gica_cmd_sub151_timecourses_ica_s1_.nii": {
+                    "age:continuous": 19.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87196666_SM_short.nii"
+                },
+                "gica_cmd_sub152_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87180947_SM_short.nii"
+                },
+                "gica_cmd_sub153_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87174634_SM_short.nii"
+                },
+                "gica_cmd_sub154_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87133950_SM_short.nii"
+                },
+                "gica_cmd_sub155_timecourses_ica_s1_.nii": {
+                    "age:continuous": 39.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87141217_SM_short.nii"
+                },
+                "gica_cmd_sub156_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87101028_SM_short.nii"
+                },
+                "gica_cmd_sub157_timecourses_ica_s1_.nii": {
+                    "age:continuous": 35.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87123638_SM_short.nii"
+                },
+                "gica_cmd_sub158_timecourses_ica_s1_.nii": {
+                    "age:continuous": 27.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87163457_SM_short.nii"
+                },
+                "gica_cmd_sub159_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87192905_SM_short.nii"
+                },
+                "gica_cmd_sub160_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87174975_SM_short.nii"
+                },
+                "gica_cmd_sub161_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87165239_SM_short.nii"
+                },
+                "gica_cmd_sub162_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87199567_SM_short.nii"
+                },
+                "gica_cmd_sub163_timecourses_ica_s1_.nii": {
+                    "age:continuous": 52.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87157534_SM_short.nii"
+                },
+                "gica_cmd_sub164_timecourses_ica_s1_.nii": {
+                    "age:continuous": 47.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87148909_SM_short.nii"
+                },
+                "gica_cmd_sub165_timecourses_ica_s1_.nii": {
+                    "age:continuous": 36.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87173659_SM_short.nii"
+                },
+                "gica_cmd_sub166_timecourses_ica_s1_.nii": {
+                    "age:continuous": 24.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87119125_SM_short.nii"
+                },
+                "gica_cmd_sub167_timecourses_ica_s1_.nii": {
+                    "age:continuous": 55.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87140673_SM_short.nii"
+                },
+                "gica_cmd_sub168_timecourses_ica_s1_.nii": {
+                    "age:continuous": 19.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87190274_SM_short.nii"
+                },
+                "gica_cmd_sub169_timecourses_ica_s1_.nii": {
+                    "age:continuous": 23.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87107842_SM_short.nii"
+                },
+                "gica_cmd_sub170_timecourses_ica_s1_.nii": {
+                    "age:continuous": 54.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87156700_SM_short.nii"
+                },
+                "gica_cmd_sub171_timecourses_ica_s1_.nii": {
+                    "age:continuous": 34.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87161790_SM_short.nii"
+                },
+                "gica_cmd_sub172_timecourses_ica_s1_.nii": {
+                    "age:continuous": 44.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87181393_SM_short.nii"
+                },
+                "gica_cmd_sub173_timecourses_ica_s1_.nii": {
+                    "age:continuous": 19.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87172336_SM_short.nii"
+                },
+                "gica_cmd_sub174_timecourses_ica_s1_.nii": {
+                    "age:continuous": 49.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87111069_SM_short.nii"
+                },
+                "gica_cmd_sub175_timecourses_ica_s1_.nii": {
+                    "age:continuous": 43.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87137280_SM_short.nii"
+                },
+                "gica_cmd_sub176_timecourses_ica_s1_.nii": {
+                    "age:continuous": 31.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87159255_SM_short.nii"
+                },
+                "gica_cmd_sub177_timecourses_ica_s1_.nii": {
+                    "age:continuous": 39.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87181193_SM_short.nii"
+                },
+                "gica_cmd_sub178_timecourses_ica_s1_.nii": {
+                    "age:continuous": 20.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87113543_SM_short.nii"
+                },
+                "gica_cmd_sub179_timecourses_ica_s1_.nii": {
+                    "age:continuous": 34.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87111655_SM_short.nii"
+                },
+                "gica_cmd_sub180_timecourses_ica_s1_.nii": {
+                    "age:continuous": 30.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87185493_SM_short.nii"
+                },
+                "gica_cmd_sub181_timecourses_ica_s1_.nii": {
+                    "age:continuous": 48.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87105262_SM_short.nii"
+                },
+                "gica_cmd_sub182_timecourses_ica_s1_.nii": {
+                    "age:continuous": 51.0,
+                    "gender:categorical": "Female",
+                    "niftifilename": "M87112185_SM_short.nii"
+                },
+                "gica_cmd_sub183_timecourses_ica_s1_.nii": {
+                    "age:continuous": 58.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87157377_SM_short.nii"
+                },
+                "gica_cmd_sub184_timecourses_ica_s1_.nii": {
+                    "age:continuous": 53.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87144049_SM_short.nii"
+                },
+                "gica_cmd_sub185_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87142950_SM_short.nii"
+                },
+                "gica_cmd_sub186_timecourses_ica_s1_.nii": {
+                    "age:continuous": 22.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87193911_SM_short.nii"
+                },
+                "gica_cmd_sub187_timecourses_ica_s1_.nii": {
+                    "age:continuous": 28.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87150666_SM_short.nii"
+                },
+                "gica_cmd_sub188_timecourses_ica_s1_.nii": {
+                    "age:continuous": 26.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87193887_SM_short.nii"
+                },
+                "gica_cmd_sub189_timecourses_ica_s1_.nii": {
+                    "age:continuous": 64.0,
+                    "gender:categorical": "Male",
+                    "niftifilename": "M87123290_SM_short.nii"
+                },
+                "gica_cmd_ica_parameter_info.mat": {
+                    "age:continuous": "",
+                    "gender:categorical": "",
+                    "niftifilename": ""
+                }
+            }
         },
         "mask": {
             "value": "/computation/local_data/mask.nii"
@@ -253,270 +1097,7 @@
             "value": ""
         },
         "skip_gica":{
-            "value": false
-        },
-        "run_mancova": {
-            "value": false
-        },
-        "run_univariate_tests": {
             "value": true
-        }
-    },
-    {
-        "covariates": {
-            "value":
-                    {
-                      "coinstac-gica_sub001_timecourses_ica_s1_.nii": {
-                        "age:continuous": 22,
-                        "niftifilename": "rtswa_1FA_NL11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub002_timecourses_ica_s1_.nii": {
-                        "age:continuous": 17,
-                        "niftifilename": "rtswa_2WJ_E511.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub003_timecourses_ica_s1_.nii": {
-                        "age:continuous": 15,
-                        "niftifilename": "rtswa_255_NL11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub004_timecourses_ica_s1_.nii": {
-                        "age:continuous": 16,
-                        "niftifilename": "rtswa_3G7_F111.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub005_timecourses_ica_s1_.nii": {
-                        "age:continuous": 22,
-                        "niftifilename": "rtswa_11G_1G11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub006_timecourses_ica_s1_.nii": {
-                        "age:continuous": 23,
-                        "niftifilename": "rtswa_26F_BA11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub007_timecourses_ica_s1_.nii": {
-                        "age:continuous": 25,
-                        "niftifilename": "rtswa_1TN_F111.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub008_timecourses_ica_s1_.nii": {
-                        "age:continuous": 39,
-                        "niftifilename": "rtswa_2TD_MB11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub009_timecourses_ica_s1_.nii": {
-                        "age:continuous": 20,
-                        "niftifilename": "rtswa_18S_NL11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub010_timecourses_ica_s1_.nii": {
-                        "age:continuous": 24,
-                        "niftifilename": "rtswa_1CJ_NL11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub011_timecourses_ica_s1_.nii": {
-                        "age:continuous": 15,
-                        "niftifilename": "rtswa_156_NL11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub012_timecourses_ica_s1_.nii": {
-                        "age:continuous": 14,
-                        "niftifilename": "rtswa_2P7_2X31.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub013_timecourses_ica_s1_.nii": {
-                        "age:continuous": 19,
-                        "niftifilename": "rtswa_2A5_NL11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub014_timecourses_ica_s1_.nii": {
-                        "age:continuous": 33,
-                        "niftifilename": "rtswa_1BW_1G11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub015_timecourses_ica_s1_.nii": {
-                        "age:continuous": 18,
-                        "niftifilename": "rtswa_1GG_NX11.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub016_timecourses_ica_s1_.nii": {
-                        "age:continuous": 28,
-                        "niftifilename": "rtswa_1NF_BN11.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub017_timecourses_ica_s1_.nii": {
-                        "age:continuous": 25,
-                        "niftifilename": "rtswa_2HA_F111.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub018_timecourses_ica_s1_.nii": {
-                        "age:continuous": 28,
-                        "niftifilename": "rtswa_1D6_4311.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_sub019_timecourses_ica_s1_.nii": {
-                        "age:continuous": 26,
-                        "niftifilename": "rtswa_1RB_B211.nii",
-                        "gender:categorical": "Female"
-                      },
-                      "coinstac-gica_sub020_timecourses_ica_s1_.nii": {
-                        "age:continuous": 14,
-                        "niftifilename": "rtswa_1PH_5811.nii",
-                        "gender:categorical": "Male"
-                      },
-                      "coinstac-gica_ica_parameter_info.mat": {
-                        "age:continuous": "",
-                        "niftifilename": "",
-                        "gender:categorical": ""
-                      }
-                    }
-        },
-        "mask": {
-            "value": "/computation/local_data/mask.nii"
-        },
-        "ica_method": {
-            "value": [
-                "spatially constrained"
-            ]
-        },
-        "num_ics": {
-            "value": 20
-        },
-        "scica_template": {
-            "value": "/computation/local_data/NeuroMark.nii"
-        },
-        "interactions": {
-            "value": []
-        },
-        "features": {
-            "value": [
-                "fnc correlations",
-                "timecourses spectra"
-            ]
-        },
-        "TR": {
-            "value": 2
-        },
-        "numOfPCs": {
-            "value": [
-                5,
-                5,
-                5
-            ]
-        },
-        "univariate_test_list": {
-            "value": [
-                {
-                    "regression": {
-                        "gender": [
-                            "age"
-                        ],
-                        "age": [
-                            "gender"
-                        ]
-                    }
-                }
-            ]
-        },
-        "t_threshold": {
-            "value": 1.0
-        },
-        "freq_limits": {
-            "value": [
-                0.1,
-                0.15
-            ]
-        },
-        "p_threshold": {
-            "value": 1.0
-        },
-        "display_p_threshold": {
-            "value": 1.0
-        },
-        "comp_network_names": {
-            "value": {
-                "SC": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5
-                ],
-                "AUD": [
-                    6,
-                    7
-                ],
-                "SM": [
-                    8,
-                    9,
-                    10,
-                    11,
-                    12,
-                    13,
-                    14,
-                    15,
-                    16
-                ],
-                "VIS": [
-                    17,
-                    18,
-                    19,
-                    20,
-                    21,
-                    22,
-                    23,
-                    24,
-                    25
-                ],
-                "CC": [
-                    26,
-                    27,
-                    28,
-                    29,
-                    30,
-                    31,
-                    32,
-                    33,
-                    34,
-                    35,
-                    36,
-                    37,
-                    38,
-                    39,
-                    40,
-                    41,
-                    42
-                ],
-                "DMN": [
-                    43,
-                    44,
-                    45,
-                    46,
-                    47,
-                    48,
-                    49
-                ],
-                "CR": [
-                    50,
-                    51,
-                    52,
-                    53
-                ]
-            }
-        },
-        "image_values": {
-            "value": "positive"
-        },
-        "threshdesc": {
-            "value": "none"
-        },
-        "gica_input_dir": {
-            "value": ""
-        },
-        "skip_gica":{
-            "value": false
         },
         "run_mancova": {
             "value": false

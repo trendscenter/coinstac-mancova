@@ -255,7 +255,7 @@ def mancova_aggregate(args):
             key = list(univariate_test.keys())[0]
             test_name = key+"-"+univariate_test[key].pop("variable") if key != "regression" else key
             univariate_out_dir = os.path.join(
-                state["outputDirectory"], "coinstac-univariate-%s" % (test_name)
+                state["outputDirectory"], "coinstac-global-univariate-%s" % (test_name)
             )
             os.makedirs(univariate_out_dir, exist_ok=True)
             stat_results[univariate_out_dir] = dict()
@@ -290,6 +290,7 @@ def mancova_aggregate(args):
             stat_results[univariate_out_dir][key] = list(
                 glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
             )
+            shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"],                                                            os.path.basename(univariate_out_dir)))
 
     output_dict = {
         "computation_phase": "scica_mancova_remote",

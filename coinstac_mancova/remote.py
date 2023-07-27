@@ -238,6 +238,28 @@ def chmod_dir_recursive(dir_name):
     except:
         pass;
 
+# This is a temporary fix made to correct the typos in the output from GIFT call 
+# in the html files. https://github.com/trendscenter/coinstac/issues/1757. We 
+# will work on the correct fix to make sure GIFT call returns correct code 
+# after the COINSTAC 2023 workshop.
+def fix_typos(html_files):
+    for file_with_path in html_files:
+        dir_name=  os.path.dirname(file_with_path)
+        file_name = os.path.basename(file_with_path)
+
+        #copy file for backup
+        shutil.copy(file_with_path,os.path.join(dir_name,'.backup_'+ file_name))
+
+        #Read and write the correct file fixing typos
+        with open(file_with_path, "r") as f:
+            content="\n".join(s for s in f.readlines())
+
+        #Write the correct file fixing typos
+        with open(file_with_path, "w") as f:
+            content = content.replace("values ate averaged", "values are averaged");
+            f.write(content)
+
+
 def mancova_aggregate(args):
     inputs = args["input"]
     state = args["state"]
@@ -286,10 +308,9 @@ def mancova_aggregate(args):
                         display_p_threshold=inputs[first].get("display_p_threshold", 0.05),
                         #comp_files=comp_files
                         )
-
-            stat_results[univariate_out_dir][key] = list(
-                glob.glob(os.path.join(univariate_out_dir, "**", "*.html"))
-            )
+            html_files=list(glob.glob(os.path.join(univariate_out_dir, "**", "*.html")))
+            fix_typos(html_files)
+            stat_results[univariate_out_dir][key] = html_files
             shutil.copytree(univariate_out_dir, os.path.join(state["transferDirectory"],                                                            os.path.basename(univariate_out_dir)))
 
     output_dict = {

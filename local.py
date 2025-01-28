@@ -43,10 +43,9 @@ def stdchannel_redirected(stdchannel, dest_filename):
 
 
 LOCAL_MANCOVA_PHASES = mpk.MANCOVA_LOCAL
-if __name__ == "__main__":
-    parsed_args = json.loads(sys.stdin.read())
-    PIPELINE = LOCAL_MANCOVA_PHASES
 
+def start(parsed_args):
+    PIPELINE = LOCAL_MANCOVA_PHASES
     phase_key = list(ut.listRecursive(parsed_args, "computation_phase"))
     computation_output = copy.deepcopy(OUTPUT_TEMPLATE)
     if not phase_key:
@@ -148,4 +147,8 @@ if __name__ == "__main__":
     ut.log(
         "The dump looks like %s" % json.dumps(computation_output), parsed_args["state"]
     )
-    sys.stdout.write(json.dumps(computation_output))
+    return computation_output
+    
+if __name__ == '__main__':
+    parsed_args = json.loads(sys.stdin.read())
+    start(parsed_args)

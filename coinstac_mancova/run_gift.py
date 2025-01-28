@@ -64,7 +64,7 @@ ICA_ALGORITHMS = [
 
 # SHARED DEFAULTS
 # matlab_cmd = os.getenv('MATLAB_COMMAND')
-matlab_cmd = "/app/groupicatv4.0b/GroupICATv4.0b_standalone/run_groupica.sh /usr/local/MATLAB/MATLAB_Runtime/v91/"
+matlab_cmd = '/computation/groupica_v4.0.4.11/run_groupica.sh /usr/local/MATLAB/MATLAB_Runtime/R2022b/'
 # DEFAULT_OUT_DIR = os.path.join(str(settings.ROOT_DIR), 'media', 'figures')
 DEFAULT_OUT_DIR = "/out"
 DEFAULT_DISPLAY_RESULTS = 1
